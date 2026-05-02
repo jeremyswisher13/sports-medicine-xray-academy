@@ -56,6 +56,9 @@ interface PerLearner {
   cases: number;
   casesCorrect: number;
   lastEventAt?: number;
+  modulePreChecks: number;
+  modulePostChecks: number;
+  moduleOutcomesPending: number;
   modulePreAvg?: number;
   modulePostAvg?: number;
   modulePreConfAvg?: number;
@@ -105,6 +108,9 @@ function buildPerLearner(
       (a, e) => (a && a > (e.createdAt ?? 0) ? a : e.createdAt),
       undefined,
     ),
+    modulePreChecks: myMods.filter((m) => Boolean(m.preCheckAt)).length,
+    modulePostChecks: myMods.filter((m) => Boolean(m.postCheckAt)).length,
+    moduleOutcomesPending: myMods.filter((m) => Boolean(m.preCheckAt) && !m.postCheckAt).length,
     modulePreAvg: avg(modulePreScores),
     modulePostAvg: avg(modulePostScores),
     modulePreConfAvg: avg(modulePreConf),
@@ -138,6 +144,8 @@ export function AdminPage() {
     const totalModuleViews = data.modules.length;
     const totalCompletions = data.modules.filter((m) => m.completed).length;
     const totalQuizzes = data.quizzes.length;
+    const totalModulePreChecks = data.modules.filter((m) => Boolean(m.preCheckAt)).length;
+    const totalModulePostChecks = data.modules.filter((m) => Boolean(m.postCheckAt)).length;
     const courseScoreDeltas = data.users
       .map((u) => {
         const pre = data.quizzes.find((q) => q.userId === u.uid && q.scope === 'pre');
@@ -164,6 +172,10 @@ export function AdminPage() {
       totalModuleViews,
       totalCompletions,
       totalQuizzes,
+      totalModulePreChecks,
+      totalModulePostChecks,
+      moduleOutcomeRate:
+        totalModulePreChecks === 0 ? 0 : (totalModulePostChecks / totalModulePreChecks) * 100,
       avgCourseDelta: avg(courseScoreDeltas),
       avgModuleDelta: avg(moduleScoreDeltas),
       avgModuleConfDelta: avg(moduleConfDeltas),
@@ -181,6 +193,8 @@ export function AdminPage() {
       const progress = data.modules.filter((p) => p.moduleId === m.id);
       const views = progress.length;
       const completions = progress.filter((p) => p.completed).length;
+      const preCheckCount = progress.filter((p) => Boolean(p.preCheckAt)).length;
+      const postCheckCount = progress.filter((p) => Boolean(p.postCheckAt)).length;
       const preScores = progress
         .map((p) => p.preCheckScore)
         .filter((n): n is number => typeof n === 'number');
@@ -197,6 +211,8 @@ export function AdminPage() {
         module: m,
         views,
         completions,
+        preCheckCount,
+        postCheckCount,
         preAvg: avg(preScores),
         postAvg: avg(postScores),
         preConfAvg: avg(preConf),
@@ -257,6 +273,9 @@ export function AdminPage() {
       'Post-Course Score',
       'Pre-Course Confidence (avg)',
       'Post-Course Confidence (avg)',
+      'Module Pre Checks',
+      'Module Post Checks',
+      'Module Outcomes Pending',
       'Module Pre Avg',
       'Module Post Avg',
       'Module Pre Confidence',
@@ -275,6 +294,9 @@ export function AdminPage() {
       l.postCourseScore ?? '',
       l.preCourseConfidenceAvg ? l.preCourseConfidenceAvg.toFixed(2) : '',
       l.postCourseConfidenceAvg ? l.postCourseConfidenceAvg.toFixed(2) : '',
+      l.modulePreChecks,
+      l.modulePostChecks,
+      l.moduleOutcomesPending,
       l.modulePreAvg ? l.modulePreAvg.toFixed(1) : '',
       l.modulePostAvg ? l.modulePostAvg.toFixed(1) : '',
       l.modulePreConfAvg ? l.modulePreConfAvg.toFixed(2) : '',
@@ -334,8 +356,18 @@ export function AdminPage() {
       )}
 
       {/* Top metrics */}
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <Stat label="Learners" value={topMetrics.totalLearners.toString()} />
+        <Stat
+          label="Baselines"
+          value={topMetrics.totalModulePreChecks.toString()}
+          sub="Module entry checks"
+        />
+        <Stat
+          label="Outcomes"
+          value={`${topMetrics.totalModulePostChecks}`}
+          sub={`${topMetrics.moduleOutcomeRate.toFixed(0)}% of baselines`}
+        />
         <Stat
           label="Module completions"
           value={`${topMetrics.totalCompletions} / ${topMetrics.totalModuleViews}`}
@@ -401,6 +433,8 @@ export function AdminPage() {
                       {m.module.title}
                     </span>
                     <span className="pill">{m.views} views</span>
+                    <span className="pill">{m.preCheckCount} pre</span>
+                    <span className="pill">{m.postCheckCount} post</span>
                     <span className="pill-primary">{m.completions} done</span>
                     {m.preAvg && m.postAvg ? (
                       <span className="pill bg-emerald-50 text-emerald-800 border-emerald-100">
@@ -419,6 +453,7 @@ export function AdminPage() {
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <Mini label="Module Δ" value={`${(topMetrics.avgModuleConfDelta ?? 0).toFixed(2)}`} />
+              <Mini label="Outcome capture" value={`${topMetrics.moduleOutcomeRate.toFixed(0)}%`} />
               <Mini label="Video completion" value={`${topMetrics.videoCompletionRate.toFixed(0)}%`} />
             </div>
             <p className="mt-3 text-xs text-slate-500">
@@ -454,6 +489,7 @@ export function AdminPage() {
                     <th className="px-4 py-2">Learner</th>
                     <th className="px-4 py-2">Role</th>
                     <th className="px-4 py-2">Mods</th>
+                    <th className="px-4 py-2">Checks</th>
                     <th className="px-4 py-2">Course Δ</th>
                     <th className="px-4 py-2">Last active</th>
                   </tr>
@@ -488,6 +524,9 @@ export function AdminPage() {
                           {l.modulesCompleted}/{moduleSummaries.length}
                         </td>
                         <td className="px-4 py-2 tabular-nums">
+                          {l.modulePreChecks}/{l.modulePostChecks}
+                        </td>
+                        <td className="px-4 py-2 tabular-nums">
                           {courseDelta !== null
                             ? `${courseDelta > 0 ? '+' : ''}${Math.round(courseDelta)}%`
                             : '—'}
@@ -500,7 +539,7 @@ export function AdminPage() {
                   })}
                   {filteredLearners.length === 0 && (
                     <tr>
-                      <td colSpan={5} className="px-4 py-6 text-center text-sm text-slate-500">
+                      <td colSpan={6} className="px-4 py-6 text-center text-sm text-slate-500">
                         No learners yet.
                       </td>
                     </tr>
@@ -529,6 +568,18 @@ export function AdminPage() {
                   <dt className="text-slate-500">Modules done</dt>
                   <dd className="font-semibold tabular-nums">
                     {selectedLearner.modulesCompleted}/{moduleSummaries.length}
+                  </dd>
+                  <dt className="text-slate-500">Module baselines</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {selectedLearner.modulePreChecks}/{moduleSummaries.length}
+                  </dd>
+                  <dt className="text-slate-500">Module outcomes</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {selectedLearner.modulePostChecks}/{selectedLearner.modulePreChecks}
+                  </dd>
+                  <dt className="text-slate-500">Outcomes pending</dt>
+                  <dd className="font-semibold tabular-nums">
+                    {selectedLearner.moduleOutcomesPending}
                   </dd>
                   <dt className="text-slate-500">Course pre</dt>
                   <dd className="font-semibold tabular-nums">
@@ -620,6 +671,8 @@ export function AdminPage() {
                   <th className="px-4 py-2">Module</th>
                   <th className="px-4 py-2">Region</th>
                   <th className="px-4 py-2">Views</th>
+                  <th className="px-4 py-2">Pre</th>
+                  <th className="px-4 py-2">Post</th>
                   <th className="px-4 py-2">Completions</th>
                   <th className="px-4 py-2">Score Δ</th>
                   <th className="px-4 py-2">Conf Δ</th>
@@ -638,6 +691,8 @@ export function AdminPage() {
                       </td>
                       <td className="px-4 py-2 text-slate-600">{m.module.region}</td>
                       <td className="px-4 py-2 tabular-nums">{m.views}</td>
+                      <td className="px-4 py-2 tabular-nums">{m.preCheckCount}</td>
+                      <td className="px-4 py-2 tabular-nums">{m.postCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.completions}</td>
                       <td
                         className={[

@@ -108,6 +108,50 @@ export async function saveModuleProgress(p: ModuleProgress): Promise<void> {
   lsSet(`progress:${p.userId}`, map);
 }
 
+export async function markModuleVisited(input: {
+  userId: string;
+  moduleId: string;
+  lastViewedAt: number;
+}): Promise<void> {
+  const update = {
+    userId: input.userId,
+    moduleId: input.moduleId,
+    visited: true,
+    lastViewedAt: input.lastViewedAt,
+  };
+  if (firestore) {
+    try {
+      const ref = doc(
+        firestore,
+        COLLECTIONS.moduleProgress,
+        `${input.userId}_${input.moduleId}`,
+      );
+      await setDoc(ref, update, { merge: true });
+      return;
+    } catch (err) {
+      console.warn('[moduleProgress] firestore visit write failed', err);
+    }
+  }
+  const map = lsGet<Record<string, ModuleProgress>>(`progress:${input.userId}`, {});
+  const existing = map[input.moduleId];
+  map[input.moduleId] = {
+    userId: input.userId,
+    moduleId: input.moduleId,
+    visited: true,
+    completedTabs: existing?.completedTabs ?? [],
+    completed: existing?.completed ?? false,
+    completedAt: existing?.completedAt,
+    lastViewedAt: input.lastViewedAt,
+    preCheckAt: existing?.preCheckAt,
+    postCheckAt: existing?.postCheckAt,
+    preCheckScore: existing?.preCheckScore,
+    postCheckScore: existing?.postCheckScore,
+    preCheckConfidence: existing?.preCheckConfidence,
+    postCheckConfidence: existing?.postCheckConfidence,
+  };
+  lsSet(`progress:${input.userId}`, map);
+}
+
 export async function listModuleProgress(userId: string): Promise<ModuleProgress[]> {
   if (firestore) {
     try {

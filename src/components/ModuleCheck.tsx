@@ -21,6 +21,9 @@ interface Props {
   // Pre-check shows under a "Start with a quick check" affordance.
   // Post-check is opened from the "Mark module complete" CTA.
   variant?: 'banner' | 'inline';
+  required?: boolean;
+  completeModuleOnFinish?: boolean;
+  completedTabsOnFinish?: string[];
   onComplete?: (result: { score: number; confidence: number }) => void;
   onSkip?: () => void;
 }
@@ -32,11 +35,14 @@ export function ModuleCheck({
   questions,
   existingProgress,
   variant = 'banner',
+  required = false,
+  completeModuleOnFinish = false,
+  completedTabsOnFinish,
   onComplete,
   onSkip,
 }: Props) {
   const { user } = useAuth();
-  const [open, setOpen] = useState(variant === 'inline');
+  const [open, setOpen] = useState(variant === 'inline' || required);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [confidence, setConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>();
@@ -102,9 +108,11 @@ export function ModuleCheck({
             </button>
           ) : (
             <>
-              <button className="btn-ghost" onClick={onSkip}>
-                Skip
-              </button>
+              {!required && (
+                <button className="btn-ghost" onClick={onSkip}>
+                  Skip
+                </button>
+              )}
               <button className="btn-primary" onClick={() => setOpen(true)}>
                 Start
                 <Icon name="arrow-right" size={14} />
@@ -146,6 +154,7 @@ export function ModuleCheck({
 
   async function submitConfidence() {
     if (!confidence) return;
+    const shouldCompleteModule = phase === 'post' && completeModuleOnFinish;
     if (user) {
       await saveConfidenceRating({
         id: ids.newId(),
@@ -155,25 +164,34 @@ export function ModuleCheck({
         value: confidence,
         createdAt: Date.now(),
       });
+      const now = Date.now();
+      const completedAt = shouldCompleteModule ? now : existingProgress?.completedAt;
+      const preCheckAt = phase === 'pre' ? now : existingProgress?.preCheckAt;
+      const postCheckAt = phase === 'post' ? now : existingProgress?.postCheckAt;
+      const preCheckScore =
+        phase === 'pre' ? scorePercent : existingProgress?.preCheckScore;
+      const postCheckScore =
+        phase === 'post' ? scorePercent : existingProgress?.postCheckScore;
+      const preCheckConfidence =
+        phase === 'pre' ? confidence : existingProgress?.preCheckConfidence;
+      const postCheckConfidence =
+        phase === 'post' ? confidence : existingProgress?.postCheckConfidence;
       const progressUpdate: ModuleProgress = {
         userId: user.uid,
         moduleId,
         visited: existingProgress?.visited ?? true,
-        completedTabs: existingProgress?.completedTabs ?? [],
-        completed: existingProgress?.completed ?? false,
-        lastViewedAt: Date.now(),
-        preCheckAt:
-          phase === 'pre' ? Date.now() : existingProgress?.preCheckAt,
-        postCheckAt:
-          phase === 'post' ? Date.now() : existingProgress?.postCheckAt,
-        preCheckScore:
-          phase === 'pre' ? scorePercent : existingProgress?.preCheckScore,
-        postCheckScore:
-          phase === 'post' ? scorePercent : existingProgress?.postCheckScore,
-        preCheckConfidence:
-          phase === 'pre' ? confidence : existingProgress?.preCheckConfidence,
-        postCheckConfidence:
-          phase === 'post' ? confidence : existingProgress?.postCheckConfidence,
+        completedTabs: shouldCompleteModule
+          ? completedTabsOnFinish ?? existingProgress?.completedTabs ?? []
+          : existingProgress?.completedTabs ?? [],
+        completed: shouldCompleteModule ? true : existingProgress?.completed ?? false,
+        lastViewedAt: now,
+        ...(completedAt !== undefined ? { completedAt } : {}),
+        ...(preCheckAt !== undefined ? { preCheckAt } : {}),
+        ...(postCheckAt !== undefined ? { postCheckAt } : {}),
+        ...(preCheckScore !== undefined ? { preCheckScore } : {}),
+        ...(postCheckScore !== undefined ? { postCheckScore } : {}),
+        ...(preCheckConfidence !== undefined ? { preCheckConfidence } : {}),
+        ...(postCheckConfidence !== undefined ? { postCheckConfidence } : {}),
       };
       await saveModuleProgress(progressUpdate);
       await logAuditEvent({
@@ -183,6 +201,7 @@ export function ModuleCheck({
         details: {
           scope: phase === 'pre' ? 'module-pre' : 'module-post',
           value: confidence,
+          completed: shouldCompleteModule,
         },
       });
     }
@@ -199,7 +218,7 @@ export function ModuleCheck({
           </div>
           <h3 className="text-base text-ucla-900">{moduleTitle}</h3>
         </div>
-        {variant === 'banner' && (
+        {variant === 'banner' && !required && (
           <button
             className="btn-ghost text-xs"
             onClick={() => {
@@ -294,7 +313,9 @@ export function ModuleCheck({
             <p className="mt-1 text-sm text-slate-600">
               {phase === 'pre'
                 ? 'Now work through the module — your post-check will compare against this baseline.'
-                : 'Nice work. Your improvement is now visible in the progress dashboard.'}
+                : completeModuleOnFinish
+                  ? 'Nice work. This module is now complete and your improvement is visible in the progress dashboard.'
+                  : 'Nice work. Your improvement is now visible in the progress dashboard.'}
             </p>
           </div>
         )}

@@ -13,7 +13,6 @@ import {
 } from '../components/Callouts';
 import { CasePracticeCard } from '../components/CasePracticeCard';
 import { QuizQuestion } from '../components/QuizQuestion';
-import { ConfidenceScale } from '../components/ConfidenceScale';
 import { VideoResourceCard } from '../components/VideoResourceCard';
 import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
@@ -31,7 +30,7 @@ import { useProgress } from '../hooks/useProgress';
 import {
   ids,
   logAuditEvent,
-  saveConfidenceRating,
+  markModuleVisited,
   saveModuleProgress,
   saveQuizAttempt,
 } from '../services/firestore';
@@ -57,22 +56,26 @@ export function ModuleDetailPage() {
   const { user } = useAuth();
   const { snapshot, refresh } = useProgress();
   const [active, setActive] = useState('overview');
-  const [confidence, setConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>(undefined);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
 
   useEffect(() => {
     if (!user || !module) return;
-    void saveModuleProgress({
+    void markModuleVisited({
       userId: user.uid,
       moduleId: module.id,
-      visited: true,
-      completedTabs: [],
-      completed: false,
       lastViewedAt: Date.now(),
     });
     void logAuditEvent({ userId: user.uid, type: 'module_viewed', moduleId: module.id });
   }, [user, module]);
+
+  useEffect(() => {
+    setActive('overview');
+    setQuizAnswers({});
+    setQuizSubmitted(false);
+    setPreCheckCompletedNow(false);
+  }, [moduleId]);
 
   const videos = useMemo(
     () => (module ? getVideosForModule(module.id) : []),
@@ -142,43 +145,40 @@ export function ModuleDetailPage() {
     });
   }
 
-  async function saveConfidence(value: 1 | 2 | 3 | 4 | 5) {
-    if (!user || !module) return;
-    setConfidence(value);
-    await saveConfidenceRating({
-      id: ids.newId(),
-      userId: user.uid,
-      scope: 'module',
-      moduleId: module.id,
-      value,
-      createdAt: Date.now(),
-    });
-    await logAuditEvent({
-      userId: user.uid,
-      type: 'confidence_submitted',
-      moduleId: module.id,
-      details: { scope: 'module', value },
-    });
-  }
+  const moduleProgress = snapshot.modules.find((m) => m.moduleId === module.id);
+  const isAdminBypass =
+    user?.role === 'admin' ||
+    user?.email.toLowerCase() === 'jeremyswisher13@gmail.com';
+  const hasPreCheck =
+    Boolean(moduleProgress?.preCheckAt) &&
+    moduleProgress?.preCheckConfidence !== undefined;
+  const contentUnlocked = Boolean(isAdminBypass || hasPreCheck || preCheckCompletedNow);
+  const isComplete = moduleProgress?.completed;
 
   async function markComplete() {
     if (!user || !module) return;
-    const existing = snapshot.modules.find((m) => m.moduleId === module.id);
-    await saveModuleProgress({
+    const existing = moduleProgress;
+    const completedAt = Date.now();
+    const progressUpdate = {
       userId: user.uid,
       moduleId: module.id,
       visited: true,
       completedTabs: TABS.map((t) => t.id),
       completed: true,
-      completedAt: Date.now(),
-      lastViewedAt: Date.now(),
-      preCheckAt: existing?.preCheckAt,
-      postCheckAt: existing?.postCheckAt,
-      preCheckScore: existing?.preCheckScore,
-      postCheckScore: existing?.postCheckScore,
-      preCheckConfidence: existing?.preCheckConfidence,
-      postCheckConfidence: existing?.postCheckConfidence,
-    });
+      completedAt,
+      lastViewedAt: completedAt,
+      ...(existing?.preCheckAt !== undefined ? { preCheckAt: existing.preCheckAt } : {}),
+      ...(existing?.postCheckAt !== undefined ? { postCheckAt: existing.postCheckAt } : {}),
+      ...(existing?.preCheckScore !== undefined ? { preCheckScore: existing.preCheckScore } : {}),
+      ...(existing?.postCheckScore !== undefined ? { postCheckScore: existing.postCheckScore } : {}),
+      ...(existing?.preCheckConfidence !== undefined
+        ? { preCheckConfidence: existing.preCheckConfidence }
+        : {}),
+      ...(existing?.postCheckConfidence !== undefined
+        ? { postCheckConfidence: existing.postCheckConfidence }
+        : {}),
+    };
+    await saveModuleProgress(progressUpdate);
     await logAuditEvent({
       userId: user.uid,
       type: 'module_completed',
@@ -186,9 +186,6 @@ export function ModuleDetailPage() {
     });
     await refresh();
   }
-
-  const moduleProgress = snapshot.modules.find((m) => m.moduleId === module.id);
-  const isComplete = moduleProgress?.completed;
 
   return (
     <div className="container-page py-8 sm:py-10">
@@ -233,45 +230,140 @@ export function ModuleDetailPage() {
           <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Module status
           </div>
-          {isComplete ? (
+          {!contentUnlocked ? (
+            <div className="mt-2 rounded-xl border border-gold-200 bg-gold-50/70 p-3">
+              <div className="flex items-center gap-2 font-semibold text-gold-900">
+                <Icon name="lock" size={15} />
+                Baseline required
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-700">
+                Complete the entry quiz and confidence rating to unlock this module.
+              </p>
+            </div>
+          ) : isComplete ? (
             <div className="mt-2 flex items-center gap-2 text-emerald-700">
               <Icon name="check-circle" size={16} />
               <span className="font-semibold">Completed</span>
             </div>
-          ) : (
+          ) : moduleProgress?.postCheckAt ? (
             <button className="btn-primary mt-2 w-full" onClick={markComplete} disabled={!user}>
               Mark module complete
               <Icon name="check" size={14} />
             </button>
+          ) : isAdminBypass ? (
+            <div className="mt-2 rounded-xl border border-ucla-100 bg-ucla-50/70 p-3">
+              <div className="flex items-center gap-2 font-semibold text-ucla-900">
+                <Icon name="shield" size={15} />
+                Admin bypass active
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-700">
+                You can preview content without completing the learner baseline.
+              </p>
+            </div>
+          ) : (
+            <button className="btn-primary mt-2 w-full" onClick={() => setActive('takeaways')}>
+              Take post-check to complete
+              <Icon name="arrow-right" size={14} />
+            </button>
           )}
-          <div className="mt-3">
-            <ConfidenceScale
-              compact
-              value={confidence}
-              onChange={saveConfidence}
-              label="How confident are you with this region?"
-            />
-          </div>
+          {moduleProgress?.preCheckAt && (
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="text-slate-500">Pre score</div>
+                <div className="font-semibold tabular-nums text-ucla-900">
+                  {Math.round(moduleProgress.preCheckScore ?? 0)}%
+                </div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="text-slate-500">Pre confidence</div>
+                <div className="font-semibold tabular-nums text-ucla-900">
+                  {moduleProgress.preCheckConfidence ?? '—'}/5
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
-      <div className="mt-6">
-        <ModuleCheck
-          phase="pre"
-          moduleId={module.id}
-          moduleTitle={module.title}
-          questions={preCheckQs}
-          existingProgress={moduleProgress}
-          variant="banner"
-          onComplete={() => void refresh()}
-        />
-      </div>
+      {!contentUnlocked ? (
+        <section className="mt-6 grid gap-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <aside className="rounded-2xl border border-ucla-100 bg-white p-5 shadow-soft">
+            <div className="section-title">Start here</div>
+            <h2 className="mt-1 text-xl text-ucla-900">Capture your baseline first.</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Each module begins with three knowledge questions and one confidence rating. After
+              you save both, the full lesson opens automatically.
+            </p>
+            <ol className="mt-4 space-y-2 text-sm text-slate-700">
+              {['Answer the short knowledge check', 'Rate your confidence', 'Work through the module', 'Finish with the post-check'].map((step, idx) => (
+                <li key={step} className="flex items-start gap-2">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ucla-50 text-xs font-bold text-ucla-800">
+                    {idx + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </aside>
+          <ModuleCheck
+            phase="pre"
+            moduleId={module.id}
+            moduleTitle={module.title}
+            questions={preCheckQs}
+            existingProgress={moduleProgress}
+            variant="inline"
+            required
+            onComplete={() => {
+              setPreCheckCompletedNow(true);
+              void refresh();
+            }}
+          />
+        </section>
+      ) : (
+        <>
+          <div
+            className={[
+              'mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4',
+              isAdminBypass && !hasPreCheck
+                ? 'border-ucla-100 bg-ucla-50/70'
+                : 'border-emerald-200 bg-emerald-50/70',
+            ].join(' ')}
+          >
+            <div className="flex items-start gap-3">
+              <span
+                className={[
+                  'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+                  isAdminBypass && !hasPreCheck
+                    ? 'bg-ucla-100 text-ucla-800'
+                    : 'bg-emerald-100 text-emerald-700',
+                ].join(' ')}
+              >
+                <Icon name={isAdminBypass && !hasPreCheck ? 'shield' : 'check-circle'} size={16} />
+              </span>
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {isAdminBypass && !hasPreCheck ? 'Admin preview mode' : 'Baseline captured'}
+                </div>
+                <p className="text-sm leading-relaxed text-slate-700">
+                  {isAdminBypass && !hasPreCheck
+                    ? 'Learners will see the entry gate here. Your admin account can review the content directly.'
+                    : 'The module is open. Complete the post-check on Key Takeaways when you finish.'}
+                </p>
+              </div>
+            </div>
+            {!isComplete && (
+              <button className="btn-secondary" onClick={() => setActive('takeaways')}>
+                Go to post-check
+                <Icon name="arrow-right" size={14} />
+              </button>
+            )}
+          </div>
 
-      <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F7F8FA]/85 px-4 backdrop-blur sm:mx-0 sm:px-0">
-        <Tabs items={TABS} active={active} onChange={setActive} />
-      </div>
+          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F7F8FA]/85 px-4 backdrop-blur sm:mx-0 sm:px-0">
+            <Tabs items={TABS} active={active} onChange={setActive} />
+          </div>
 
-      <div className="mt-6 animate-fade-in">
+          <div className="mt-6 animate-fade-in">
         {active === 'overview' && (
           <section className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
             <article className="card p-5 sm:p-6">
@@ -529,6 +621,7 @@ export function ModuleDetailPage() {
                     selectedOptionId={quizAnswers[q.id]}
                     showFeedback={quizSubmitted}
                     locked={quizSubmitted}
+                    formative
                     onSelect={(id) =>
                       setQuizAnswers((prev) => ({ ...prev, [q.id]: id }))
                     }
@@ -614,12 +707,6 @@ export function ModuleDetailPage() {
                     </dl>
                   </div>
                 )}
-                <ConfidenceScale
-                  value={confidence}
-                  onChange={saveConfidence}
-                  label="Confidence after this module"
-                  description="Tracked alongside your pre/post checks on the progress dashboard."
-                />
                 <div className="card p-5">
                   <div className="label">Next steps</div>
                   <ul className="mt-2 space-y-2">
@@ -650,11 +737,15 @@ export function ModuleDetailPage() {
               questions={postCheckQs}
               existingProgress={moduleProgress}
               variant="banner"
+              completeModuleOnFinish
+              completedTabsOnFinish={TABS.map((t) => t.id)}
               onComplete={() => void refresh()}
             />
           </section>
         )}
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
