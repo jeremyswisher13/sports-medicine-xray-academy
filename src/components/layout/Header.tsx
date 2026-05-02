@@ -31,8 +31,8 @@ export function Header() {
       <div className="container-page">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link to="/dashboard" className="flex items-center gap-2.5 no-underline">
-            <span className="rounded-xl ring-1 ring-white/15">
-              <Logo size={32} />
+            <span className="rounded-2xl shadow-soft ring-1 ring-white/20">
+              <Logo size={34} variant="white" />
             </span>
             <div className="hidden sm:block">
               <div className="text-sm font-semibold leading-tight text-white">

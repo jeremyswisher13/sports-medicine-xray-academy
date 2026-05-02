@@ -11,7 +11,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           <div>
             <div className="flex items-center gap-3">
-              <Logo size={30} />
+              <Logo size={34} variant="white" />
               <div>
                 <div className="font-serif text-base font-semibold leading-tight text-white">
                   Sports Medicine X-Ray Academy
