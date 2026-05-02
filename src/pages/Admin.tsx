@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { useAdminData } from '../hooks/useAdminData';
-import { moduleSummaries } from '../data/modules';
+import { moduleContents } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
+import { checks } from '../data/moduleChecks';
+import { postCourseQuiz, preCourseQuiz } from '../data/quizzes';
 import { videoResources } from '../data/videoResources';
 import type {
   AuditEvent,
@@ -63,6 +66,15 @@ interface PerLearner {
   modulePostAvg?: number;
   modulePreConfAvg?: number;
   modulePostConfAvg?: number;
+}
+
+interface QuestionStat {
+  questionId: string;
+  prompt: string;
+  moduleId?: string;
+  domain?: string;
+  attempts: number;
+  misses: number;
 }
 
 function buildPerLearner(
@@ -220,6 +232,68 @@ export function AdminPage() {
       };
     });
   }, [data.modules]);
+
+  const questionBank = useMemo(() => {
+    const bank = new Map<string, { prompt: string; moduleId?: string; domain?: string }>();
+    const allQuestions = [
+      ...preCourseQuiz,
+      ...postCourseQuiz,
+      ...moduleContents.flatMap((m) => [
+        ...m.quiz,
+        ...checks.pre(m.id),
+        ...checks.post(m.id),
+      ]),
+    ];
+    for (const q of allQuestions) {
+      bank.set(q.id, {
+        prompt: q.prompt,
+        ...(q.moduleId ? { moduleId: q.moduleId } : {}),
+        domain: q.domain,
+      });
+    }
+    return bank;
+  }, []);
+
+  const questionAnalytics = useMemo<QuestionStat[]>(() => {
+    const stats = new Map<string, QuestionStat>();
+    for (const attempt of data.quizzes) {
+      for (const answer of attempt.answers) {
+        const meta = questionBank.get(answer.questionId);
+        const existing =
+          stats.get(answer.questionId) ??
+          {
+            questionId: answer.questionId,
+            prompt: meta?.prompt ?? answer.questionId,
+            moduleId: meta?.moduleId ?? attempt.moduleId,
+            domain: meta?.domain,
+            attempts: 0,
+            misses: 0,
+          };
+        existing.attempts += 1;
+        if (!answer.correct) existing.misses += 1;
+        stats.set(answer.questionId, existing);
+      }
+    }
+    return [...stats.values()]
+      .filter((q) => q.attempts > 0)
+      .sort((a, b) => b.misses / b.attempts - a.misses / a.attempts || b.misses - a.misses)
+      .slice(0, 8);
+  }, [data.quizzes, questionBank]);
+
+  const followUpLearners = useMemo(() => {
+    return perLearner
+      .filter(
+        (l) =>
+          l.moduleOutcomesPending > 0 ||
+          (l.preCourseScore !== undefined && l.postCourseScore === undefined),
+      )
+      .sort(
+        (a, b) =>
+          b.moduleOutcomesPending - a.moduleOutcomesPending ||
+          (b.lastEventAt ?? 0) - (a.lastEventAt ?? 0),
+      )
+      .slice(0, 8);
+  }, [perLearner]);
 
   const recentAudit = useMemo(
     () =>
@@ -459,6 +533,73 @@ export function AdminPage() {
             <p className="mt-3 text-xs text-slate-500">
               Confidence and score deltas come from the per-module pre/post quick checks.
             </p>
+          </article>
+          <article className="card p-5">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-base text-ucla-900">Learners needing follow-up</h3>
+              <span className="pill-primary">{followUpLearners.length}</span>
+            </div>
+            <p className="mt-1 text-sm text-slate-500">
+              Baselines captured but outcomes still pending.
+            </p>
+            <ul className="mt-3 space-y-2">
+              {followUpLearners.map((l) => (
+                <li
+                  key={l.user.uid}
+                  className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 px-3 py-2"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-slate-800">
+                      {l.user.displayName || l.user.email}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">
+                      {l.user.email}
+                    </span>
+                  </span>
+                  <span className="pill">{l.moduleOutcomesPending} module post pending</span>
+                  {l.preCourseScore !== undefined && l.postCourseScore === undefined && (
+                    <span className="pill-gold">course post pending</span>
+                  )}
+                </li>
+              ))}
+              {followUpLearners.length === 0 && (
+                <li className="rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-500">
+                  No follow-up flags yet.
+                </li>
+              )}
+            </ul>
+          </article>
+          <article className="card p-5">
+            <h3 className="text-base text-ucla-900">Most missed questions</h3>
+            <p className="mt-1 text-sm text-slate-500">
+              Use these to tighten teaching points and module explanations.
+            </p>
+            <ul className="mt-3 space-y-2">
+              {questionAnalytics.map((q) => {
+                const missRate = q.attempts === 0 ? 0 : (q.misses / q.attempts) * 100;
+                const moduleTitle = moduleSummaries.find((m) => m.id === q.moduleId)?.shortTitle;
+                return (
+                  <li key={q.questionId} className="rounded-xl border border-slate-200 px-3 py-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="pill bg-rose-50 text-rose-800 border-rose-100">
+                        {Math.round(missRate)}% missed
+                      </span>
+                      {moduleTitle && <span className="pill">{moduleTitle}</span>}
+                      {q.domain && <span className="pill">{q.domain}</span>}
+                    </div>
+                    <p className="mt-2 line-clamp-2 text-sm text-slate-700">{q.prompt}</p>
+                    <div className="mt-1 text-xs text-slate-500">
+                      {q.misses} misses / {q.attempts} attempts
+                    </div>
+                  </li>
+                );
+              })}
+              {questionAnalytics.length === 0 && (
+                <li className="rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-500">
+                  No question attempts yet.
+                </li>
+              )}
+            </ul>
           </article>
         </div>
       )}
