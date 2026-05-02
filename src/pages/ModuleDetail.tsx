@@ -421,7 +421,8 @@ export function ModuleDetailPage() {
                           : module.id === 'do-not-miss'
                             ? 'do-not-miss-klein-line'
                             : null;
-                const heroImage = realImages[0] ?? (heroImageKey ? getImage(heroImageKey) : null);
+                const heroImage =
+                  normalImages[0] ?? realImages[0] ?? (heroImageKey ? getImage(heroImageKey) : null);
                 if (!heroImage) return null;
                 return <XRayImage entry={heroImage} />;
               })()}
@@ -481,7 +482,7 @@ export function ModuleDetailPage() {
                   <div>
                     <div className="section-title">Normal anatomy reference</div>
                     <p className="mt-1 text-sm text-slate-500">
-                      Compare these to the pathology atlas under the next tab.
+                      Study the normal view first, then compare it to pathology and do-not-miss findings.
                     </p>
                   </div>
                   <span className="text-xs text-slate-500">
@@ -494,6 +495,13 @@ export function ModuleDetailPage() {
                   ))}
                 </div>
               </section>
+            )}
+            {normalImages.length === 0 && (
+              <div className="card p-5 text-sm text-slate-600">
+                Normal comparison radiographs are still needed for this module. Until those are
+                sourced, use the systematic checklist and available pathology examples to anchor
+                your read.
+              </div>
             )}
             <AnatomyLandmarkCard landmarks={module.anatomy} />
           </div>

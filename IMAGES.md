@@ -74,3 +74,17 @@ Do **not** generate AI imagery that looks like real radiographs and do not prese
 ## Why the placeholder fallback exists
 
 Every slot that doesn't yet have a registered entry renders a clean labeled placeholder ("Licensed teaching radiograph pending."). You can ship the curriculum to learners while images get sourced — and the moment you add a registry entry, the placeholder swaps for the real thing on the next deploy.
+
+## Normal image sourcing priorities
+
+Learners need repeated normal comparisons before pathology feels obvious. The current atlas has a useful normal baseline, but the next acquisition pass should prioritize these open-license or institution-cleared fully de-identified images:
+
+- **Shoulder:** normal axillary view, AP internal/external rotation pair, normal AC/clavicle comparison view.
+- **Wrist/hand:** normal lateral wrist, scaphoid/navicular view, pediatric hand/wrist with open physes.
+- **Pelvis/hip:** normal adult AP pelvis, frog-leg lateral hip, Dunn or lateral hip view for FAI comparison.
+- **Knee:** normal tunnel/notch view, weight-bearing AP comparison, pediatric knee with open physes.
+- **Spine:** normal lumbar AP, thoracic AP/lateral, cervical oblique views if used in the curriculum.
+- **Pediatric/adolescent:** normal pediatric elbow ossification centers, normal ankle physes, normal hip/pelvis by age range.
+- **Do-not-miss comparisons:** normal carpal alignment PA/lateral, normal pediatric hip AP/frog-leg, normal ankle mortise comparison.
+
+For patient-derived images, use them only after educational-use approval, full de-identification, metadata stripping, and review for this web distribution context. Prefer open-license repositories when an equivalent normal image is available.

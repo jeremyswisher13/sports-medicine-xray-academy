@@ -9,7 +9,7 @@ type AtlasKind = 'all' | 'normal' | 'pathology';
 export function AtlasPage() {
   const allImages = useMemo(() => getAllRealImages(), []);
   const [moduleFilter, setModuleFilter] = useState<string>('all');
-  const [kindFilter, setKindFilter] = useState<AtlasKind>('all');
+  const [kindFilter, setKindFilter] = useState<AtlasKind>('normal');
   const [query, setQuery] = useState('');
 
   const filtered = useMemo(() => {
@@ -50,8 +50,8 @@ export function AtlasPage() {
           <div className="section-title">Open-license teaching atlas</div>
           <h1 className="mt-1 text-balance">Image atlas</h1>
           <p className="mt-1 max-w-prose text-slate-600 leading-relaxed">
-            Curated open-license radiographs from Wikimedia Commons. All images include source
-            attribution and license metadata. Click any image to view its full Wikimedia source page.
+            Start with normal anatomy, then compare pathology. All radiographs are open-license
+            teaching images with source attribution and license metadata.
           </p>
         </div>
         <div className="card flex items-center gap-3 px-4 py-3">
@@ -88,8 +88,8 @@ export function AtlasPage() {
                 'rounded-full border px-3.5 py-1.5 text-xs font-semibold capitalize',
                 active
                   ? k === 'normal'
-                    ? 'border-emerald-600 bg-emerald-600 text-white'
-                    : 'border-ucla-600 bg-ucla-600 text-white'
+                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-100'
+                    : 'border-ucla-200 bg-ucla-50 text-ucla-900 ring-1 ring-ucla-100'
                   : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
               ].join(' ')}
             >
@@ -124,6 +124,25 @@ export function AtlasPage() {
           ))}
         </select>
       </div>
+
+      {kindFilter === 'normal' && (
+        <div className="mt-5 rounded-xl border border-ucla-100 bg-white p-4 shadow-soft">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+              <Icon name="check-circle" size={16} />
+            </span>
+            <div>
+              <div className="text-sm font-semibold text-ucla-900">
+                Normal-first study mode
+              </div>
+              <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
+                Review normal alignment, joint spacing, cortical contours, and growth plates before
+                pathology. The next image-sourcing pass should keep filling normal comparison views.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="mt-6 space-y-8">
         {moduleSummaries
