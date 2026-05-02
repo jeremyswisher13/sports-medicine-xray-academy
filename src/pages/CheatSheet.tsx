@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Logo } from '../components/ui/Logo';
 import { Icon } from '../components/ui/Icon';
 import { getModule } from '../data/modules';
+import { getClinicCheatSheetSpec } from '../data/cheatSheetSpecs';
 
 // One-page printable cheat sheet. Designed for browser → "Save as PDF" or print.
 // All print-only / screen-only flourishes are gated by the `print:` and
@@ -37,6 +38,8 @@ export function CheatSheetPage() {
     );
   }
 
+  const spec = getClinicCheatSheetSpec(module);
+
   return (
     <div className="bg-white">
       {/* Screen-only top bar */}
@@ -68,14 +71,14 @@ export function CheatSheetPage() {
       </div>
 
       {/* The printable page itself. Width clamped to 8.5in for screen preview. */}
-      <article className="cheatsheet mx-auto bg-white text-[10pt] leading-snug text-slate-900 print:p-0 print:shadow-none print:border-none print:max-w-none print:w-full">
+      <article className="cheatsheet mx-auto bg-white text-[9.5pt] leading-snug text-slate-900 print:p-0 print:shadow-none print:border-none print:max-w-none print:w-full">
         {/* Header */}
         <header className="cheatsheet-header flex items-end justify-between gap-4 border-b-2 border-ucla-800 pb-3">
           <div className="flex items-center gap-3">
             <Logo size={32} />
             <div>
               <div className="text-[8pt] font-semibold uppercase tracking-[0.18em] text-ucla-700">
-                Sports Medicine X-Ray Academy
+                Sports Medicine X-Ray Academy · Clinic-Ready Reference
               </div>
               <h1 className="font-serif text-[20pt] leading-tight text-ucla-900">
                 {module.title}
@@ -92,144 +95,104 @@ export function CheatSheetPage() {
           </div>
         </header>
 
-        {/* Two-column body */}
-        <div className="mt-4 grid grid-cols-12 gap-x-5 gap-y-4">
-          {/* LEFT (8 cols on print) */}
-          <div className="col-span-12 print:col-span-7 lg:col-span-7 space-y-4">
-            {/* Systematic Read framework */}
+        <section className="mt-3 rounded border border-ucla-200 bg-ucla-50/60 p-2.5">
+          <div className="grid gap-2 print:grid-cols-3 lg:grid-cols-3">
+            <CompactSection title="Minimum Series">
+              <BulletList items={spec.requiredViews} max={4} />
+            </CompactSection>
+            <CompactSection title="Add When Needed">
+              <BulletList items={spec.addOnViews} max={4} />
+            </CompactSection>
+            <CompactSection title="Adequacy Warning" tone="amber">
+              <p className="text-[8.7pt] leading-snug text-slate-800">{spec.viewAdequacyWarning}</p>
+            </CompactSection>
+          </div>
+        </section>
+
+        <div className="mt-3 grid grid-cols-12 gap-x-4 gap-y-3">
+          <div className="col-span-12 space-y-3 print:col-span-4 lg:col-span-4">
             <section>
-              <H2>Systematic X-Ray Read</H2>
-              <ol className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-[9.5pt]">
+              <H2>Systematic Read</H2>
+              <ol className="mt-1 space-y-0.5 text-[8.8pt]">
                 {module.systematicChecklist.map((s, i) => (
                   <li key={s.step} className="leading-snug">
-                    <span className="font-bold text-ucla-800">{i + 1}. {s.step}.</span>{' '}
+                    <span className="font-bold text-ucla-800">{i + 1}. {s.step}:</span>{' '}
                     <span className="text-slate-700">
-                      {s.prompts.slice(0, 3).join(' · ')}
+                      {s.prompts.slice(0, 3).join(' / ')}
                     </span>
                   </li>
                 ))}
               </ol>
             </section>
 
-            {/* Views to order */}
-            {module.views.length > 0 && (
-              <section>
-                <H2>Views to Order</H2>
-                <ul className="mt-1 space-y-1 text-[9.5pt]">
-                  {module.views.map((v) => (
-                    <li key={v.name} className="leading-snug">
-                      <span className="font-semibold text-slate-900">{v.name}.</span>{' '}
-                      <span className="text-slate-700">{v.why}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {/* Pathology compare-and-contrast (top 3) */}
-            {module.pathology.length > 0 && (
-              <section>
-                <H2>Pathology Patterns</H2>
-                <div className="mt-1 grid grid-cols-1 gap-2">
-                  {module.pathology.slice(0, 3).map((p) => (
-                    <div
-                      key={p.finding}
-                      className="rounded border border-slate-200 bg-slate-50/60 px-2.5 py-1.5 text-[9pt]"
-                    >
-                      <div className="font-semibold text-ucla-800">{p.finding}</div>
-                      <div className="text-slate-700">
-                        <span className="text-emerald-700 font-semibold">Normal:</span> {p.normal}{' '}
-                        ·{' '}
-                        <span className="text-rose-700 font-semibold">Pathologic:</span>{' '}
-                        {p.pathologic}
-                      </div>
-                      <div className="text-slate-600">
-                        <span className="font-semibold">Clue:</span> {p.keyClue} ·{' '}
-                        <span className="font-semibold">Next:</span> {p.nextStep}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Pearls */}
-            {module.pearls.length > 0 && (
-              <section>
-                <H2>Clinical Pearls</H2>
-                <ul className="mt-1 space-y-1 text-[9.5pt]">
-                  {module.pearls.slice(0, 4).map((p) => (
-                    <li key={p.title} className="leading-snug">
-                      <span className="font-semibold text-gold-800">{p.title}.</span>{' '}
-                      <span className="text-slate-700">{p.body}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            <section className="rounded border border-slate-200 bg-slate-50/60 p-2.5">
+              <H2>Signs + Measurements</H2>
+              <BulletList items={spec.signs} max={6} />
+            </section>
           </div>
 
-          {/* RIGHT (5 cols on print) */}
-          <aside className="col-span-12 print:col-span-5 lg:col-span-5 space-y-4">
-            {/* Do Not Miss */}
-            {module.doNotMiss.length > 0 && (
-              <section className="rounded border border-rose-200 bg-rose-50/40 p-3">
-                <H2 tone="rose">Do Not Miss</H2>
-                <ul className="mt-1 space-y-1 text-[9pt]">
-                  {module.doNotMiss.slice(0, 5).map((d) => (
-                    <li key={d.title} className="leading-snug">
-                      <span className="font-semibold text-rose-900">{d.title}.</span>{' '}
-                      <span className="text-slate-700">{d.imagingNext}</span>
+          <div className="col-span-12 space-y-3 print:col-span-4 lg:col-span-4">
+            <section>
+              <H2>Pattern Recognition</H2>
+              <BulletList items={spec.patterns} max={6} />
+            </section>
+
+            {module.pathology.length > 0 && (
+              <section className="rounded border border-slate-200 bg-white p-2.5">
+                <H2>Key Clues</H2>
+                <ul className="mt-1 space-y-1 text-[8.8pt]">
+                  {module.pathology.slice(0, 3).map((p) => (
+                    <li key={p.finding} className="leading-snug">
+                      <span className="font-semibold text-ucla-800">{p.finding}:</span>{' '}
+                      <span className="text-slate-700">{p.keyClue}</span>
                     </li>
                   ))}
                 </ul>
               </section>
             )}
 
-            {/* Pitfalls */}
-            {module.pitfalls.length > 0 && (
-              <section className="rounded border border-amber-200 bg-amber-50/40 p-3">
-                <H2 tone="amber">Pitfalls</H2>
-                <ul className="mt-1 space-y-1 text-[9pt]">
-                  {module.pitfalls.slice(0, 4).map((p) => (
-                    <li key={p.title} className="leading-snug">
-                      <span className="font-semibold text-amber-900">{p.title}.</span>{' '}
-                      <span className="text-slate-700">{p.body}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            <section className="rounded border border-amber-200 bg-amber-50/50 p-2.5">
+              <H2 tone="amber">Common Pitfalls</H2>
+              <BulletList items={spec.pitfalls} max={5} />
+            </section>
+          </div>
 
-            {/* Escalation */}
-            {module.whenToEscalate.length > 0 && (
-              <section className="rounded border border-ucla-200 bg-ucla-50/40 p-3">
-                <H2 tone="ucla">When to Escalate</H2>
-                <ul className="mt-1 space-y-1 text-[9pt]">
-                  {module.whenToEscalate.map((line) => (
-                    <li key={line} className="leading-snug text-slate-700">
-                      • {line}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+          <aside className="col-span-12 space-y-3 print:col-span-4 lg:col-span-4">
+            <section className="rounded border border-rose-200 bg-rose-50/60 p-2.5">
+              <H2 tone="rose">Do Not Miss</H2>
+              <BulletList items={spec.doNotMiss} max={7} />
+            </section>
 
-            {/* Takeaways */}
-            {module.keyTakeaways.length > 0 && (
-              <section>
-                <H2>Key Takeaways</H2>
-                <ul className="mt-1 space-y-1 text-[9pt]">
-                  {module.keyTakeaways.slice(0, 5).map((line) => (
-                    <li key={line} className="leading-snug text-slate-700">
-                      • {line}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            )}
+            <section className="rounded border border-ucla-200 bg-ucla-50/50 p-2.5">
+              <H2>X-Ray Negative, Still Worried?</H2>
+              <BulletList items={spec.negativeXrayEscalation} max={4} />
+            </section>
+
+            <section>
+              <H2>Quick Tips</H2>
+              <BulletList items={spec.quickTips} max={5} />
+            </section>
           </aside>
         </div>
+
+        <section className="mt-3 rounded border border-gold-300 bg-gold-50/70 p-2.5">
+          <div className="grid gap-2 print:grid-cols-[1.1fr_1fr] lg:grid-cols-[1.1fr_1fr]">
+            <div>
+              <H2 tone="amber">Clinic Pearl</H2>
+              <p className="mt-1 text-[9pt] font-semibold leading-snug text-slate-900">
+                {spec.pearl}
+              </p>
+            </div>
+            <div>
+              <H2 tone="rose">Escalate Today For</H2>
+              <p className="mt-1 text-[8.7pt] leading-snug text-slate-800">
+                Dislocation, unstable fracture, neurovascular deficit, open injury,
+                infection concern, SCFE, perilunate/lunate injury, Lisfranc instability,
+                femoral neck stress fracture, or pathologic/aggressive lesion.
+              </p>
+            </div>
+          </div>
+        </section>
 
         {/* Footer */}
         <footer className="cheatsheet-footer mt-4 border-t border-slate-200 pt-2 flex flex-wrap items-center justify-between gap-2 text-[8pt] text-slate-500">
@@ -246,7 +209,36 @@ export function CheatSheetPage() {
   );
 }
 
-function H2({ children, tone = 'ucla' }: { children: React.ReactNode; tone?: 'ucla' | 'rose' | 'amber' }) {
+function CompactSection({
+  title,
+  tone = 'ucla',
+  children,
+}: {
+  title: string;
+  tone?: 'ucla' | 'rose' | 'amber';
+  children: ReactNode;
+}) {
+  return (
+    <section>
+      <H2 tone={tone}>{title}</H2>
+      <div className="mt-1">{children}</div>
+    </section>
+  );
+}
+
+function BulletList({ items, max }: { items: string[]; max?: number }) {
+  return (
+    <ul className="mt-1 space-y-0.5 text-[8.8pt]">
+      {items.slice(0, max ?? items.length).map((item) => (
+        <li key={item} className="leading-snug text-slate-700">
+          <span className="font-bold text-ucla-700">•</span> {item}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function H2({ children, tone = 'ucla' }: { children: ReactNode; tone?: 'ucla' | 'rose' | 'amber' }) {
   const cls =
     tone === 'rose'
       ? 'text-rose-800'

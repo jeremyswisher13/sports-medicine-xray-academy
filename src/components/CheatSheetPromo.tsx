@@ -11,8 +11,8 @@ export function CheatSheetPromo({ module, compact = false }: Props) {
   const primaryHref = module ? `/modules/${module.id}/cheatsheet` : '/cheatsheets';
   const title = module ? `${module.shortTitle} cheat sheet` : 'Clinic-ready cheat sheets';
   const body = module
-    ? 'Open the one-page reference for views, do-not-miss findings, pitfalls, and escalation.'
-    : 'Fast one-page references for clinic, sideline coverage, and last-minute review.';
+    ? 'Open the clinic-ready reference for required views, thresholds, misses, and escalation.'
+    : 'Fast references for minimum views, red flags, and negative-x-ray escalation in clinic.';
 
   return (
     <section

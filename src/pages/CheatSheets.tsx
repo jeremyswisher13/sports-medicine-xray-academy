@@ -14,8 +14,9 @@ export function CheatSheetsPage() {
             </div>
             <h1 className="mt-1 text-balance text-ucla-950">Cheat sheets</h1>
             <p className="mt-2 max-w-prose leading-relaxed text-slate-600">
-              One-page summaries for clinic: Systematic X-Ray Read, views, do-not-miss findings,
-              pitfalls, and escalation triggers.
+              Clinic-ready one-page references for minimum views, systematic read,
+              high-yield thresholds, do-not-miss findings, pitfalls, and what to do
+              when the x-ray is negative but suspicion stays high.
             </p>
           </div>
           <div className="rounded-xl border border-ucla-100 bg-ucla-50/80 px-4 py-3 text-sm text-slate-600">
@@ -50,6 +51,11 @@ export function CheatSheetsPage() {
               <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-ucla-500 px-3 py-2 text-sm font-semibold text-white transition-colors group-hover:bg-ucla-600">
                 Open cheat sheet
                 <Icon name="arrow-right" size={14} />
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] font-semibold text-slate-500">
+                <span className="rounded-full bg-ucla-50 px-2 py-1 text-ucla-800">Views</span>
+                <span className="rounded-full bg-rose-50 px-2 py-1 text-rose-700">Red flags</span>
+                <span className="rounded-full bg-gold-50 px-2 py-1 text-gold-800">Escalation</span>
               </div>
             </div>
           </Link>
