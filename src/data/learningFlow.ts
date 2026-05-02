@@ -2,32 +2,32 @@ export const modulePhases = [
   {
     id: 'learn',
     label: 'Learn',
-    description: 'Orient to the module, core framework, anatomy, and escalation triggers.',
+    description: 'Commit to the normal-first goals, core framework, and escalation triggers.',
   },
   {
     id: 'views',
     label: 'Views',
-    description: 'Know which radiographic views answer the clinical question.',
+    description: 'Choose the radiographic views that answer the clinical question.',
   },
   {
     id: 'images',
     label: 'Images',
-    description: 'Compare normal anatomy, pathology, pitfalls, and do-not-miss findings.',
+    description: 'Compare normal anatomy against pathology, pitfalls, and do-not-miss findings.',
   },
   {
     id: 'practice',
     label: 'Practice',
-    description: 'Apply the read pattern to clinical cases and supplemental video recall.',
+    description: 'Commit to an impression, next step, and confidence before feedback.',
   },
   {
     id: 'quiz',
     label: 'Quiz',
-    description: 'Check your module knowledge after working through the examples.',
+    description: 'Test whether the module knowledge is ready without coaching.',
   },
   {
     id: 'takeaways',
     label: 'Takeaways',
-    description: 'Finish with key points, post-check, confidence, and next steps.',
+    description: 'Close the loop with key points, post-check, confidence, and next steps.',
   },
 ] as const;
 

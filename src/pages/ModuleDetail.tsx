@@ -18,6 +18,7 @@ import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { ModulePhaseGuide } from '../components/ModulePhaseGuide';
+import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoach';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -405,6 +406,13 @@ export function ModuleDetailPage() {
           </div>
 
           <ModulePhaseGuide active={active} onChange={setActive} className="mt-4" />
+
+          <ModuleActiveLearningCoach
+            module={module}
+            activePhaseId={active}
+            onPhaseChange={setActive}
+            className="mt-4"
+          />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
