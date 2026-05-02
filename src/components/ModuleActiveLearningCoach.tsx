@@ -1,9 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
 import { modulePhases } from '../data/learningFlow';
+import { useAuth } from '../context/AuthContext';
+import {
+  ids,
+  logAuditEvent,
+  saveConfidenceRating,
+  saveQuizAttempt,
+} from '../services/firestore';
 import type { CaseScenario, ImagingView, ModuleContent, PathologyComparison } from '../types';
 
 type PhaseId = (typeof modulePhases)[number]['id'];
+type CoachConfidenceValue = 1 | 2 | 3 | 4 | 5;
 
 interface ChallengeOption {
   id: string;
@@ -38,7 +46,7 @@ interface ResearchModulePrompts {
 
 interface CoachState {
   answers: Record<string, string>;
-  confidence: Record<string, number>;
+  confidence: Record<string, CoachConfidenceValue>;
   mastered: Record<string, boolean>;
 }
 
@@ -472,16 +480,23 @@ export function ModuleActiveLearningCoach({
   onPhaseChange,
   className = '',
 }: Props) {
+  const { user, learnerPreview } = useAuth();
   const phaseId = normalizePhaseId(activePhaseId);
   const phaseIndex = modulePhases.findIndex((phase) => phase.id === phaseId);
   const nextPhase = modulePhases[phaseIndex + 1];
   const challenge = useMemo(() => buildChallenge(module, phaseId), [module, phaseId]);
   const [state, setState] = useState<CoachState>(() => readCoachState(module.id));
+  const [saving, setSaving] = useState(false);
   const selectedOptionId = state.answers[phaseId];
   const selectedConfidence = state.confidence[phaseId];
   const mastered = Boolean(state.mastered[phaseId]);
   const answered = selectedOptionId !== undefined;
   const correct = selectedOptionId === challenge.correctOptionId;
+
+  useEffect(() => {
+    setState(readCoachState(module.id));
+    setSaving(false);
+  }, [module.id]);
 
   function persist(next: CoachState) {
     try {
@@ -507,7 +522,7 @@ export function ModuleActiveLearningCoach({
     }));
   }
 
-  function setConfidence(value: number) {
+  function setConfidence(value: CoachConfidenceValue) {
     updateState((prev) => ({
       ...prev,
       confidence: { ...prev.confidence, [phaseId]: value },
@@ -515,11 +530,53 @@ export function ModuleActiveLearningCoach({
     }));
   }
 
-  function markMastered() {
+  async function markMastered() {
+    if (!selectedOptionId || selectedConfidence === undefined) return;
+    setSaving(true);
     updateState((prev) => ({
       ...prev,
       mastered: { ...prev.mastered, [phaseId]: true },
     }));
+    if (user && !learnerPreview) {
+      const now = Date.now();
+      await saveQuizAttempt({
+        id: ids.newId(),
+        userId: user.uid,
+        scope: 'module-coach',
+        moduleId: module.id,
+        startedAt: now,
+        submittedAt: now,
+        answers: [
+          {
+            questionId: `${module.id}:${phaseId}:coach`,
+            selectedOptionId,
+            correct,
+          },
+        ],
+        scorePercent: correct ? 100 : 0,
+      });
+      await saveConfidenceRating({
+        id: ids.newId(),
+        userId: user.uid,
+        scope: 'module-coach',
+        moduleId: module.id,
+        domain: phaseId,
+        value: selectedConfidence,
+        createdAt: now,
+      });
+      await logAuditEvent({
+        userId: user.uid,
+        type: 'active_learning_completed',
+        moduleId: module.id,
+        refId: phaseId,
+        details: {
+          phaseId,
+          correct,
+          confidence: selectedConfidence,
+        },
+      });
+    }
+    setSaving(false);
   }
 
   return (
@@ -658,7 +715,7 @@ export function ModuleActiveLearningCoach({
           <div className="mt-4">
             <div className="label">{challenge.confidencePrompt}</div>
             <div className="mt-2 grid grid-cols-5 gap-1.5">
-              {[1, 2, 3, 4, 5].map((value) => (
+              {([1, 2, 3, 4, 5] as const).map((value) => (
                 <button
                   key={value}
                   type="button"
@@ -697,11 +754,11 @@ export function ModuleActiveLearningCoach({
             <button
               type="button"
               className="btn-primary"
-              onClick={markMastered}
-              disabled={!answered || selectedConfidence === undefined}
+              onClick={() => void markMastered()}
+              disabled={!answered || selectedConfidence === undefined || saving}
             >
               <Icon name="check-circle" size={14} />
-              Mark phase ready
+              {saving ? 'Saving…' : 'Mark phase ready'}
             </button>
             {nextPhase && (
               <button

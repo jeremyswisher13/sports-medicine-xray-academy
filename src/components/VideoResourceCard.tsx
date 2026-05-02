@@ -205,6 +205,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
                   selectedOptionId={pvAnswers[q.id]}
                   showFeedback={pvSubmitted}
                   locked={pvSubmitted}
+                  cheatSheetModuleId={video.moduleId}
                   onSelect={(id) =>
                     setPvAnswers((prev) => ({ ...prev, [q.id]: id }))
                   }

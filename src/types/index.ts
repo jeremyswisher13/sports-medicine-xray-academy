@@ -173,7 +173,10 @@ export type QuizScope =
   | 'module'
   | 'module-pre'
   | 'module-post'
-  | 'video';
+  | 'video'
+  | 'module-coach'
+  | 'systematic-read'
+  | 'atlas-practice';
 
 export interface Flashcard {
   id: string;
@@ -219,7 +222,14 @@ export interface QuizAttempt {
   scorePercent: number;
 }
 
-export type ConfidenceScope = 'pre' | 'post' | 'module' | 'module-pre' | 'module-post';
+export type ConfidenceScope =
+  | 'pre'
+  | 'post'
+  | 'module'
+  | 'module-pre'
+  | 'module-post'
+  | 'module-coach'
+  | 'case';
 
 export interface ConfidenceRating {
   id: string;
@@ -240,6 +250,8 @@ export interface CaseAttempt {
   correct: boolean;
   checklistChecked: string[];
   freeTextNotes?: string;
+  managementChoiceId?: string;
+  confidence?: number;
   submittedAt: number;
 }
 
@@ -273,7 +285,10 @@ export type AuditEventType =
   | 'video_completed'
   | 'reflection_submitted'
   | 'bookmark_added'
-  | 'bookmark_removed';
+  | 'bookmark_removed'
+  | 'active_learning_completed'
+  | 'systematic_read_step_answered'
+  | 'atlas_practice_answered';
 
 export interface AuditEvent {
   id: string;

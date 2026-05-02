@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Icon } from './ui/Icon';
 import { moduleSummaries } from '../data/moduleSummaries';
+import { hasCourseAssessment, hasCompleteCourseConfidence } from '../utils/progress';
 import type { ProgressSnapshot } from '../hooks/useProgress';
 
 interface Props {
@@ -11,16 +12,16 @@ interface Props {
 export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
   const preQuiz = snapshot.quizzes.find((q) => q.scope === 'pre');
   const postQuiz = snapshot.quizzes.find((q) => q.scope === 'post');
-  const hasPreConfidence = snapshot.confidence.some((c) => c.scope === 'pre');
-  const hasPostConfidence = snapshot.confidence.some((c) => c.scope === 'post');
+  const hasPreConfidence = hasCompleteCourseConfidence(snapshot.confidence, 'pre');
+  const hasPostConfidence = hasCompleteCourseConfidence(snapshot.confidence, 'post');
   const completedModules = snapshot.modules.filter((m) => m.completed).length;
   const startedModules = snapshot.modules.filter((m) => m.visited || m.completed).length;
   const completedVideos = snapshot.videos.filter((v) => v.markedComplete).length;
   const totalModules = moduleSummaries.length;
 
-  const baselineDone = Boolean(preQuiz && hasPreConfidence);
+  const baselineDone = hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'pre');
   const modulesDone = completedModules >= totalModules;
-  const outcomeDone = Boolean(postQuiz && hasPostConfidence);
+  const outcomeDone = hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'post');
   const nextModule =
     moduleSummaries.find((m) => !snapshot.modules.find((p) => p.moduleId === m.id)?.completed) ??
     moduleSummaries[0];

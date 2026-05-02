@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { QuizQuestion } from '../components/QuizQuestion';
 import { ConfidenceScale } from '../components/ConfidenceScale';
@@ -14,7 +14,9 @@ interface Props {
 export function QuizPage({ scope }: Props) {
   const { user, learnerPreview } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const questions = scope === 'pre' ? preCourseQuiz : postCourseQuiz;
+  const requestedPath = getRequestedPath(location.state);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [confidences, setConfidences] = useState<Record<string, 1 | 2 | 3 | 4 | 5>>({});
@@ -33,6 +35,8 @@ export function QuizPage({ scope }: Props) {
   const correctCount = questions.filter((q) => answers[q.id] === q.correctOptionId).length;
   const scorePercent = total === 0 ? 0 : (correctCount / total) * 100;
   const allAnswered = Object.keys(answers).length === total;
+  const confidenceCount = Object.keys(confidences).length;
+  const allConfidenceRated = confidenceDomains.every((domain) => confidences[domain.id]);
 
   async function submitQuiz() {
     setSubmitted(true);
@@ -58,6 +62,7 @@ export function QuizPage({ scope }: Props) {
   }
 
   async function submitConfidence() {
+    if (!allConfidenceRated) return;
     if (!user || learnerPreview) {
       setStep('done');
       return;
@@ -93,7 +98,7 @@ export function QuizPage({ scope }: Props) {
           {scope === 'pre' ? 'Pre-course assessment' : 'Post-course assessment'}
         </span>
       </div>
-      <header className="mt-3">
+      <header className="mt-3 overflow-hidden rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft sm:p-6">
         <div className="section-title">{scope === 'pre' ? 'Baseline' : 'Outcome'}</div>
         <h1 className="mt-1 text-balance">
           {scope === 'pre' ? 'Pre-course assessment' : 'Post-course assessment'}
@@ -107,6 +112,41 @@ export function QuizPage({ scope }: Props) {
                 ? 'Learner preview complete — no analytics were saved.'
                 : 'Thanks — your responses are saved.'}
         </p>
+        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          {[
+            {
+              label: '1. Knowledge',
+              body: `${questions.length} short questions with explanations after submit.`,
+              active: step === 'quiz',
+            },
+            {
+              label: '2. Confidence',
+              body: `${confidenceDomains.length} clinical-readiness domains, all required.`,
+              active: step === 'confidence',
+            },
+            {
+              label: scope === 'pre' ? '3. Unlock' : '3. Review',
+              body:
+                scope === 'pre'
+                  ? 'Modules open after knowledge and confidence are both captured.'
+                  : 'Progress and readiness update after the outcome check.',
+              active: step === 'done',
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className={[
+                'rounded-xl border px-3 py-2 text-sm',
+                item.active
+                  ? 'border-ucla-200 bg-white text-ucla-900 shadow-soft'
+                  : 'border-ucla-100 bg-white/60 text-slate-600',
+              ].join(' ')}
+            >
+              <div className="font-semibold">{item.label}</div>
+              <div className="mt-0.5 text-xs leading-relaxed">{item.body}</div>
+            </div>
+          ))}
+        </div>
       </header>
 
       {step === 'quiz' && (
@@ -120,6 +160,7 @@ export function QuizPage({ scope }: Props) {
               selectedOptionId={answers[q.id]}
               showFeedback={submitted}
               locked={submitted}
+              cheatSheetModuleId={q.moduleId}
               onSelect={(id) => setAnswers((p) => ({ ...p, [q.id]: id }))}
             />
           ))}
@@ -157,6 +198,15 @@ export function QuizPage({ scope }: Props) {
 
       {step === 'confidence' && (
         <section className="mt-6 space-y-3">
+          <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4 text-sm leading-relaxed text-slate-700">
+            <div className="font-semibold text-ucla-900">
+              Confidence is part of the assessment.
+            </div>
+            <p className="mt-1">
+              Rate all {confidenceDomains.length} domains so your knowledge score can be
+              interpreted alongside clinical readiness.
+            </p>
+          </div>
           {confidenceDomains.map((d) => (
             <ConfidenceScale
               key={d.id}
@@ -167,14 +217,14 @@ export function QuizPage({ scope }: Props) {
               }
             />
           ))}
-          <div className="flex justify-end gap-2">
-            <button className="btn-secondary" onClick={() => setStep('done')}>
-              Skip
-            </button>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs text-slate-500">
+              {confidenceCount}/{confidenceDomains.length} domains rated
+            </span>
             <button
               className="btn-primary"
               onClick={submitConfidence}
-              disabled={Object.keys(confidences).length === 0}
+              disabled={!allConfidenceRated}
             >
               Submit ratings
             </button>
@@ -197,8 +247,8 @@ export function QuizPage({ scope }: Props) {
               Back to dashboard
             </Link>
             {scope === 'pre' ? (
-              <Link to="/modules/xray-foundations" className="btn-primary">
-                Start X-Ray Foundations
+              <Link to={requestedPath ?? '/modules/xray-foundations'} className="btn-primary">
+                {requestedPath ? 'Continue to requested module' : 'Start X-Ray Foundations'}
                 <Icon name="arrow-right" size={14} />
               </Link>
             ) : (
@@ -212,4 +262,12 @@ export function QuizPage({ scope }: Props) {
       )}
     </div>
   );
+}
+
+function getRequestedPath(state: unknown): string | null {
+  if (!state || typeof state !== 'object') return null;
+  const from = (state as { from?: unknown }).from;
+  if (typeof from !== 'string') return null;
+  if (!from.startsWith('/modules')) return null;
+  return from;
 }

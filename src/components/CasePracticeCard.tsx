@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Icon } from './ui/Icon';
+import { ConfidenceScale } from './ConfidenceScale';
 import { XRayImage } from './XRayImage';
 import { getImage } from '../data/images';
 import { useAuth } from '../context/AuthContext';
@@ -10,13 +12,39 @@ interface Props {
   scenario: CaseScenario;
 }
 
+type CaseConfidenceValue = 1 | 2 | 3 | 4 | 5;
+
+const managementOptions = [
+  {
+    id: 'symptomatic-follow-up',
+    label: 'Symptomatic care with routine follow-up',
+  },
+  {
+    id: 'immobilize-protect',
+    label: 'Immobilize/protect weightbearing and arrange follow-up',
+  },
+  {
+    id: 'advanced-imaging',
+    label: 'Escalate to advanced imaging because x-ray is not enough',
+  },
+  {
+    id: 'urgent-referral',
+    label: 'Same-day urgent referral, reduction, or emergency pathway',
+  },
+] as const;
+
+type ManagementChoiceId = (typeof managementOptions)[number]['id'];
+
 export function CasePracticeCard({ scenario }: Props) {
   const { user, learnerPreview } = useAuth();
   const [selected, setSelected] = useState<string | undefined>();
   const [submitted, setSubmitted] = useState(false);
   const [notes, setNotes] = useState('');
   const [observations, setObservations] = useState<string[]>([]);
+  const [managementChoiceId, setManagementChoiceId] = useState<ManagementChoiceId | undefined>();
+  const [confidence, setConfidence] = useState<CaseConfidenceValue | undefined>();
   const correct = selected === scenario.correctOptionId;
+  const recommendedManagementId = managementChoiceFor(scenario.nextStep);
 
   function toggleObservation(text: string) {
     setObservations((prev) =>
@@ -25,7 +53,7 @@ export function CasePracticeCard({ scenario }: Props) {
   }
 
   async function submit() {
-    if (!selected) return;
+    if (!selected || !managementChoiceId || confidence === undefined) return;
     setSubmitted(true);
     if (!user || learnerPreview) return;
     await saveCaseAttempt({
@@ -37,6 +65,8 @@ export function CasePracticeCard({ scenario }: Props) {
       correct: selected === scenario.correctOptionId,
       checklistChecked: observations,
       freeTextNotes: notes,
+      managementChoiceId,
+      confidence,
       submittedAt: Date.now(),
     });
     await logAuditEvent({
@@ -44,7 +74,11 @@ export function CasePracticeCard({ scenario }: Props) {
       type: 'case_attempted',
       moduleId: scenario.moduleId,
       refId: scenario.id,
-      details: { correct },
+      details: {
+        correct,
+        managementCorrect: managementChoiceId === recommendedManagementId,
+        confidence,
+      },
     });
   }
 
@@ -196,9 +230,71 @@ export function CasePracticeCard({ scenario }: Props) {
             );
           })}
         </div>
+        <div className="mt-4 rounded-xl border border-ucla-100 bg-ucla-50/50 p-4">
+          <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+            Management commitment
+          </div>
+          <p className="mt-1 text-sm leading-relaxed text-slate-700">
+            Commit to the safest next action before seeing the teaching feedback.
+          </p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {managementOptions.map((option) => {
+              const isSelected = managementChoiceId === option.id;
+              const isRecommended = recommendedManagementId === option.id;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  disabled={submitted}
+                  onClick={() => setManagementChoiceId(option.id)}
+                  className={[
+                    'flex min-h-[3.75rem] items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition-colors disabled:cursor-not-allowed',
+                    submitted && isRecommended
+                      ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
+                      : submitted && isSelected
+                        ? 'border-rose-300 bg-rose-50 text-rose-900'
+                        : isSelected
+                          ? 'border-ucla-400 bg-white text-ucla-950'
+                          : 'border-ucla-100 bg-white text-slate-700 hover:border-ucla-200',
+                  ].join(' ')}
+                  aria-pressed={isSelected}
+                >
+                  <span
+                    className={[
+                      'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border',
+                      submitted && isRecommended
+                        ? 'border-emerald-600 bg-emerald-600 text-white'
+                        : isSelected
+                          ? 'border-ucla-700 bg-ucla-700 text-white'
+                          : 'border-slate-300 bg-white text-transparent',
+                    ].join(' ')}
+                  >
+                    <Icon name={submitted && isRecommended ? 'check' : 'circle'} size={11} />
+                  </span>
+                  <span>{option.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="mt-4">
+            <ConfidenceScale
+              compact
+              label="How confident are you in your read and next step?"
+              value={confidence}
+              onChange={setConfidence}
+            />
+          </div>
+        </div>
         {!submitted && (
-          <div className="mt-4 flex justify-end">
-            <button className="btn-primary" disabled={!selected} onClick={submit}>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs text-slate-500">
+              Diagnosis, management, and confidence are required before reveal.
+            </span>
+            <button
+              className="btn-primary"
+              disabled={!selected || !managementChoiceId || confidence === undefined}
+              onClick={submit}
+            >
               Submit answer
             </button>
           </div>
@@ -230,9 +326,48 @@ export function CasePracticeCard({ scenario }: Props) {
             <p className="mt-1 text-sm text-slate-800 leading-relaxed">
               {scenario.nextStep}
             </p>
+            <Link
+              to={`/modules/${scenario.moduleId}/cheatsheet`}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
+            >
+              <Icon name="printer" size={13} />
+              Open related cheat sheet
+            </Link>
           </div>
         </div>
       )}
     </article>
   );
+}
+
+function managementChoiceFor(nextStep: string): ManagementChoiceId {
+  const text = nextStep.toLowerCase();
+  if (
+    text.includes('urgent') ||
+    text.includes('emergent') ||
+    text.includes('same day') ||
+    text.includes('reduction') ||
+    text.includes('emergency')
+  ) {
+    return 'urgent-referral';
+  }
+  if (
+    text.includes('mri') ||
+    text.includes('ct') ||
+    text.includes('advanced imaging') ||
+    text.includes('repeat radiograph')
+  ) {
+    return 'advanced-imaging';
+  }
+  if (
+    text.includes('immobil') ||
+    text.includes('splint') ||
+    text.includes('boot') ||
+    text.includes('non-weightbearing') ||
+    text.includes('nwb') ||
+    text.includes('protect')
+  ) {
+    return 'immobilize-protect';
+  }
+  return 'symptomatic-follow-up';
 }

@@ -244,6 +244,7 @@ export function ModuleCheck({
                 selectedOptionId={answers[q.id]}
                 showFeedback={submitted}
                 locked={submitted}
+                cheatSheetModuleId={moduleId}
                 onSelect={(id) =>
                   setAnswers((p) => ({ ...p, [q.id]: id }))
                 }

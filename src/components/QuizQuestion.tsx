@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Icon } from './ui/Icon';
 import type { QuizQuestionData } from '../types';
 
@@ -10,6 +11,7 @@ interface Props {
   showFeedback?: boolean;
   locked?: boolean;
   formative?: boolean;
+  cheatSheetModuleId?: string;
   onSelect: (optionId: string) => void;
 }
 
@@ -21,6 +23,7 @@ export function QuizQuestion({
   showFeedback = false,
   locked = false,
   formative = false,
+  cheatSheetModuleId,
   onSelect,
 }: Props) {
   const [revealed, setRevealed] = useState(showFeedback);
@@ -119,6 +122,15 @@ export function QuizQuestion({
                 </li>
               ))}
             </ul>
+          )}
+          {cheatSheetModuleId && (
+            <Link
+              to={`/modules/${cheatSheetModuleId}/cheatsheet`}
+              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
+            >
+              <Icon name="printer" size={13} />
+              Open related cheat sheet
+            </Link>
           )}
         </div>
       )}

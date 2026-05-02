@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
+import { useAuth } from '../context/AuthContext';
+import { ids, logAuditEvent, saveQuizAttempt } from '../services/firestore';
 import type { SystematicChecklistItem } from '../types';
 
 type SystematicStep = SystematicChecklistItem['step'];
@@ -197,6 +199,7 @@ export function SystematicReadChecklist({
   onChangeChecked,
   defaultExpandedAll = false,
 }: Props) {
+  const { user, learnerPreview } = useAuth();
   const [checked, setChecked] = useState<Set<string>>(() => {
     if (!storageKey) return new Set();
     try {
@@ -263,6 +266,8 @@ export function SystematicReadChecklist({
   }
 
   function answerChallenge(step: SystematicStep, optionId: string) {
+    const stepChallenge = stepGuidance[step].challenge;
+    const correct = optionId === stepChallenge.correctOptionId;
     setChallengeAnswers((prev) => {
       const next = { ...prev, [step]: optionId };
       if (storageKey) {
@@ -274,6 +279,32 @@ export function SystematicReadChecklist({
       }
       return next;
     });
+    if (user && storageKey && !learnerPreview) {
+      const now = Date.now();
+      void saveQuizAttempt({
+        id: ids.newId(),
+        userId: user.uid,
+        scope: 'systematic-read',
+        moduleId: storageKey,
+        startedAt: now,
+        submittedAt: now,
+        answers: [
+          {
+            questionId: `${storageKey}:${step}:systematic-read`,
+            selectedOptionId: optionId,
+            correct,
+          },
+        ],
+        scorePercent: correct ? 100 : 0,
+      });
+      void logAuditEvent({
+        userId: user.uid,
+        type: 'systematic_read_step_answered',
+        moduleId: storageKey,
+        refId: step,
+        details: { step, correct },
+      });
+    }
   }
 
   function goToStep(index: number) {

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Tabs } from '../components/ui/Tabs';
-import { Icon } from '../components/ui/Icon';
+import { Icon, type IconName } from '../components/ui/Icon';
 import { SystematicReadChecklist } from '../components/SystematicReadChecklist';
 import { ViewSelector } from '../components/ViewSelector';
 import { AnatomyLandmarkCard } from '../components/AnatomyLandmarkCard';
@@ -17,8 +17,9 @@ import { VideoResourceCard } from '../components/VideoResourceCard';
 import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
-import { ModulePhaseGuide } from '../components/ModulePhaseGuide';
 import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoach';
+import { GuidedModuleSession } from '../components/GuidedModuleSession';
+import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -39,6 +40,7 @@ import {
   saveModuleProgress,
   saveQuizAttempt,
 } from '../services/firestore';
+import type { ModuleProgress } from '../types';
 
 export function ModuleDetailPage() {
   const params = useParams<{ moduleId: string }>();
@@ -401,11 +403,19 @@ export function ModuleDetailPage() {
             )}
           </div>
 
+          <GuidedModuleSession
+            module={module}
+            activePhaseId={active}
+            onPhaseChange={setActive}
+            completedPhaseIds={moduleProgress?.completedTabs ?? []}
+            readyPhaseIds={moduleProgress?.completedTabs ?? []}
+            postCheckPending={!moduleProgress?.postCheckAt}
+            className="mt-5"
+          />
+
           <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#EAF3FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
             <Tabs items={modulePhases} active={active} onChange={setActive} />
           </div>
-
-          <ModulePhaseGuide active={active} onChange={setActive} className="mt-4" />
 
           <ModuleActiveLearningCoach
             module={module}
@@ -413,6 +423,8 @@ export function ModuleDetailPage() {
             onPhaseChange={setActive}
             className="mt-4"
           />
+
+          <InlineFlashcardStrip moduleId={module.id} maxCards={3} className="mt-4" />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
@@ -682,6 +694,7 @@ export function ModuleDetailPage() {
                     showFeedback={quizSubmitted}
                     locked={quizSubmitted}
                     formative
+                    cheatSheetModuleId={module.id}
                     onSelect={(id) =>
                       setQuizAnswers((prev) => ({ ...prev, [q.id]: id }))
                     }
@@ -732,6 +745,23 @@ export function ModuleDetailPage() {
                 </ul>
               </article>
               <aside className="space-y-4">
+                <div className="card p-5">
+                  <div className="label">Readiness verdict</div>
+                  {(() => {
+                    const verdict = moduleReadinessVerdict(moduleProgress);
+                    return (
+                      <div className="mt-2">
+                        <div className="flex items-center gap-2 font-semibold text-ucla-900">
+                          <Icon name={verdict.icon} size={16} className={verdict.iconClass} />
+                          {verdict.title}
+                        </div>
+                        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                          {verdict.body}
+                        </p>
+                      </div>
+                    );
+                  })()}
+                </div>
                 {moduleProgress?.preCheckScore !== undefined && (
                   <div className="card p-5">
                     <div className="label">Your delta</div>
@@ -813,4 +843,44 @@ export function ModuleDetailPage() {
       )}
     </div>
   );
+}
+
+function moduleReadinessVerdict(progress?: ModuleProgress): {
+  title: string;
+  body: string;
+  icon: IconName;
+  iconClass: string;
+} {
+  if (!progress?.postCheckAt) {
+    return {
+      title: 'Post-check pending',
+      body: 'Finish the post-check and confidence rating to convert this module into a measurable learning outcome.',
+      icon: 'flag',
+      iconClass: 'text-gold-700',
+    };
+  }
+  const score = progress.postCheckScore ?? 0;
+  const confidence = progress.postCheckConfidence ?? 0;
+  if (score >= 80 && confidence >= 4) {
+    return {
+      title: 'Clinic-ready basics',
+      body: 'Knowledge and confidence are aligned. Keep using cases and normal images to maintain fluency.',
+      icon: 'check-circle',
+      iconClass: 'text-emerald-700',
+    };
+  }
+  if (score >= 70 || confidence >= 4) {
+    return {
+      title: 'Targeted review recommended',
+      body: 'You are close. Review missed explanations, then repeat the case and atlas practice for this module.',
+      icon: 'sparkles',
+      iconClass: 'text-ucla-700',
+    };
+  }
+  return {
+    title: 'Rebuild the read pattern',
+    body: 'Return to views, normal anatomy, and systematic read challenges before repeating the post-check.',
+    icon: 'alert',
+    iconClass: 'text-amber-700',
+  };
 }

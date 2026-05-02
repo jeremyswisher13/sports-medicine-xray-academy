@@ -200,6 +200,37 @@ export function AdminPage() {
     };
   }, [data]);
 
+  const activeLearningMetrics = useMemo(() => {
+    const coachAttempts = data.quizzes.filter((q) => q.scope === 'module-coach');
+    const systematicAttempts = data.quizzes.filter((q) => q.scope === 'systematic-read');
+    const atlasAttempts = data.quizzes.filter((q) => q.scope === 'atlas-practice');
+    const activeAttempts = [...coachAttempts, ...systematicAttempts, ...atlasAttempts];
+    const correctAttempts = activeAttempts.filter((attempt) =>
+      attempt.answers.every((answer) => answer.correct),
+    ).length;
+    const highConfidenceIncorrect = coachAttempts.filter((attempt) => {
+      const answer = attempt.answers[0];
+      const phaseId = answer?.questionId.split(':')[1];
+      if (!answer || answer.correct || !phaseId) return false;
+      return data.confidence.some(
+        (rating) =>
+          rating.userId === attempt.userId &&
+          rating.scope === 'module-coach' &&
+          rating.moduleId === attempt.moduleId &&
+          rating.domain === phaseId &&
+          rating.value >= 4,
+      );
+    }).length;
+    return {
+      total: activeAttempts.length,
+      coach: coachAttempts.length,
+      systematic: systematicAttempts.length,
+      atlas: atlasAttempts.length,
+      correctRate: activeAttempts.length === 0 ? 0 : (correctAttempts / activeAttempts.length) * 100,
+      highConfidenceIncorrect,
+    };
+  }, [data.confidence, data.quizzes]);
+
   const moduleAnalytics = useMemo(() => {
     return moduleSummaries.map((m) => {
       const progress = data.modules.filter((p) => p.moduleId === m.id);
@@ -430,7 +461,7 @@ export function AdminPage() {
       )}
 
       {/* Top metrics */}
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
         <Stat label="Learners" value={topMetrics.totalLearners.toString()} />
         <Stat
           label="Baselines"
@@ -464,6 +495,11 @@ export function AdminPage() {
               : '—'
           }
           sub="Per-module pre→post"
+        />
+        <Stat
+          label="Active drills"
+          value={activeLearningMetrics.total.toString()}
+          sub={`${activeLearningMetrics.correctRate.toFixed(0)}% correct`}
         />
       </div>
 
@@ -532,6 +568,24 @@ export function AdminPage() {
             </div>
             <p className="mt-3 text-xs text-slate-500">
               Confidence and score deltas come from the per-module pre/post quick checks.
+            </p>
+          </article>
+          <article className="card p-5">
+            <h3 className="text-base text-ucla-900">Active learning signal</h3>
+            <p className="mt-1 text-sm text-slate-500">
+              Coach, systematic-read, and atlas-practice reps that happen inside the learning flow.
+            </p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <Mini label="Coach commits" value={activeLearningMetrics.coach.toString()} />
+              <Mini label="Read steps" value={activeLearningMetrics.systematic.toString()} />
+              <Mini label="Atlas reps" value={activeLearningMetrics.atlas.toString()} />
+              <Mini
+                label="Overconfident misses"
+                value={activeLearningMetrics.highConfidenceIncorrect.toString()}
+              />
+            </div>
+            <p className="mt-3 text-xs text-slate-500">
+              Overconfident misses are module-coach questions missed with confidence rated 4 or 5.
             </p>
           </article>
           <article className="card p-5">
