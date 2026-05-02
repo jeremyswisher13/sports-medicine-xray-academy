@@ -25,7 +25,7 @@ export function ModulesPage() {
   const [query, setQuery] = useState('');
 
   const list = useMemo(() => {
-    return moduleSummaries.filter((m) => {
+    const matches = moduleSummaries.filter((m) => {
       const matchesRegion = region === 'All' || m.region === region;
       const q = query.trim().toLowerCase();
       const matchesQuery =
@@ -36,7 +36,13 @@ export function ModulesPage() {
           .includes(q);
       return matchesRegion && matchesQuery;
     });
+    return [...matches].sort(
+      (a, b) => Number(a.status === 'placeholder') - Number(b.status === 'placeholder'),
+    );
   }, [region, query]);
+
+  const readyModules = list.filter((m) => m.status === 'full');
+  const inBuildModules = list.filter((m) => m.status === 'placeholder');
 
   function progressFor(moduleId: string): number {
     const p = learnerModules.find((m) => m.moduleId === moduleId);
@@ -93,21 +99,66 @@ export function ModulesPage() {
         })}
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((m) => (
-          <ModuleCard
-            key={m.id}
-            module={m}
-            progressPercent={progressFor(m.id)}
-            completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
-          />
-        ))}
-        {list.length === 0 && (
+      {readyModules.length > 0 && (
+        <section className="mt-6">
+          <div className="flex items-baseline justify-between gap-3">
+            <div>
+              <h2 className="text-xl text-ucla-900">Ready modules</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Fully built lessons with entry checks, cases, images, quizzes, and cheat sheets.
+              </p>
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+              Start here
+            </span>
+          </div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {readyModules.map((m) => (
+              <ModuleCard
+                key={m.id}
+                module={m}
+                progressPercent={progressFor(m.id)}
+                completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {inBuildModules.length > 0 && (
+        <section className="mt-8">
+          <div className="rounded-xl border border-ucla-100 bg-ucla-50/70 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-xl text-ucla-900">In-build modules</h2>
+                <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
+                  These regions are visible for preview and navigation, but the polished learner
+                  experience is still being expanded.
+                </p>
+              </div>
+              <span className="pill-primary">Preview content</span>
+            </div>
+          </div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {inBuildModules.map((m) => (
+              <ModuleCard
+                key={m.id}
+                module={m}
+                progressPercent={progressFor(m.id)}
+                completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {list.length === 0 && (
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <div className="card col-span-full p-6 text-center text-sm text-slate-500">
             No modules match that search.
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

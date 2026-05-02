@@ -35,12 +35,16 @@ export function DashboardPage() {
 
   const filteredModules = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return moduleSummaries;
-    return moduleSummaries.filter((m) =>
-      [m.title, m.shortTitle, m.description, ...m.emphasis, m.region]
-        .join(' ')
-        .toLowerCase()
-        .includes(q),
+    const matches = q
+      ? moduleSummaries.filter((m) =>
+          [m.title, m.shortTitle, m.description, ...m.emphasis, m.region]
+            .join(' ')
+            .toLowerCase()
+            .includes(q),
+        )
+      : moduleSummaries;
+    return [...matches].sort(
+      (a, b) => Number(a.status === 'placeholder') - Number(b.status === 'placeholder'),
     );
   }, [query]);
 
