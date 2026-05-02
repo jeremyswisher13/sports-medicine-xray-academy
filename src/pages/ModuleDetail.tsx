@@ -459,7 +459,7 @@ export function ModuleDetailPage() {
             </aside>
           </section>
           <CheatSheetPromo module={module} compact />
-          <section className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+          <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
             <SystematicReadChecklist
               items={module.systematicChecklist}
               storageKey={module.id}
