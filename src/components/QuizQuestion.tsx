@@ -9,6 +9,7 @@ interface Props {
   selectedOptionId?: string;
   showFeedback?: boolean;
   locked?: boolean;
+  formative?: boolean;
   onSelect: (optionId: string) => void;
 }
 
@@ -19,6 +20,7 @@ export function QuizQuestion({
   selectedOptionId,
   showFeedback = false,
   locked = false,
+  formative = false,
   onSelect,
 }: Props) {
   const [revealed, setRevealed] = useState(showFeedback);
@@ -85,7 +87,7 @@ export function QuizQuestion({
         })}
       </fieldset>
 
-      {!showFeedback && !revealed && (
+      {formative && !showFeedback && !revealed && (
         <div className="mt-4 flex justify-end">
           <button
             type="button"

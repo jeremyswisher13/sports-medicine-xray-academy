@@ -529,6 +529,7 @@ export function ModuleDetailPage() {
                     selectedOptionId={quizAnswers[q.id]}
                     showFeedback={quizSubmitted}
                     locked={quizSubmitted}
+                    formative
                     onSelect={(id) =>
                       setQuizAnswers((prev) => ({ ...prev, [q.id]: id }))
                     }
