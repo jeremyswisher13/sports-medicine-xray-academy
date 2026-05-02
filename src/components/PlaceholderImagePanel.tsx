@@ -39,7 +39,7 @@ export function PlaceholderImagePanel({ view = 'AP', caption, className = '' }: 
         </span>
         <span className="pill-primary">{labelByView[view]}</span>
         <p className="max-w-sm text-xs text-slate-500 leading-relaxed">
-          X-ray image placeholder. Add de-identified licensed teaching image here.
+          Licensed teaching radiograph pending.
         </p>
       </div>
       {caption && (

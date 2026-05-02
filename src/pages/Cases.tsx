@@ -38,7 +38,7 @@ export function CasesPage() {
           <h1 className="mt-1 text-balance">Sports medicine case practice</h1>
           <p className="mt-1 max-w-prose text-slate-600 leading-relaxed">
             Apply the Systematic X-Ray Read to representative cases. Each case uses
-            placeholder x-rays awaiting de-identified, licensed teaching images.
+            open-license teaching radiographs where available.
           </p>
         </div>
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
