@@ -267,7 +267,9 @@ export type AuditEventType =
   | 'confidence_submitted'
   | 'video_viewed'
   | 'video_completed'
-  | 'reflection_submitted';
+  | 'reflection_submitted'
+  | 'bookmark_added'
+  | 'bookmark_removed';
 
 export interface AuditEvent {
   id: string;
@@ -282,10 +284,13 @@ export interface AuditEvent {
 export interface Bookmark {
   id: string;
   userId: string;
+  type?: 'module' | 'tab' | 'case' | 'video' | 'image';
   moduleId: string;
   tabId?: string;
   caseId?: string;
   videoId?: string;
+  imageId?: string;
+  title?: string;
   note?: string;
   createdAt: number;
 }

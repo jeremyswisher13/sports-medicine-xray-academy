@@ -7,6 +7,7 @@ import { CoursePathPanel } from '../components/CoursePathPanel';
 import { modulePhaseCount } from '../data/learningFlow';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
+import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 
 const quickAccess = [
@@ -26,6 +27,7 @@ const quickAccess = [
 export function DashboardPage() {
   const { user, learnerPreview } = useAuth();
   const { snapshot } = useProgress();
+  const { bookmarks, isModuleSaved, toggleModuleBookmark } = useBookmarks();
   const [query, setQuery] = useState('');
   const learnerModules = learnerPreview ? [] : snapshot.modules;
   const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
@@ -51,6 +53,8 @@ export function DashboardPage() {
   const completedCount = learnerModules.filter((m) => m.completed).length;
   const totalCount = moduleSummaries.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
+  const savedModuleIds = new Set(bookmarks.map((bookmark) => bookmark.moduleId));
+  const savedModules = moduleSummaries.filter((module) => savedModuleIds.has(module.id));
 
   function progressFor(moduleId: string): number {
     const p = learnerModules.find((m) => m.moduleId === moduleId);
@@ -146,6 +150,35 @@ export function DashboardPage() {
         <CheatSheetPromo />
       </div>
 
+      {savedModules.length > 0 && (
+        <section className="mt-10">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2>Saved for review</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Quick return to modules you marked for another pass.
+              </p>
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+              {savedModules.length} saved
+            </span>
+          </div>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {savedModules.map((m) => (
+              <ModuleCard
+                key={m.id}
+                module={m}
+                progressPercent={progressFor(m.id)}
+                completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                confidence={confidenceFor(m.id)}
+                saved={isModuleSaved(m.id)}
+                onToggleSaved={(module) => void toggleModuleBookmark(module)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <h2>Quick access</h2>
@@ -195,6 +228,8 @@ export function DashboardPage() {
               progressPercent={progressFor(m.id)}
               completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
               confidence={confidenceFor(m.id)}
+              saved={isModuleSaved(m.id)}
+              onToggleSaved={(module) => void toggleModuleBookmark(module)}
             />
           ))}
         </div>

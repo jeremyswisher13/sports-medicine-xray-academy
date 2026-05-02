@@ -29,6 +29,7 @@ import {
 } from '../data/images';
 import { getVideosForModule } from '../data/videoResources';
 import { useAuth } from '../context/AuthContext';
+import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 import {
   ids,
@@ -44,6 +45,7 @@ export function ModuleDetailPage() {
   const module = getModule(moduleId);
   const { user, learnerPreview, isAdminAccount } = useAuth();
   const { snapshot, refresh } = useProgress();
+  const { isModuleSaved, toggleModuleBookmark } = useBookmarks();
   const [active, setActive] = useState('learn');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
@@ -138,6 +140,7 @@ export function ModuleDetailPage() {
   const savedModuleProgress = snapshot.modules.find((m) => m.moduleId === module.id);
   const moduleProgress = learnerPreview ? undefined : savedModuleProgress;
   const isAdminBypass = isAdminAccount && !learnerPreview;
+  const moduleSaved = isModuleSaved(module.id);
   const hasPreCheck =
     Boolean(moduleProgress?.preCheckAt) &&
     moduleProgress?.preCheckConfidence !== undefined;
@@ -186,13 +189,29 @@ export function ModuleDetailPage() {
           <span className="text-slate-300">/</span>
           <span className="text-slate-700">{module.title}</span>
         </div>
-        <Link
-          to={`/modules/${module.id}/cheatsheet`}
-          className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-ucla-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100 no-underline"
-        >
-          <Icon name="printer" size={12} />
-          Cheat sheet
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            className={[
+              'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-soft',
+              moduleSaved
+                ? 'border-ucla-200 bg-ucla-50 text-ucla-900 hover:bg-ucla-100'
+                : 'border-slate-200 bg-white/90 text-slate-700 hover:bg-ucla-50',
+            ].join(' ')}
+            onClick={() => void toggleModuleBookmark(module)}
+            aria-pressed={moduleSaved}
+          >
+            <Icon name="star" size={12} />
+            {moduleSaved ? 'Saved for review' : 'Save for review'}
+          </button>
+          <Link
+            to={`/modules/${module.id}/cheatsheet`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-ucla-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100 no-underline"
+          >
+            <Icon name="printer" size={12} />
+            Cheat sheet
+          </Link>
+        </div>
       </div>
 
       <header className="mt-3 grid gap-4 rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft lg:grid-cols-[1.4fr_1fr] lg:items-end">

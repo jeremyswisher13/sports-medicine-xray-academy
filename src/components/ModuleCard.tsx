@@ -7,6 +7,8 @@ interface Props {
   progressPercent?: number;
   completed?: boolean;
   confidence?: number | null;
+  saved?: boolean;
+  onToggleSaved?: (module: ModuleSummary) => void;
 }
 
 const regionTone: Record<ModuleSummary['region'], string> = {
@@ -18,7 +20,14 @@ const regionTone: Record<ModuleSummary['region'], string> = {
   'High-Yield Cases': 'bg-gold-50 text-gold-800 border-gold-100',
 };
 
-export function ModuleCard({ module, progressPercent = 0, completed, confidence }: Props) {
+export function ModuleCard({
+  module,
+  progressPercent = 0,
+  completed,
+  confidence,
+  saved = false,
+  onToggleSaved,
+}: Props) {
   const isPlaceholder = module.status === 'placeholder';
   return (
     <article
@@ -35,6 +44,10 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
         ) : completed ? (
           <span className="pill-primary">
             <Icon name="check" size={12} /> Completed
+          </span>
+        ) : saved ? (
+          <span className="pill-primary">
+            <Icon name="star" size={12} /> Saved
           </span>
         ) : null}
       </div>
@@ -80,6 +93,20 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
           <Icon name="printer" size={13} />
           Cheat sheet
         </Link>
+        {onToggleSaved && (
+          <button
+            type="button"
+            className={[
+              'btn-secondary px-3 py-2 text-xs',
+              saved ? 'border-ucla-200 bg-ucla-50 text-ucla-900' : '',
+            ].join(' ')}
+            onClick={() => onToggleSaved(module)}
+            aria-pressed={saved}
+          >
+            <Icon name="star" size={13} />
+            {saved ? 'Saved' : 'Save'}
+          </button>
+        )}
       </div>
     </article>
   );

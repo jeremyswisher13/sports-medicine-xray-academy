@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -12,6 +13,7 @@ import { COLLECTIONS, firestore } from './firebase';
 import type {
   AuditEvent,
   AuditEventType,
+  Bookmark,
   CaseAttempt,
   ConfidenceRating,
   ModuleProgress,
@@ -300,6 +302,56 @@ export async function listVideoProgress(userId: string): Promise<VideoProgress[]
     }
   }
   const map = lsGet<Record<string, VideoProgress>>(`videos:${userId}`, {});
+  return Object.values(map);
+}
+
+// ---- Bookmarks ------------------------------------------------------------
+
+export async function saveBookmark(bookmark: Bookmark): Promise<void> {
+  if (firestore) {
+    try {
+      await setDoc(doc(firestore, COLLECTIONS.bookmarks, bookmark.id), bookmark);
+      return;
+    } catch (err) {
+      console.warn('[bookmark] firestore write failed', err);
+    }
+  }
+  const map = lsGet<Record<string, Bookmark>>(`bookmarks:${bookmark.userId}`, {});
+  map[bookmark.id] = bookmark;
+  lsSet(`bookmarks:${bookmark.userId}`, map);
+}
+
+export async function deleteBookmark(input: {
+  userId: string;
+  bookmarkId: string;
+}): Promise<void> {
+  if (firestore) {
+    try {
+      await deleteDoc(doc(firestore, COLLECTIONS.bookmarks, input.bookmarkId));
+      return;
+    } catch (err) {
+      console.warn('[bookmark] firestore delete failed', err);
+    }
+  }
+  const map = lsGet<Record<string, Bookmark>>(`bookmarks:${input.userId}`, {});
+  delete map[input.bookmarkId];
+  lsSet(`bookmarks:${input.userId}`, map);
+}
+
+export async function listBookmarks(userId: string): Promise<Bookmark[]> {
+  if (firestore) {
+    try {
+      const q = query(
+        collection(firestore, COLLECTIONS.bookmarks),
+        where('userId', '==', userId),
+      );
+      const snap = await getDocs(q);
+      return snap.docs.map((d) => d.data() as Bookmark);
+    } catch {
+      // fall through
+    }
+  }
+  const map = lsGet<Record<string, Bookmark>>(`bookmarks:${userId}`, {});
   return Object.values(map);
 }
 

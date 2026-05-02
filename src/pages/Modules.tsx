@@ -4,6 +4,7 @@ import { Icon } from '../components/ui/Icon';
 import { modulePhaseCount } from '../data/learningFlow';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
+import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 import type { ModuleRegion } from '../types';
 
@@ -20,6 +21,7 @@ const allRegions: ('All' | ModuleRegion)[] = [
 export function ModulesPage() {
   const { learnerPreview } = useAuth();
   const { snapshot } = useProgress();
+  const { isModuleSaved, toggleModuleBookmark } = useBookmarks();
   const learnerModules = learnerPreview ? [] : snapshot.modules;
   const [region, setRegion] = useState<(typeof allRegions)[number]>('All');
   const [query, setQuery] = useState('');
@@ -119,6 +121,8 @@ export function ModulesPage() {
                 module={m}
                 progressPercent={progressFor(m.id)}
                 completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                saved={isModuleSaved(m.id)}
+                onToggleSaved={(module) => void toggleModuleBookmark(module)}
               />
             ))}
           </div>
@@ -146,6 +150,8 @@ export function ModulesPage() {
                 module={m}
                 progressPercent={progressFor(m.id)}
                 completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                saved={isModuleSaved(m.id)}
+                onToggleSaved={(module) => void toggleModuleBookmark(module)}
               />
             ))}
           </div>
