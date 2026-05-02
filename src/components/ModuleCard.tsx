@@ -22,7 +22,7 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
   const isPlaceholder = module.status === 'placeholder';
   return (
     <article
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-soft transition-shadow hover:shadow-card"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-ucla-100/80 bg-gradient-to-b from-white to-ucla-50/70 shadow-soft transition-shadow hover:shadow-card"
     >
       <div className="h-1 bg-ucla-400" />
       <Link to={`/modules/${module.id}`} className="flex flex-1 flex-col p-5 no-underline">
@@ -71,7 +71,7 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
         )}
       </div>
       </Link>
-      <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 bg-slate-50/70 px-5 py-3">
+      <div className="flex flex-wrap items-center gap-2 border-t border-ucla-100/80 bg-ucla-50/75 px-5 py-3">
         <Link to={`/modules/${module.id}`} className="btn-primary px-3 py-2 text-xs">
           Open module
           <Icon name="arrow-right" size={13} />

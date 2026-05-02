@@ -13,7 +13,7 @@
   }
 
   body {
-    @apply bg-[#F3F6FA] text-slate-900 font-sans antialiased;
+    @apply bg-[#EAF3FA] text-slate-900 font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01', 'kern';
     -webkit-font-smoothing: antialiased;
   }
@@ -46,7 +46,7 @@
   }
 
   .card {
-    @apply bg-white rounded-xl border border-slate-200/80 shadow-soft;
+    @apply bg-white/95 rounded-xl border border-ucla-100/80 shadow-soft;
   }
 
   .card-hover {
@@ -74,7 +74,7 @@
   }
 
   .btn-secondary {
-    @apply btn bg-white border border-slate-200 text-slate-800 hover:bg-slate-50;
+    @apply btn bg-white/95 border border-ucla-100 text-slate-800 hover:bg-ucla-50;
   }
 
   .btn-ghost {
@@ -86,7 +86,7 @@
   }
 
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-ucla-500 focus:ring-2 focus:ring-ucla-100 focus:outline-none;
+    @apply w-full rounded-xl border border-ucla-100 bg-white/95 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-ucla-500 focus:ring-2 focus:ring-ucla-100 focus:outline-none;
   }
 
   .label {

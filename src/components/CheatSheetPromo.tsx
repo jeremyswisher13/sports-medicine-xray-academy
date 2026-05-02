@@ -17,7 +17,7 @@ export function CheatSheetPromo({ module, compact = false }: Props) {
   return (
     <section
       className={[
-        'overflow-hidden rounded-xl border border-ucla-100 bg-white text-slate-700 shadow-soft',
+        'overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/80 text-slate-700 shadow-soft',
         compact ? 'p-4' : 'p-5 sm:p-6',
       ].join(' ')}
     >

@@ -195,7 +195,7 @@ export function ModuleDetailPage() {
         </Link>
       </div>
 
-      <header className="mt-3 grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+      <header className="mt-3 grid gap-4 rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft lg:grid-cols-[1.4fr_1fr] lg:items-end">
         <div>
           <span className="pill">{module.region}</span>
           {module.status === 'placeholder' && (
@@ -215,7 +215,7 @@ export function ModuleDetailPage() {
             <span>{videos.length} AMSSM videos</span>
           </div>
         </div>
-        <div className="card p-4">
+        <div className="rounded-xl border border-ucla-100 bg-white/90 p-4 shadow-soft">
           <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
             Module status
           </div>
@@ -267,13 +267,13 @@ export function ModuleDetailPage() {
           )}
           {moduleProgress?.preCheckAt && (
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+              <div className="rounded-xl border border-ucla-100 bg-ucla-50/60 px-3 py-2">
                 <div className="text-slate-500">Pre score</div>
                 <div className="font-semibold tabular-nums text-ucla-900">
                   {Math.round(moduleProgress.preCheckScore ?? 0)}%
                 </div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+              <div className="rounded-xl border border-ucla-100 bg-ucla-50/60 px-3 py-2">
                 <div className="text-slate-500">Pre confidence</div>
                 <div className="font-semibold tabular-nums text-ucla-900">
                   {moduleProgress.preCheckConfidence ?? '—'}/5
@@ -374,7 +374,7 @@ export function ModuleDetailPage() {
             )}
           </div>
 
-          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F3F6FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
+          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#EAF3FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
             <Tabs items={modulePhases} active={active} onChange={setActive} />
           </div>
 

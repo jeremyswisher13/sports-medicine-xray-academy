@@ -93,9 +93,9 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
   ];
 
   return (
-    <section className="overflow-hidden rounded-xl border border-ucla-100 bg-white shadow-soft">
+    <section className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 shadow-soft">
       <div className="grid gap-0 lg:grid-cols-[0.95fr_1.4fr]">
-        <div className="border-b border-ucla-100 bg-ucla-50/80 p-5 sm:border-b-0 sm:border-r sm:p-6">
+        <div className="border-b border-ucla-100 bg-white/80 p-5 sm:border-b-0 sm:border-r sm:p-6">
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ucla-700">
             Course path
           </div>
@@ -128,10 +128,10 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
               className={[
                 'group rounded-xl border p-4 no-underline transition-shadow hover:shadow-card',
                 step.active
-                  ? 'border-ucla-200 bg-ucla-50/80'
+                  ? 'border-ucla-200 bg-white/90'
                   : step.done
                     ? 'border-emerald-200 bg-emerald-50/70'
-                    : 'border-slate-200 bg-white',
+                    : 'border-ucla-100 bg-white/75',
               ].join(' ')}
             >
               <div className="flex items-start gap-3">

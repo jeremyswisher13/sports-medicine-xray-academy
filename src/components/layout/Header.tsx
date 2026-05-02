@@ -26,7 +26,7 @@ export function Header() {
       : baseNavItems;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-ucla-100 bg-white/95 text-slate-800 shadow-soft backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-ucla-100 bg-ucla-50/95 text-slate-800 shadow-soft backdrop-blur">
       <div className="h-[3px] gold-divider" aria-hidden />
       <div className="container-page">
         <div className="flex h-16 items-center justify-between gap-4">

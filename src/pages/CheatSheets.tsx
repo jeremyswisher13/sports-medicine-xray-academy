@@ -5,7 +5,7 @@ import { moduleSummaries } from '../data/moduleSummaries';
 export function CheatSheetsPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <header className="overflow-hidden rounded-xl border border-ucla-100 bg-white p-6 shadow-soft sm:p-8">
+      <header className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
         <div className="-mx-6 -mt-6 mb-6 h-1 bg-ucla-400 sm:-mx-8 sm:-mt-8" />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>

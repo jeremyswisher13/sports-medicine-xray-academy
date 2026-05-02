@@ -70,7 +70,7 @@ export function DashboardPage() {
 
   return (
     <div className="container-page py-8 sm:py-12">
-      <section className="overflow-hidden rounded-xl border border-ucla-100 bg-white p-6 shadow-soft sm:p-8">
+      <section className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
         <div className="-mx-6 -mt-6 mb-6 h-1 bg-ucla-400 sm:-mx-8 sm:-mt-8" />
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-end">
           <div>
@@ -92,7 +92,7 @@ export function DashboardPage() {
               </Link>
             </div>
           </div>
-          <div className="card p-5">
+          <div className="rounded-xl border border-ucla-100 bg-white/90 p-5 shadow-soft">
             <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Your progress
             </div>

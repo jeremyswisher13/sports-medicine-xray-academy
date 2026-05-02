@@ -20,7 +20,7 @@ export function ModulePhaseGuide({ active, onChange, className = '' }: Props) {
   return (
     <section
       className={[
-        'rounded-xl border border-ucla-100 bg-white p-4 shadow-soft',
+        'rounded-xl border border-ucla-100 bg-ucla-50/80 p-4 shadow-soft',
         className,
       ].join(' ')}
     >
