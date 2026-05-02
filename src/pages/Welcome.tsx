@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
+import { CoursePathPanel } from '../components/CoursePathPanel';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
+import { useProgress } from '../hooks/useProgress';
 
 export function WelcomePage() {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
+  const { snapshot } = useProgress();
   const firstName = user?.displayName?.split(' ')[0] ?? 'Learner';
   const greeting = greetingFor(new Date());
 
@@ -19,6 +22,10 @@ export function WelcomePage() {
           medicine fellows. The goal is a reproducible, clinic-ready approach to interpreting
           common musculoskeletal radiographs — and knowing when x-rays are not enough.
         </p>
+
+        <div className="mt-6">
+          <CoursePathPanel snapshot={snapshot} learnerPreview={learnerPreview} />
+        </div>
 
         <ol className="mt-6 space-y-3">
           {[

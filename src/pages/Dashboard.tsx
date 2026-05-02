@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { ModuleCard } from '../components/ModuleCard';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
+import { CoursePathPanel } from '../components/CoursePathPanel';
+import { modulePhaseCount } from '../data/learningFlow';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../hooks/useProgress';
@@ -51,7 +53,7 @@ export function DashboardPage() {
     if (!p) return 0;
     if (p.completed) return 100;
     if (p.completedTabs?.length) {
-      return Math.min(100, (p.completedTabs.length / 11) * 100);
+      return Math.min(100, (p.completedTabs.length / modulePhaseCount) * 100);
     }
     return p.visited ? 10 : 0;
   }
@@ -130,6 +132,10 @@ export function DashboardPage() {
           </div>
         </div>
       </section>
+
+      <div className="mt-5">
+        <CoursePathPanel snapshot={snapshot} learnerPreview={learnerPreview} />
+      </div>
 
       <div className="mt-5">
         <CheatSheetPromo />

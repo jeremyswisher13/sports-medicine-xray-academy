@@ -17,6 +17,8 @@ import { VideoResourceCard } from '../components/VideoResourceCard';
 import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
+import { ModulePhaseGuide } from '../components/ModulePhaseGuide';
+import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import {
@@ -35,15 +37,6 @@ import {
   saveModuleProgress,
   saveQuizAttempt,
 } from '../services/firestore';
-
-const TABS = [
-  { id: 'learn', label: 'Learn' },
-  { id: 'views', label: 'Views' },
-  { id: 'images', label: 'Images' },
-  { id: 'practice', label: 'Practice' },
-  { id: 'quiz', label: 'Quiz' },
-  { id: 'takeaways', label: 'Takeaways' },
-];
 
 export function ModuleDetailPage() {
   const params = useParams<{ moduleId: string }>();
@@ -159,7 +152,7 @@ export function ModuleDetailPage() {
       userId: user.uid,
       moduleId: module.id,
       visited: true,
-      completedTabs: TABS.map((t) => t.id),
+      completedTabs: modulePhases.map((t) => t.id),
       completed: true,
       completedAt,
       lastViewedAt: completedAt,
@@ -382,8 +375,10 @@ export function ModuleDetailPage() {
           </div>
 
           <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F3F6FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
-            <Tabs items={TABS} active={active} onChange={setActive} />
+            <Tabs items={modulePhases} active={active} onChange={setActive} />
           </div>
+
+          <ModulePhaseGuide active={active} onChange={setActive} className="mt-4" />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
@@ -766,7 +761,7 @@ export function ModuleDetailPage() {
               existingProgress={moduleProgress}
               variant="banner"
               completeModuleOnFinish
-              completedTabsOnFinish={TABS.map((t) => t.id)}
+              completedTabsOnFinish={modulePhases.map((t) => t.id)}
               onComplete={() => void refresh()}
             />
           </section>

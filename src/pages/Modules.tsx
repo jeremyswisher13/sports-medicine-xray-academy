@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ModuleCard } from '../components/ModuleCard';
 import { Icon } from '../components/ui/Icon';
+import { modulePhaseCount } from '../data/learningFlow';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../hooks/useProgress';
@@ -42,7 +43,7 @@ export function ModulesPage() {
     if (!p) return 0;
     if (p.completed) return 100;
     if (p.completedTabs?.length) {
-      return Math.min(100, (p.completedTabs.length / 11) * 100);
+      return Math.min(100, (p.completedTabs.length / modulePhaseCount) * 100);
     }
     return p.visited ? 10 : 0;
   }

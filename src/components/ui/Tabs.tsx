@@ -6,7 +6,7 @@ interface TabItem {
 }
 
 interface Props {
-  items: TabItem[];
+  items: readonly TabItem[];
   active: string;
   onChange: (id: string) => void;
   ariaLabel?: string;
