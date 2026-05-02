@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "ucla-hamstring-ultrasound"
+  },
+  "targets": {
+    "ucla-hamstring-ultrasound": {
+      "hosting": {
+        "primary": ["swisher-xray-academy"],
+        "legacy": ["ucla-hamstring-ultrasound"]
+      }
+    }
+  }
+}

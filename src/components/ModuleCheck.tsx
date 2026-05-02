@@ -1,0 +1,304 @@
+import { useMemo, useState } from 'react';
+import { Icon } from './ui/Icon';
+import { QuizQuestion } from './QuizQuestion';
+import { ConfidenceScale } from './ConfidenceScale';
+import { useAuth } from '../context/AuthContext';
+import {
+  ids,
+  logAuditEvent,
+  saveConfidenceRating,
+  saveModuleProgress,
+  saveQuizAttempt,
+} from '../services/firestore';
+import type { ModuleProgress, QuizQuestionData } from '../types';
+
+interface Props {
+  moduleId: string;
+  moduleTitle: string;
+  phase: 'pre' | 'post';
+  questions: QuizQuestionData[];
+  existingProgress?: ModuleProgress;
+  // Pre-check shows under a "Start with a quick check" affordance.
+  // Post-check is opened from the "Mark module complete" CTA.
+  variant?: 'banner' | 'inline';
+  onComplete?: (result: { score: number; confidence: number }) => void;
+  onSkip?: () => void;
+}
+
+export function ModuleCheck({
+  moduleId,
+  moduleTitle,
+  phase,
+  questions,
+  existingProgress,
+  variant = 'banner',
+  onComplete,
+  onSkip,
+}: Props) {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(variant === 'inline');
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [confidence, setConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>();
+  const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
+
+  const total = questions.length;
+  const correct = useMemo(
+    () => questions.filter((q) => answers[q.id] === q.correctOptionId).length,
+    [questions, answers],
+  );
+  const scorePercent = total === 0 ? 0 : (correct / total) * 100;
+  const allAnswered = Object.keys(answers).length === total;
+
+  const alreadyDone =
+    phase === 'pre'
+      ? Boolean(existingProgress?.preCheckAt)
+      : Boolean(existingProgress?.postCheckAt);
+
+  if (variant === 'banner' && !open) {
+    return (
+      <div
+        className={[
+          'flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4',
+          alreadyDone
+            ? 'border-emerald-200 bg-emerald-50/60'
+            : 'border-gold-200 bg-gold-50/60',
+        ].join(' ')}
+      >
+        <div className="flex items-start gap-3">
+          <span
+            className={[
+              'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+              alreadyDone
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-gold-100 text-gold-800',
+            ].join(' ')}
+          >
+            <Icon name={alreadyDone ? 'check-circle' : 'lightning'} size={16} />
+          </span>
+          <div className="min-w-0">
+            <div
+              className={[
+                'text-xs font-semibold uppercase tracking-wide',
+                alreadyDone ? 'text-emerald-700' : 'text-gold-800',
+              ].join(' ')}
+            >
+              {phase === 'pre' ? 'Pre-module check' : 'Post-module check'}
+              {alreadyDone ? ' • complete' : ''}
+            </div>
+            <div className="text-sm text-slate-800 leading-snug">
+              {alreadyDone
+                ? phase === 'pre'
+                  ? `Baseline captured. Score: ${Math.round(existingProgress?.preCheckScore ?? 0)}% · Confidence: ${existingProgress?.preCheckConfidence ?? '—'}/5`
+                  : `Outcome captured. Score: ${Math.round(existingProgress?.postCheckScore ?? 0)}% · Confidence: ${existingProgress?.postCheckConfidence ?? '—'}/5`
+                : `${total} quick questions plus a confidence rating — under a minute.`}
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {alreadyDone ? (
+            <button className="btn-secondary" onClick={() => setOpen(true)}>
+              Retake
+            </button>
+          ) : (
+            <>
+              <button className="btn-ghost" onClick={onSkip}>
+                Skip
+              </button>
+              <button className="btn-primary" onClick={() => setOpen(true)}>
+                Start
+                <Icon name="arrow-right" size={14} />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  async function submitQuiz() {
+    setSubmitted(true);
+    if (!user) return;
+    await saveQuizAttempt({
+      id: ids.newId(),
+      userId: user.uid,
+      scope: phase === 'pre' ? 'module-pre' : 'module-post',
+      moduleId,
+      startedAt: Date.now(),
+      submittedAt: Date.now(),
+      answers: questions.map((q) => ({
+        questionId: q.id,
+        selectedOptionId: answers[q.id] ?? '',
+        correct: answers[q.id] === q.correctOptionId,
+      })),
+      scorePercent,
+    });
+    await logAuditEvent({
+      userId: user.uid,
+      type: 'quiz_submitted',
+      moduleId,
+      details: {
+        scope: phase === 'pre' ? 'module-pre' : 'module-post',
+        score: scorePercent,
+      },
+    });
+  }
+
+  async function submitConfidence() {
+    if (!confidence) return;
+    if (user) {
+      await saveConfidenceRating({
+        id: ids.newId(),
+        userId: user.uid,
+        scope: phase === 'pre' ? 'module-pre' : 'module-post',
+        moduleId,
+        value: confidence,
+        createdAt: Date.now(),
+      });
+      const progressUpdate: ModuleProgress = {
+        userId: user.uid,
+        moduleId,
+        visited: existingProgress?.visited ?? true,
+        completedTabs: existingProgress?.completedTabs ?? [],
+        completed: existingProgress?.completed ?? false,
+        lastViewedAt: Date.now(),
+        preCheckAt:
+          phase === 'pre' ? Date.now() : existingProgress?.preCheckAt,
+        postCheckAt:
+          phase === 'post' ? Date.now() : existingProgress?.postCheckAt,
+        preCheckScore:
+          phase === 'pre' ? scorePercent : existingProgress?.preCheckScore,
+        postCheckScore:
+          phase === 'post' ? scorePercent : existingProgress?.postCheckScore,
+        preCheckConfidence:
+          phase === 'pre' ? confidence : existingProgress?.preCheckConfidence,
+        postCheckConfidence:
+          phase === 'post' ? confidence : existingProgress?.postCheckConfidence,
+      };
+      await saveModuleProgress(progressUpdate);
+      await logAuditEvent({
+        userId: user.uid,
+        type: 'confidence_submitted',
+        moduleId,
+        details: {
+          scope: phase === 'pre' ? 'module-pre' : 'module-post',
+          value: confidence,
+        },
+      });
+    }
+    setStep('done');
+    onComplete?.({ score: scorePercent, confidence });
+  }
+
+  return (
+    <article className="card overflow-hidden">
+      <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-slate-100 bg-slate-50/60 px-5 py-3">
+        <div>
+          <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+            {phase === 'pre' ? 'Pre-module quick check' : 'Post-module quick check'}
+          </div>
+          <h3 className="text-base text-ucla-900">{moduleTitle}</h3>
+        </div>
+        {variant === 'banner' && (
+          <button
+            className="btn-ghost text-xs"
+            onClick={() => {
+              setOpen(false);
+              onSkip?.();
+            }}
+          >
+            Close
+          </button>
+        )}
+      </header>
+
+      <div className="p-5 sm:p-6">
+        {step === 'quiz' && (
+          <div className="space-y-3">
+            {questions.map((q, idx) => (
+              <QuizQuestion
+                key={q.id}
+                question={q}
+                index={idx}
+                total={total}
+                selectedOptionId={answers[q.id]}
+                showFeedback={submitted}
+                locked={submitted}
+                onSelect={(id) =>
+                  setAnswers((p) => ({ ...p, [q.id]: id }))
+                }
+              />
+            ))}
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+              {submitted ? (
+                <div className="text-sm text-slate-700">
+                  Score:{' '}
+                  <span className="font-bold tabular-nums text-ucla-900">
+                    {Math.round(scorePercent)}%
+                  </span>{' '}
+                  ({correct}/{total})
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">
+                  {Object.keys(answers).length}/{total} answered
+                </span>
+              )}
+              {submitted ? (
+                <button className="btn-primary" onClick={() => setStep('confidence')}>
+                  Continue to confidence
+                  <Icon name="arrow-right" size={14} />
+                </button>
+              ) : (
+                <button
+                  className="btn-primary"
+                  disabled={!allAnswered}
+                  onClick={submitQuiz}
+                >
+                  Submit answers
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {step === 'confidence' && (
+          <div className="space-y-3">
+            <ConfidenceScale
+              compact
+              label={
+                phase === 'pre'
+                  ? `Before this module — confidence with ${moduleTitle.toLowerCase()} radiograph interpretation`
+                  : `After this module — confidence with ${moduleTitle.toLowerCase()} radiograph interpretation`
+              }
+              value={confidence}
+              onChange={setConfidence}
+            />
+            <div className="flex justify-end">
+              <button
+                className="btn-primary"
+                disabled={!confidence}
+                onClick={submitConfidence}
+              >
+                Save and continue
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 'done' && (
+          <div className="text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+              <Icon name="check" size={20} />
+            </div>
+            <h4 className="mt-3 text-ucla-900">Saved.</h4>
+            <p className="mt-1 text-sm text-slate-600">
+              {phase === 'pre'
+                ? 'Now work through the module — your post-check will compare against this baseline.'
+                : 'Nice work. Your improvement is now visible in the progress dashboard.'}
+            </p>
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}

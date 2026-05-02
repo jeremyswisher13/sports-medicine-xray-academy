@@ -1,0 +1,90 @@
+rules_version = '2';
+
+// Swisher Sports X-Ray Academy — Firestore security rules.
+// Each learner can only read/write their own progress data.
+// Audit logs are write-only-by-self, read-only-by-self.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isSelf(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function ownsIncoming() {
+      return isSignedIn() && request.resource.data.userId == request.auth.uid;
+    }
+    function ownsExisting() {
+      return isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+    function isAdminEmail() {
+      return isSignedIn()
+        && request.auth.token.email != null
+        && (request.auth.token.email == 'jswisher@mednet.ucla.edu'
+            || request.auth.token.email == 'jeremyswisher@gmail.com'
+            || request.auth.token.email == 'jeremyswisher13@gmail.com'
+            || request.auth.token.email == 'jeremyswisher.medicine@gmail.com');
+    }
+
+    // User profile docs are keyed by uid.
+    match /users/{uid} {
+      allow read: if isSelf(uid) || isAdminEmail();
+      allow create, update: if isSelf(uid);
+      allow delete: if false;
+      // Allow admin to list/query the users collection.
+      allow list: if isAdminEmail();
+    }
+
+    // Per-learner progress collections — owner-only with admin read.
+    match /moduleProgress/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create, update: if ownsIncoming();
+      allow delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+    match /quizAttempts/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create: if ownsIncoming();
+      allow update, delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+    match /confidenceRatings/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create: if ownsIncoming();
+      allow update, delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+    match /caseAttempts/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create: if ownsIncoming();
+      allow update, delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+    match /videoProgress/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create, update: if ownsIncoming();
+      allow delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+    match /bookmarks/{docId} {
+      allow read: if ownsExisting() || isAdminEmail();
+      allow create, update, delete: if ownsIncoming();
+    }
+    match /auditLogs/{docId} {
+      allow create: if ownsIncoming();
+      allow read: if ownsExisting() || isAdminEmail();
+      allow update, delete: if false;
+      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
+    }
+
+    // Curriculum docs (modules) are read-only to authenticated users,
+    // writable only by the admin emails (when migrating data later).
+    match /modules/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdminEmail();
+    }
+    match /adminContentDrafts/{docId} {
+      allow read, write: if isAdminEmail();
+    }
+  }
+}

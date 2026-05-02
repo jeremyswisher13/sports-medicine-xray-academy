@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #F7F8FA;
+    --color-text: #0F172A;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-[#F7F8FA] text-slate-900 font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'kern';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif tracking-tight text-slate-900;
+  }
+
+  h1 { @apply text-3xl sm:text-4xl font-semibold; }
+  h2 { @apply text-2xl sm:text-3xl font-semibold; }
+  h3 { @apply text-xl sm:text-2xl font-semibold; }
+  h4 { @apply text-base sm:text-lg font-semibold; }
+
+  a {
+    @apply text-ucla-700 hover:text-ucla-900 underline-offset-4;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-gold-400 ring-offset-2 ring-offset-white rounded-md;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-slate-200/80 shadow-soft;
+  }
+
+  .card-hover {
+    @apply transition-shadow duration-200 hover:shadow-card;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600;
+  }
+
+  .pill-primary {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-ucla-50 text-ucla-800 border border-ucla-100 px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .pill-gold {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-gold-50 text-gold-800 border border-gold-100 px-2.5 py-0.5 text-xs font-semibold;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-ucla-800 text-white hover:bg-ucla-900 active:bg-ucla-950 shadow-soft;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white border border-slate-200 text-slate-800 hover:bg-slate-50;
+  }
+
+  .btn-ghost {
+    @apply btn text-slate-700 hover:bg-slate-100;
+  }
+
+  .btn-gold {
+    @apply btn bg-gold-500 text-ucla-900 hover:bg-gold-400 shadow-soft;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-ucla-500 focus:ring-2 focus:ring-ucla-100 focus:outline-none;
+  }
+
+  .label {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700;
+  }
+
+  .prose-clinical p { @apply text-slate-700 leading-relaxed; }
+  .prose-clinical li { @apply text-slate-700 leading-relaxed; }
+}
+
+/* ---------- Print / Cheat Sheet ---------- */
+.cheatsheet {
+  width: 8.5in;
+  max-width: 100%;
+  padding: 0.4in 0.5in;
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(226, 232, 240, 1);
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.screen-only { display: block; }
+.print-only { display: none; }
+
+@media print {
+  @page { size: letter; margin: 0.4in; }
+  html, body, #root { background: #FFFFFF !important; }
+  body { font-size: 10pt; }
+  .screen-only { display: none !important; }
+  .print-only { display: block !important; }
+  .cheatsheet {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+  /* Avoid orphaned section breaks */
+  section { break-inside: avoid; }
+  .cheatsheet-header { break-after: avoid; }
+  .cheatsheet-footer { break-before: avoid; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .gradient-hero {
+    background:
+      radial-gradient(1200px 480px at 80% -10%, rgba(255, 209, 0, 0.10), transparent 60%),
+      radial-gradient(1200px 480px at -10% 110%, rgba(0, 59, 92, 0.10), transparent 60%),
+      linear-gradient(180deg, #FFFFFF 0%, #F7F8FA 100%);
+  }
+  .gradient-ucla {
+    background: linear-gradient(135deg, #003B5C 0%, #002438 100%);
+  }
+  .gold-divider {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 209, 0, 0.55) 18%,
+      rgba(255, 209, 0, 0.9) 50%,
+      rgba(255, 209, 0, 0.55) 82%,
+      transparent 100%
+    );
+  }
+}

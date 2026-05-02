@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Segond fracture diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="50" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Segond Fracture (AP Knee)</text>
+  <text x="400" y="80" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Lateral capsular avulsion — highly associated with ACL injury</text>
+  <g transform="translate(220,120)" font-family="Inter, sans-serif">
+    <!-- Femur -->
+    <path d="M120 0 L120 200 Q60 220 60 260 L300 260 Q300 220 240 200 L240 0 Z" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Femoral condyles -->
+    <path d="M60 260 Q90 290 130 290 Q170 290 180 260" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <path d="M180 260 Q200 290 240 290 Q280 290 300 260" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Tibial plateau -->
+    <path d="M40 320 L320 320" stroke="#0F172A" stroke-width="3"/>
+    <!-- Tibia -->
+    <path d="M70 320 L70 460 L290 460 L290 320" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Fibula -->
+    <path d="M310 340 L310 460" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Segond avulsion fragment (lateral) -->
+    <path d="M295 326 L308 322 L312 332 L300 336 Z" fill="#9F1239" stroke="#9F1239" stroke-width="2"/>
+    <line x1="320" y1="328" x2="380" y2="310" stroke="#9F1239" stroke-width="1.5"/>
+    <text x="385" y="306" font-size="12" font-weight="700" fill="#9F1239">Segond avulsion</text>
+    <text x="385" y="322" font-size="11" fill="#9F1239">→ ACL tear suspicion</text>
+    <!-- Tibial spines -->
+    <path d="M170 320 L180 305 L190 320" stroke="#0F172A" stroke-width="2" fill="none"/>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="13" fill="#475569">
+    <rect x="80" y="460" width="640" height="100" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="400" y="492" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="13" letter-spacing="2">PEARL</text>
+    <text x="400" y="520" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="17" fill="#0F172A">A 3–5 mm avulsion off the lateral tibia in a pivot injury is rarely innocent — order MRI.</text>
+    <text x="400" y="544" text-anchor="middle" font-size="12" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>

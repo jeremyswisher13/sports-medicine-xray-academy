@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="AC joint and coracoclavicular distance diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="50" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">AC Joint &amp; Coracoclavicular Distance</text>
+  <text x="400" y="80" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Always compare to the contralateral side — normal CC ~ 11–13 mm</text>
+  <g transform="translate(80,140)" font-family="Inter, sans-serif">
+    <text x="170" y="0" text-anchor="middle" font-weight="700" fill="#003B5C">Normal</text>
+    <!-- Clavicle -->
+    <path d="M20 80 Q170 50 320 80" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Acromion -->
+    <path d="M250 80 L320 100 L320 130" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Coracoid -->
+    <path d="M210 130 L260 130 L260 170" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Humeral head -->
+    <circle cx="290" cy="200" r="60" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Glenoid -->
+    <path d="M225 165 Q235 200 225 240" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- CC distance -->
+    <line x1="230" y1="80" x2="230" y2="130" stroke="#FFD100" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="200" y="110" font-size="12" fill="#7A6400" font-weight="700">CC ≈ 12 mm</text>
+    <!-- AC line -->
+    <line x1="245" y1="78" x2="265" y2="92" stroke="#003B5C" stroke-width="2"/>
+    <text x="295" y="80" font-size="11" fill="#003B5C">AC joint</text>
+  </g>
+  <g transform="translate(440,140)" font-family="Inter, sans-serif">
+    <text x="170" y="0" text-anchor="middle" font-weight="700" fill="#9F1239">Type III separation</text>
+    <!-- Clavicle elevated -->
+    <path d="M20 60 Q170 30 320 80" stroke="#9F1239" stroke-width="3" fill="none"/>
+    <!-- Acromion (lower) -->
+    <path d="M250 100 L320 120 L320 150" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Coracoid -->
+    <path d="M210 150 L260 150 L260 190" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Humeral head -->
+    <circle cx="290" cy="220" r="60" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <path d="M225 185 Q235 220 225 260" stroke="#0F172A" stroke-width="3" fill="none"/>
+    <!-- Increased CC -->
+    <line x1="230" y1="55" x2="230" y2="150" stroke="#9F1239" stroke-width="2" stroke-dasharray="4 3"/>
+    <text x="170" y="105" font-size="12" fill="#9F1239" font-weight="700">CC widened</text>
+  </g>
+  <g font-family="Inter, sans-serif" font-size="13" fill="#475569">
+    <rect x="80" y="460" width="640" height="100" rx="16" fill="#FFFFFF" stroke="#A8C2D7"/>
+    <text x="400" y="492" text-anchor="middle" font-weight="700" fill="#003B5C" font-size="13" letter-spacing="2">PEARL</text>
+    <text x="400" y="520" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="17" fill="#0F172A">CC distance ↑ &gt; 25–50% over the opposite side suggests Type III+ AC separation.</text>
+    <text x="400" y="544" text-anchor="middle" font-size="12" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>
