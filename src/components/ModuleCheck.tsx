@@ -41,12 +41,13 @@ export function ModuleCheck({
   onComplete,
   onSkip,
 }: Props) {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
   const [open, setOpen] = useState(variant === 'inline' || required);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [confidence, setConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>();
   const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
+  const persistedProgress = learnerPreview ? undefined : existingProgress;
 
   const total = questions.length;
   const correct = useMemo(
@@ -58,8 +59,8 @@ export function ModuleCheck({
 
   const alreadyDone =
     phase === 'pre'
-      ? Boolean(existingProgress?.preCheckAt)
-      : Boolean(existingProgress?.postCheckAt);
+      ? Boolean(persistedProgress?.preCheckAt)
+      : Boolean(persistedProgress?.postCheckAt);
 
   if (variant === 'banner' && !open) {
     return (
@@ -95,8 +96,8 @@ export function ModuleCheck({
             <div className="text-sm text-slate-800 leading-snug">
               {alreadyDone
                 ? phase === 'pre'
-                  ? `Baseline captured. Score: ${Math.round(existingProgress?.preCheckScore ?? 0)}% · Confidence: ${existingProgress?.preCheckConfidence ?? '—'}/5`
-                  : `Outcome captured. Score: ${Math.round(existingProgress?.postCheckScore ?? 0)}% · Confidence: ${existingProgress?.postCheckConfidence ?? '—'}/5`
+                  ? `Baseline captured. Score: ${Math.round(persistedProgress?.preCheckScore ?? 0)}% · Confidence: ${persistedProgress?.preCheckConfidence ?? '—'}/5`
+                  : `Outcome captured. Score: ${Math.round(persistedProgress?.postCheckScore ?? 0)}% · Confidence: ${persistedProgress?.postCheckConfidence ?? '—'}/5`
                 : `${total} quick questions plus a confidence rating — under a minute.`}
             </div>
           </div>
@@ -126,7 +127,7 @@ export function ModuleCheck({
 
   async function submitQuiz() {
     setSubmitted(true);
-    if (!user) return;
+    if (!user || learnerPreview) return;
     await saveQuizAttempt({
       id: ids.newId(),
       userId: user.uid,
@@ -155,7 +156,7 @@ export function ModuleCheck({
   async function submitConfidence() {
     if (!confidence) return;
     const shouldCompleteModule = phase === 'post' && completeModuleOnFinish;
-    if (user) {
+    if (user && !learnerPreview) {
       await saveConfidenceRating({
         id: ids.newId(),
         userId: user.uid,
@@ -165,25 +166,25 @@ export function ModuleCheck({
         createdAt: Date.now(),
       });
       const now = Date.now();
-      const completedAt = shouldCompleteModule ? now : existingProgress?.completedAt;
-      const preCheckAt = phase === 'pre' ? now : existingProgress?.preCheckAt;
-      const postCheckAt = phase === 'post' ? now : existingProgress?.postCheckAt;
+      const completedAt = shouldCompleteModule ? now : persistedProgress?.completedAt;
+      const preCheckAt = phase === 'pre' ? now : persistedProgress?.preCheckAt;
+      const postCheckAt = phase === 'post' ? now : persistedProgress?.postCheckAt;
       const preCheckScore =
-        phase === 'pre' ? scorePercent : existingProgress?.preCheckScore;
+        phase === 'pre' ? scorePercent : persistedProgress?.preCheckScore;
       const postCheckScore =
-        phase === 'post' ? scorePercent : existingProgress?.postCheckScore;
+        phase === 'post' ? scorePercent : persistedProgress?.postCheckScore;
       const preCheckConfidence =
-        phase === 'pre' ? confidence : existingProgress?.preCheckConfidence;
+        phase === 'pre' ? confidence : persistedProgress?.preCheckConfidence;
       const postCheckConfidence =
-        phase === 'post' ? confidence : existingProgress?.postCheckConfidence;
+        phase === 'post' ? confidence : persistedProgress?.postCheckConfidence;
       const progressUpdate: ModuleProgress = {
         userId: user.uid,
         moduleId,
-        visited: existingProgress?.visited ?? true,
+        visited: persistedProgress?.visited ?? true,
         completedTabs: shouldCompleteModule
-          ? completedTabsOnFinish ?? existingProgress?.completedTabs ?? []
-          : existingProgress?.completedTabs ?? [],
-        completed: shouldCompleteModule ? true : existingProgress?.completed ?? false,
+          ? completedTabsOnFinish ?? persistedProgress?.completedTabs ?? []
+          : persistedProgress?.completedTabs ?? [],
+        completed: shouldCompleteModule ? true : persistedProgress?.completed ?? false,
         lastViewedAt: now,
         ...(completedAt !== undefined ? { completedAt } : {}),
         ...(preCheckAt !== undefined ? { preCheckAt } : {}),
@@ -309,13 +310,17 @@ export function ModuleCheck({
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
               <Icon name="check" size={20} />
             </div>
-            <h4 className="mt-3 text-ucla-900">Saved.</h4>
+            <h4 className="mt-3 text-ucla-900">
+              {learnerPreview ? 'Preview complete.' : 'Saved.'}
+            </h4>
             <p className="mt-1 text-sm text-slate-600">
-              {phase === 'pre'
-                ? 'Now work through the module — your post-check will compare against this baseline.'
-                : completeModuleOnFinish
-                  ? 'Nice work. This module is now complete and your improvement is visible in the progress dashboard.'
-                  : 'Nice work. Your improvement is now visible in the progress dashboard.'}
+              {learnerPreview
+                ? 'Learner preview only — no admin analytics were saved.'
+                : phase === 'pre'
+                  ? 'Now work through the module — your post-check will compare against this baseline.'
+                  : completeModuleOnFinish
+                    ? 'Nice work. This module is now complete and your improvement is visible in the progress dashboard.'
+                    : 'Nice work. Your improvement is now visible in the progress dashboard.'}
             </p>
           </div>
         )}

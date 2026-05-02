@@ -21,9 +21,14 @@ const quickAccess = [
 ];
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
   const { snapshot } = useProgress();
   const [query, setQuery] = useState('');
+  const learnerModules = learnerPreview ? [] : snapshot.modules;
+  const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
+  const learnerCases = learnerPreview ? [] : snapshot.cases;
+  const learnerVideos = learnerPreview ? [] : snapshot.videos;
+  const learnerQuizzes = learnerPreview ? [] : snapshot.quizzes;
 
   const filteredModules = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -36,12 +41,12 @@ export function DashboardPage() {
     );
   }, [query]);
 
-  const completedCount = snapshot.modules.filter((m) => m.completed).length;
+  const completedCount = learnerModules.filter((m) => m.completed).length;
   const totalCount = moduleSummaries.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
 
   function progressFor(moduleId: string): number {
-    const p = snapshot.modules.find((m) => m.moduleId === moduleId);
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
     if (!p) return 0;
     if (p.completed) return 100;
     if (p.completedTabs?.length) {
@@ -51,7 +56,7 @@ export function DashboardPage() {
   }
 
   function confidenceFor(moduleId: string): number | null {
-    const c = snapshot.confidence.filter((c) => c.scope === 'module' && c.moduleId === moduleId);
+    const c = learnerConfidence.filter((c) => c.scope === 'module' && c.moduleId === moduleId);
     if (!c.length) return null;
     return c.at(-1)!.value;
   }
@@ -98,26 +103,27 @@ export function DashboardPage() {
             <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-slate-500">
               <div>
                 <div className="font-semibold text-ucla-900 tabular-nums">
-                  {snapshot.cases.length}
+                  {learnerCases.length}
                 </div>
                 Cases attempted
               </div>
               <div>
                 <div className="font-semibold text-ucla-900 tabular-nums">
-                  {snapshot.videos.filter((v) => v.markedComplete).length}
+                  {learnerVideos.filter((v) => v.markedComplete).length}
                 </div>
                 Videos completed
               </div>
               <div>
                 <div className="font-semibold text-ucla-900 tabular-nums">
-                  {snapshot.quizzes.length}
+                  {learnerQuizzes.length}
                 </div>
                 Quiz attempts
               </div>
             </div>
             {user && (
               <p className="mt-3 text-[11px] text-slate-500">
-                Signed in as {user.email || user.displayName} ({user.role}).
+                Signed in as {user.email || user.displayName} (
+                {learnerPreview ? 'learner preview' : user.role}).
               </p>
             )}
           </div>
@@ -171,7 +177,7 @@ export function DashboardPage() {
               key={m.id}
               module={m}
               progressPercent={progressFor(m.id)}
-              completed={snapshot.modules.find((x) => x.moduleId === m.id)?.completed}
+              completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
               confidence={confidenceFor(m.id)}
             />
           ))}

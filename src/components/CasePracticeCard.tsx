@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function CasePracticeCard({ scenario }: Props) {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
   const [selected, setSelected] = useState<string | undefined>();
   const [submitted, setSubmitted] = useState(false);
   const [notes, setNotes] = useState('');
@@ -27,7 +27,7 @@ export function CasePracticeCard({ scenario }: Props) {
   async function submit() {
     if (!selected) return;
     setSubmitted(true);
-    if (!user) return;
+    if (!user || learnerPreview) return;
     await saveCaseAttempt({
       id: ids.newId(),
       userId: user.uid,

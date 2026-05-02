@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { ModuleCard } from '../components/ModuleCard';
 import { Icon } from '../components/ui/Icon';
 import { moduleSummaries } from '../data/modules';
+import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../hooks/useProgress';
 import type { ModuleRegion } from '../types';
 
@@ -16,7 +17,9 @@ const allRegions: ('All' | ModuleRegion)[] = [
 ];
 
 export function ModulesPage() {
+  const { learnerPreview } = useAuth();
   const { snapshot } = useProgress();
+  const learnerModules = learnerPreview ? [] : snapshot.modules;
   const [region, setRegion] = useState<(typeof allRegions)[number]>('All');
   const [query, setQuery] = useState('');
 
@@ -35,7 +38,7 @@ export function ModulesPage() {
   }, [region, query]);
 
   function progressFor(moduleId: string): number {
-    const p = snapshot.modules.find((m) => m.moduleId === moduleId);
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
     if (!p) return 0;
     if (p.completed) return 100;
     if (p.completedTabs?.length) {
@@ -95,7 +98,7 @@ export function ModulesPage() {
             key={m.id}
             module={m}
             progressPercent={progressFor(m.id)}
-            completed={snapshot.modules.find((x) => x.moduleId === m.id)?.completed}
+            completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
           />
         ))}
         {list.length === 0 && (

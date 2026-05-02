@@ -23,23 +23,28 @@ export interface ProgressSnapshot {
   videos: VideoProgress[];
 }
 
+const emptySnapshot: ProgressSnapshot = {
+  modules: [],
+  quizzes: [],
+  confidence: [],
+  cases: [],
+  videos: [],
+};
+
 export function useProgress(): {
   snapshot: ProgressSnapshot;
   loading: boolean;
   refresh: () => Promise<void>;
 } {
-  const { user } = useAuth();
-  const [snapshot, setSnapshot] = useState<ProgressSnapshot>({
-    modules: [],
-    quizzes: [],
-    confidence: [],
-    cases: [],
-    videos: [],
-  });
+  const { user, learnerPreview } = useAuth();
+  const [snapshot, setSnapshot] = useState<ProgressSnapshot>(emptySnapshot);
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!user) return;
+    if (!user || learnerPreview) {
+      setSnapshot(emptySnapshot);
+      return;
+    }
     setLoading(true);
     try {
       const [modules, quizzes, confidence, cases, videos] = await Promise.all([
@@ -53,7 +58,7 @@ export function useProgress(): {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, learnerPreview]);
 
   useEffect(() => {
     void refresh();

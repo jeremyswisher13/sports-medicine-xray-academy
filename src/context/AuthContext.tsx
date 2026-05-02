@@ -6,6 +6,9 @@ import type { UserProfile } from '../types';
 interface AuthContextValue {
   user: UserProfile | null;
   loading: boolean;
+  learnerPreview: boolean;
+  isAdminAccount: boolean;
+  setLearnerPreview: (enabled: boolean) => void;
   signInGoogle: () => Promise<void>;
   signInGuest: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -13,11 +16,20 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const learnerPreviewKey = 'sports-xray:learner-preview';
+const adminPreviewEmails = new Set(['jeremyswisher13@gmail.com']);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [learnerPreviewEnabled, setLearnerPreviewEnabled] = useState(() => {
+    try {
+      return localStorage.getItem(learnerPreviewKey) === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     const unsub = subscribeToAuth((profile) => {
@@ -27,11 +39,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsub();
   }, []);
 
+  const isAdminAccount =
+    user?.role === 'admin' ||
+    (user?.email ? adminPreviewEmails.has(user.email.toLowerCase()) : false);
+  const learnerPreview = Boolean(isAdminAccount && learnerPreviewEnabled);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       loading,
       error,
+      learnerPreview,
+      isAdminAccount,
+      setLearnerPreview(enabled) {
+        setLearnerPreviewEnabled(enabled);
+        try {
+          localStorage.setItem(learnerPreviewKey, String(enabled));
+        } catch {
+          // localStorage can be unavailable in private browsing; preview still works in memory.
+        }
+      },
       async signInGoogle() {
         setError(null);
         try {
@@ -51,9 +78,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async signOut() {
         await signOut();
         setUser(null);
+        setLearnerPreviewEnabled(false);
+        try {
+          localStorage.removeItem(learnerPreviewKey);
+        } catch {
+          // Ignore storage cleanup failures on sign out.
+        }
       },
     }),
-    [user, loading, error],
+    [user, loading, error, learnerPreview, isAdminAccount],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

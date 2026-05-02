@@ -53,7 +53,7 @@ export function ModuleDetailPage() {
   const params = useParams<{ moduleId: string }>();
   const moduleId = params.moduleId ?? '';
   const module = getModule(moduleId);
-  const { user } = useAuth();
+  const { user, learnerPreview, isAdminAccount } = useAuth();
   const { snapshot, refresh } = useProgress();
   const [active, setActive] = useState('overview');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
@@ -61,14 +61,14 @@ export function ModuleDetailPage() {
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
 
   useEffect(() => {
-    if (!user || !module) return;
+    if (!user || !module || learnerPreview) return;
     void markModuleVisited({
       userId: user.uid,
       moduleId: module.id,
       lastViewedAt: Date.now(),
     });
     void logAuditEvent({ userId: user.uid, type: 'module_viewed', moduleId: module.id });
-  }, [user, module]);
+  }, [user, module, learnerPreview]);
 
   useEffect(() => {
     setActive('overview');
@@ -122,6 +122,7 @@ export function ModuleDetailPage() {
   async function submitQuiz() {
     if (!user || !module) return;
     setQuizSubmitted(true);
+    if (learnerPreview) return;
     const attempt = {
       id: ids.newId(),
       userId: user.uid,
@@ -145,10 +146,9 @@ export function ModuleDetailPage() {
     });
   }
 
-  const moduleProgress = snapshot.modules.find((m) => m.moduleId === module.id);
-  const isAdminBypass =
-    user?.role === 'admin' ||
-    user?.email.toLowerCase() === 'jeremyswisher13@gmail.com';
+  const savedModuleProgress = snapshot.modules.find((m) => m.moduleId === module.id);
+  const moduleProgress = learnerPreview ? undefined : savedModuleProgress;
+  const isAdminBypass = isAdminAccount && !learnerPreview;
   const hasPreCheck =
     Boolean(moduleProgress?.preCheckAt) &&
     moduleProgress?.preCheckConfidence !== undefined;
@@ -250,6 +250,16 @@ export function ModuleDetailPage() {
               Mark module complete
               <Icon name="check" size={14} />
             </button>
+          ) : learnerPreview ? (
+            <div className="mt-2 rounded-xl border border-gold-200 bg-gold-50/70 p-3">
+              <div className="flex items-center gap-2 font-semibold text-gold-900">
+                <Icon name="eye" size={15} />
+                Learner preview active
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-slate-700">
+                You are seeing the fresh learner flow. Preview checks do not save to analytics.
+              </p>
+            </div>
           ) : isAdminBypass ? (
             <div className="mt-2 rounded-xl border border-ucla-100 bg-ucla-50/70 p-3">
               <div className="flex items-center gap-2 font-semibold text-ucla-900">
@@ -326,6 +336,8 @@ export function ModuleDetailPage() {
               'mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4',
               isAdminBypass && !hasPreCheck
                 ? 'border-ucla-100 bg-ucla-50/70'
+                : learnerPreview
+                  ? 'border-gold-200 bg-gold-50/70'
                 : 'border-emerald-200 bg-emerald-50/70',
             ].join(' ')}
           >
@@ -335,18 +347,29 @@ export function ModuleDetailPage() {
                   'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
                   isAdminBypass && !hasPreCheck
                     ? 'bg-ucla-100 text-ucla-800'
+                    : learnerPreview
+                      ? 'bg-gold-100 text-gold-900'
                     : 'bg-emerald-100 text-emerald-700',
                 ].join(' ')}
               >
-                <Icon name={isAdminBypass && !hasPreCheck ? 'shield' : 'check-circle'} size={16} />
+                <Icon
+                  name={isAdminBypass && !hasPreCheck ? 'shield' : learnerPreview ? 'eye' : 'check-circle'}
+                  size={16}
+                />
               </span>
               <div>
                 <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {isAdminBypass && !hasPreCheck ? 'Admin preview mode' : 'Baseline captured'}
+                  {isAdminBypass && !hasPreCheck
+                    ? 'Admin preview mode'
+                    : learnerPreview
+                      ? 'Learner preview mode'
+                      : 'Baseline captured'}
                 </div>
                 <p className="text-sm leading-relaxed text-slate-700">
                   {isAdminBypass && !hasPreCheck
                     ? 'Learners will see the entry gate here. Your admin account can review the content directly.'
+                    : learnerPreview
+                      ? 'This is the learner path with admin bypass and saved admin progress ignored.'
                     : 'The module is open. Complete the post-check on Key Takeaways when you finish.'}
                 </p>
               </div>
@@ -403,7 +426,7 @@ export function ModuleDetailPage() {
                           : module.id === 'do-not-miss'
                             ? 'do-not-miss-klein-line'
                             : null;
-                const heroImage = heroImageKey ? getImage(heroImageKey) : null;
+                const heroImage = realImages[0] ?? (heroImageKey ? getImage(heroImageKey) : null);
                 if (!heroImage) return null;
                 return <XRayImage entry={heroImage} />;
               })()}

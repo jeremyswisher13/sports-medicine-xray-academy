@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function QuizPage({ scope }: Props) {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
   const navigate = useNavigate();
   const questions = scope === 'pre' ? preCourseQuiz : postCourseQuiz;
 
@@ -36,7 +36,7 @@ export function QuizPage({ scope }: Props) {
 
   async function submitQuiz() {
     setSubmitted(true);
-    if (!user) return;
+    if (!user || learnerPreview) return;
     await saveQuizAttempt({
       id: ids.newId(),
       userId: user.uid,
@@ -58,7 +58,7 @@ export function QuizPage({ scope }: Props) {
   }
 
   async function submitConfidence() {
-    if (!user) {
+    if (!user || learnerPreview) {
       setStep('done');
       return;
     }
@@ -103,7 +103,9 @@ export function QuizPage({ scope }: Props) {
             ? 'A short knowledge check. Pick the best answer; explanations appear after submission.'
             : step === 'confidence'
               ? 'Rate your confidence across core domains.'
-              : 'Thanks — your responses are saved.'}
+              : learnerPreview
+                ? 'Learner preview complete — no analytics were saved.'
+                : 'Thanks — your responses are saved.'}
         </p>
       </header>
 
@@ -187,7 +189,7 @@ export function QuizPage({ scope }: Props) {
           </div>
           <h2 className="mt-3">You're done.</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Quiz score saved:{' '}
+            {learnerPreview ? 'Preview quiz score: ' : 'Quiz score saved: '}
             <span className="font-bold text-ucla-900">{Math.round(scorePercent)}%</span>
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-2">

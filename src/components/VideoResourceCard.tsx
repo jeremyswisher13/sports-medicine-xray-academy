@@ -14,7 +14,7 @@ interface Props {
 }
 
 export function VideoResourceCard({ video, initialProgress, onProgressChange }: Props) {
-  const { user } = useAuth();
+  const { user, learnerPreview } = useAuth();
   const [completed, setCompleted] = useState(Boolean(initialProgress?.markedComplete));
   const [reflection, setReflection] = useState(initialProgress?.reflectionText ?? '');
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved'>('idle');
@@ -52,6 +52,14 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
       markedComplete: next,
       completedAt: next ? Date.now() : undefined,
     });
+    if (learnerPreview) {
+      setSavingState('saved');
+      setTimeout(() => setSavingState('idle'), 1200);
+      if (next && recallQuestions.length > 0) {
+        setShowRecall(true);
+      }
+      return;
+    }
     await saveVideoProgress(progress);
     await logAuditEvent({
       userId: user.uid,
@@ -70,7 +78,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
 
   async function submitRecall() {
     setPvSubmitted(true);
-    if (!user) return;
+    if (!user || learnerPreview) return;
     const correct = recallQuestions.filter(
       (q) => pvAnswers[q.id] === q.correctOptionId,
     ).length;
@@ -103,6 +111,11 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
     if (!user) return;
     setSavingState('saving');
     const progress = buildProgress({ reflectionText: reflection });
+    if (learnerPreview) {
+      setSavingState('saved');
+      setTimeout(() => setSavingState('idle'), 1200);
+      return;
+    }
     await saveVideoProgress(progress);
     await logAuditEvent({
       userId: user.uid,
@@ -160,7 +173,9 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
           <span className="self-center text-xs text-slate-500">Saving…</span>
         )}
         {savingState === 'saved' && (
-          <span className="self-center text-xs text-emerald-700">Saved</span>
+          <span className="self-center text-xs text-emerald-700">
+            {learnerPreview ? 'Previewed' : 'Saved'}
+          </span>
         )}
       </div>
 
@@ -210,7 +225,9 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
               )}
               {pvSubmitted && (
                 <div className="text-sm text-emerald-800">
-                  Saved. These attempts feed into your progress dashboard.
+                  {learnerPreview
+                    ? 'Preview complete. No admin analytics were saved.'
+                    : 'Saved. These attempts feed into your progress dashboard.'}
                 </div>
               )}
             </div>

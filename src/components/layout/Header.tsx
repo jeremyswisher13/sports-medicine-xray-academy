@@ -13,14 +13,14 @@ const baseNavItems = [
 ];
 
 export function Header() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, learnerPreview, isAdminAccount, setLearnerPreview } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   if (location.pathname === '/login') return null;
 
   const navItems =
-    user?.role === 'admin'
+    user?.role === 'admin' && !learnerPreview
       ? [...baseNavItems, { to: '/admin', label: 'Admin' }]
       : baseNavItems;
 
@@ -60,6 +60,27 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {isAdminAccount && (
+              <button
+                type="button"
+                onClick={() => setLearnerPreview(!learnerPreview)}
+                className={[
+                  'hidden items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors sm:inline-flex',
+                  learnerPreview
+                    ? 'border-gold-200 bg-gold-50 text-gold-900 hover:bg-gold-100'
+                    : 'border-ucla-100 bg-ucla-50 text-ucla-900 hover:bg-ucla-100',
+                ].join(' ')}
+                aria-pressed={learnerPreview}
+                title={
+                  learnerPreview
+                    ? 'Switch back to admin mode'
+                    : 'Preview the course as a fresh learner'
+                }
+              >
+                <Icon name={learnerPreview ? 'eye' : 'shield'} size={13} />
+                {learnerPreview ? 'Learner view' : 'Admin mode'}
+              </button>
+            )}
             {user && (
               <div className="hidden sm:flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-2 py-1.5">
                 {user.photoURL ? (
@@ -78,7 +99,7 @@ export function Header() {
                     {user.displayName}
                   </div>
                   <div className="text-[10px] uppercase tracking-wide leading-tight text-slate-500">
-                    {user.role}
+                    {learnerPreview ? 'previewing learner' : user.role}
                   </div>
                 </div>
               </div>
@@ -107,6 +128,24 @@ export function Header() {
         {menuOpen && (
           <div className="lg:hidden pb-3 animate-fade-in">
             <nav className="flex flex-col gap-1">
+              {isAdminAccount && (
+                <button
+                  type="button"
+                  onClick={() => setLearnerPreview(!learnerPreview)}
+                  className={[
+                    'mb-1 flex items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-semibold',
+                    learnerPreview
+                      ? 'bg-gold-50 text-gold-900'
+                      : 'bg-ucla-50 text-ucla-900',
+                  ].join(' ')}
+                  aria-pressed={learnerPreview}
+                >
+                  <Icon name={learnerPreview ? 'eye' : 'shield'} size={15} />
+                  {learnerPreview
+                    ? 'Viewing as a learner'
+                    : 'Viewing with admin bypass'}
+                </button>
+              )}
               {navItems.map((item) => (
                 <NavLink
                   key={item.to}
