@@ -211,6 +211,13 @@ export function ModuleDetailPage() {
             <Icon name="printer" size={12} />
             Cheat sheet
           </Link>
+          <Link
+            to={`/flashcards?module=${module.id}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-gold-100 no-underline"
+          >
+            <Icon name="sparkles" size={12} />
+            Flashcards
+          </Link>
         </div>
       </div>
 

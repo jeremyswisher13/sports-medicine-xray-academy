@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { Flashcard } from '../components/Flashcard';
 import { flashcards } from '../data/flashcards';
@@ -39,8 +39,18 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+function validModuleFilter(moduleId: string | null): string {
+  return moduleId && moduleSummaries.some((module) => module.id === moduleId)
+    ? moduleId
+    : 'all';
+}
+
 export function FlashcardsPage() {
-  const [moduleFilter, setModuleFilter] = useState<string>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const moduleParam = searchParams.get('module');
+  const [moduleFilter, setModuleFilter] = useState<string>(() =>
+    validModuleFilter(moduleParam),
+  );
   const [mode, setMode] = useState<'all' | 'review-only'>('all');
   const [shuffleSeed, setShuffleSeed] = useState(0);
   const [persisted, setPersisted] = useState<PersistedState>(loadState);
@@ -49,6 +59,10 @@ export function FlashcardsPage() {
   useEffect(() => {
     saveState(persisted);
   }, [persisted]);
+
+  useEffect(() => {
+    setModuleFilter(validModuleFilter(moduleParam));
+  }, [moduleParam]);
 
   const moduleDecks = useMemo(() => {
     return moduleSummaries
@@ -94,6 +108,12 @@ export function FlashcardsPage() {
     setIndex((i) => (i + 1) % Math.max(deck.length, 1));
   }
 
+  function changeModuleFilter(next: string) {
+    setModuleFilter(next);
+    if (next === 'all') setSearchParams({});
+    else setSearchParams({ module: next });
+  }
+
   function resetProgress() {
     setPersisted({ reviewedIds: [], needsReviewIds: [] });
     setIndex(0);
@@ -133,7 +153,7 @@ export function FlashcardsPage() {
         <select
           className="input"
           value={moduleFilter}
-          onChange={(e) => setModuleFilter(e.target.value)}
+          onChange={(e) => changeModuleFilter(e.target.value)}
           aria-label="Filter by module"
         >
           <option value="all">All modules ({flashcards.length})</option>
@@ -164,6 +184,59 @@ export function FlashcardsPage() {
           Reset progress
         </button>
       </div>
+
+      <section className="mt-4">
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <div className="label">Module decks</div>
+          <button
+            type="button"
+            onClick={() => {
+              setMode('all');
+              changeModuleFilter('all');
+            }}
+            className="text-xs font-semibold text-ucla-700 hover:text-ucla-900"
+          >
+            Study all {totalCards}
+          </button>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+          {moduleDecks.map((deckSummary) => {
+            const selected = moduleFilter === deckSummary.module.id;
+            const reviewedCount = deckSummary.cards.filter((deckCard) =>
+              persisted.reviewedIds.includes(deckCard.id),
+            ).length;
+            return (
+              <button
+                key={deckSummary.module.id}
+                type="button"
+                onClick={() => {
+                  setMode('all');
+                  changeModuleFilter(deckSummary.module.id);
+                }}
+                className={[
+                  'rounded-2xl border p-3 text-left shadow-soft transition-colors',
+                  selected
+                    ? 'border-ucla-300 bg-ucla-700 text-white'
+                    : 'border-ucla-100 bg-white/90 text-slate-700 hover:bg-ucla-50',
+                ].join(' ')}
+                aria-pressed={selected}
+              >
+                <div
+                  className={[
+                    'text-sm font-semibold leading-tight',
+                    selected ? 'text-white' : 'text-ucla-900',
+                  ].join(' ')}
+                >
+                  {deckSummary.module.shortTitle}
+                </div>
+                <div className={selected ? 'mt-1 text-xs text-ucla-50' : 'mt-1 text-xs text-slate-500'}>
+                  {reviewedCount}/{deckSummary.cards.length} reviewed
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       <div className="mt-6">
         {card ? (
