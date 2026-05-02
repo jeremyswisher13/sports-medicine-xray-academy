@@ -18,7 +18,7 @@ import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoach';
-import { GuidedModuleSession } from '../components/GuidedModuleSession';
+import { ModulePhaseNavigator } from '../components/ModulePhaseNavigator';
 import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
@@ -54,6 +54,7 @@ export function ModuleDetailPage() {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
+  const [practiceToolsOpen, setPracticeToolsOpen] = useState(false);
 
   useEffect(() => {
     if (!user || !module || learnerPreview) return;
@@ -70,11 +71,13 @@ export function ModuleDetailPage() {
     setQuizAnswers({});
     setQuizSubmitted(false);
     setPreCheckCompletedNow(false);
+    setPracticeToolsOpen(false);
   }, [moduleId]);
 
   useEffect(() => {
     if (location.hash !== '#systematic') return;
     setActive('learn');
+    setPracticeToolsOpen(false);
     window.setTimeout(() => {
       document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
     }, 0);
@@ -158,6 +161,11 @@ export function ModuleDetailPage() {
     moduleProgress?.preCheckConfidence !== undefined;
   const contentUnlocked = Boolean(isAdminBypass || hasPreCheck || preCheckCompletedNow);
   const isComplete = moduleProgress?.completed;
+
+  function handlePhaseChange(nextPhaseId: string) {
+    setActive(nextPhaseId);
+    setPracticeToolsOpen(false);
+  }
 
   async function markComplete() {
     if (!user || !module) return;
@@ -298,7 +306,7 @@ export function ModuleDetailPage() {
               </p>
             </div>
           ) : (
-            <button className="btn-primary mt-2 w-full" onClick={() => setActive('takeaways')}>
+            <button className="btn-primary mt-2 w-full" onClick={() => handlePhaseChange('takeaways')}>
               Take post-check to complete
               <Icon name="arrow-right" size={14} />
             </button>
@@ -405,35 +413,25 @@ export function ModuleDetailPage() {
               </div>
             </div>
             {!isComplete && (
-              <button className="btn-secondary" onClick={() => setActive('takeaways')}>
+              <button className="btn-secondary" onClick={() => handlePhaseChange('takeaways')}>
                 Go to post-check
                 <Icon name="arrow-right" size={14} />
               </button>
             )}
           </div>
 
-          <GuidedModuleSession
+          <ModulePhaseNavigator
             module={module}
             activePhaseId={active}
-            onPhaseChange={setActive}
+            onPhaseChange={handlePhaseChange}
             completedPhaseIds={moduleProgress?.completedTabs ?? []}
-            readyPhaseIds={moduleProgress?.completedTabs ?? []}
             postCheckPending={!moduleProgress?.postCheckAt}
             className="mt-5"
           />
 
           <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#EAF3FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
-            <Tabs items={modulePhases} active={active} onChange={setActive} />
+            <Tabs items={modulePhases} active={active} onChange={handlePhaseChange} />
           </div>
-
-          <ModuleActiveLearningCoach
-            module={module}
-            activePhaseId={active}
-            onPhaseChange={setActive}
-            className="mt-4"
-          />
-
-          <InlineFlashcardStrip moduleId={module.id} maxCards={3} className="mt-4" />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
@@ -851,6 +849,37 @@ export function ModuleDetailPage() {
           </section>
         )}
           </div>
+
+          <section className="mt-5 rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="section-title">Optional active practice</div>
+                <h2 className="mt-1 text-xl text-ucla-900">Flashcards and phase coach</h2>
+                <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
+                  Use these when you want a quick recall check before moving to the next phase.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setPracticeToolsOpen((open) => !open)}
+                aria-expanded={practiceToolsOpen}
+              >
+                {practiceToolsOpen ? 'Hide practice' : 'Open practice'}
+                <Icon name={practiceToolsOpen ? 'chevron-left' : 'chevron-right'} size={14} />
+              </button>
+            </div>
+            {practiceToolsOpen && (
+              <div className="mt-4 space-y-4 border-t border-ucla-100 pt-4 animate-fade-in">
+                <ModuleActiveLearningCoach
+                  module={module}
+                  activePhaseId={active}
+                  onPhaseChange={handlePhaseChange}
+                />
+                <InlineFlashcardStrip moduleId={module.id} maxCards={3} />
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>
