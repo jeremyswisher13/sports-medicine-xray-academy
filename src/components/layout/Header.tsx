@@ -32,10 +32,10 @@ export function Header() {
         <div className="flex h-16 items-center justify-between gap-4">
           <Link
             to="/dashboard"
-            className="flex items-center gap-2.5 rounded-2xl shadow-soft ring-1 ring-white/20 no-underline"
+            className="flex items-center gap-2.5 rounded-2xl border border-white/80 bg-white p-1 shadow-soft ring-1 ring-ucla-100/70 no-underline"
             aria-label="Sports Medicine X-Ray Academy dashboard"
           >
-            <Logo size={38} variant="white" />
+            <Logo size={36} variant="navy" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
