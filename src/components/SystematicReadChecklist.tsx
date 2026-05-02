@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveQuizAttempt } from '../services/firestore';
@@ -193,6 +193,28 @@ const modeLabels: Record<StudyMode, string> = {
   checklist: 'Checklist',
 };
 
+function readCheckedState(storageKey?: string): Set<string> {
+  if (!storageKey) return new Set();
+  try {
+    const raw = localStorage.getItem(`sxra:checklist:${storageKey}`);
+    if (raw) return new Set(JSON.parse(raw) as string[]);
+  } catch {
+    // ignore
+  }
+  return new Set();
+}
+
+function readChallengeAnswers(storageKey?: string): Record<string, string> {
+  if (!storageKey) return {};
+  try {
+    const raw = localStorage.getItem(`sxra:read-challenges:${storageKey}`);
+    if (raw) return JSON.parse(raw) as Record<string, string>;
+  } catch {
+    // ignore
+  }
+  return {};
+}
+
 export function SystematicReadChecklist({
   items,
   storageKey,
@@ -200,28 +222,19 @@ export function SystematicReadChecklist({
   defaultExpandedAll = false,
 }: Props) {
   const { user, learnerPreview } = useAuth();
-  const [checked, setChecked] = useState<Set<string>>(() => {
-    if (!storageKey) return new Set();
-    try {
-      const raw = localStorage.getItem(`sxra:checklist:${storageKey}`);
-      if (raw) return new Set(JSON.parse(raw) as string[]);
-    } catch {
-      // ignore
-    }
-    return new Set();
-  });
-  const [challengeAnswers, setChallengeAnswers] = useState<Record<string, string>>(() => {
-    if (!storageKey) return {};
-    try {
-      const raw = localStorage.getItem(`sxra:read-challenges:${storageKey}`);
-      if (raw) return JSON.parse(raw) as Record<string, string>;
-    } catch {
-      // ignore
-    }
-    return {};
-  });
+  const [checked, setChecked] = useState<Set<string>>(() => readCheckedState(storageKey));
+  const [challengeAnswers, setChallengeAnswers] = useState<Record<string, string>>(() =>
+    readChallengeAnswers(storageKey),
+  );
   const [mode, setMode] = useState<StudyMode>(() => (defaultExpandedAll ? 'checklist' : 'challenge'));
   const [activeStep, setActiveStep] = useState<SystematicStep | null>(() => items[0]?.step ?? null);
+
+  useEffect(() => {
+    setChecked(readCheckedState(storageKey));
+    setChallengeAnswers(readChallengeAnswers(storageKey));
+    setMode(defaultExpandedAll ? 'checklist' : 'challenge');
+    setActiveStep(items[0]?.step ?? null);
+  }, [defaultExpandedAll, items, storageKey]);
 
   const totalPrompts = useMemo(
     () => items.reduce((acc, i) => acc + i.prompts.length, 0),

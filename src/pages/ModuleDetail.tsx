@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { Tabs } from '../components/ui/Tabs';
 import { Icon, type IconName } from '../components/ui/Icon';
 import { SystematicReadChecklist } from '../components/SystematicReadChecklist';
@@ -44,6 +44,7 @@ import type { ModuleProgress } from '../types';
 
 export function ModuleDetailPage() {
   const params = useParams<{ moduleId: string }>();
+  const location = useLocation();
   const moduleId = params.moduleId ?? '';
   const module = getModule(moduleId);
   const { user, learnerPreview, isAdminAccount } = useAuth();
@@ -70,6 +71,14 @@ export function ModuleDetailPage() {
     setQuizSubmitted(false);
     setPreCheckCompletedNow(false);
   }, [moduleId]);
+
+  useEffect(() => {
+    if (location.hash !== '#systematic') return;
+    setActive('learn');
+    window.setTimeout(() => {
+      document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
+    }, 0);
+  }, [location.hash, moduleId]);
 
   const videos = useMemo(
     () => (module ? getVideosForModule(module.id) : []),
@@ -486,7 +495,10 @@ export function ModuleDetailPage() {
             </aside>
           </section>
           <CheatSheetPromo module={module} compact />
-          <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+          <section
+            id="systematic-read"
+            className="grid scroll-mt-28 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
+          >
             <SystematicReadChecklist
               items={module.systematicChecklist}
               storageKey={module.id}

@@ -9,7 +9,7 @@ import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
-import { hasCourseAssessment } from '../utils/progress';
+import { hasCourseAssessment, hasPreviewCourseAssessment } from '../utils/progress';
 
 const quickAccess = [
   { id: 'foundations', label: 'X-Ray Basics', to: '/modules/xray-foundations', icon: 'graduation' as const },
@@ -54,11 +54,9 @@ export function DashboardPage() {
   const completedCount = learnerModules.filter((m) => m.completed).length;
   const totalCount = moduleSummaries.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
-  const hasCourseBaseline = hasCourseAssessment(
-    learnerQuizzes,
-    learnerConfidence,
-    'pre',
-  );
+  const hasCourseBaseline =
+    hasCourseAssessment(learnerQuizzes, learnerConfidence, 'pre') ||
+    (learnerPreview && hasPreviewCourseAssessment('pre'));
   const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
   const nextModule =
     moduleSummaries.find((module) => {

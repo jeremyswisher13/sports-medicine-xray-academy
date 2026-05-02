@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Icon } from './ui/Icon';
 import { moduleSummaries } from '../data/moduleSummaries';
-import { hasCourseAssessment, hasCompleteCourseConfidence } from '../utils/progress';
+import {
+  hasCourseAssessment,
+  hasCompleteCourseConfidence,
+  hasPreviewCourseAssessment,
+} from '../utils/progress';
 import type { ProgressSnapshot } from '../hooks/useProgress';
 
 interface Props {
@@ -19,9 +23,13 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
   const completedVideos = snapshot.videos.filter((v) => v.markedComplete).length;
   const totalModules = moduleSummaries.length;
 
-  const baselineDone = hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'pre');
+  const baselineDone =
+    hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'pre') ||
+    (learnerPreview && hasPreviewCourseAssessment('pre'));
   const modulesDone = completedModules >= totalModules;
-  const outcomeDone = hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'post');
+  const outcomeDone =
+    hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'post') ||
+    (learnerPreview && hasPreviewCourseAssessment('post'));
   const nextModule =
     moduleSummaries.find((m) => !snapshot.modules.find((p) => p.moduleId === m.id)?.completed) ??
     moduleSummaries[0];

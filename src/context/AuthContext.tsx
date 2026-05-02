@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { signInAsGuest, signInWithGoogle, signOut, subscribeToAuth } from '../services/auth';
+import { clearPreviewCourseAssessments } from '../utils/progress';
 import type { UserProfile } from '../types';
 
 interface AuthContextValue {
@@ -53,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdminAccount,
       setLearnerPreview(enabled) {
         setLearnerPreviewEnabled(enabled);
+        clearPreviewCourseAssessments();
         try {
           localStorage.setItem(learnerPreviewKey, String(enabled));
         } catch {
@@ -79,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await signOut();
         setUser(null);
         setLearnerPreviewEnabled(false);
+        clearPreviewCourseAssessments();
         try {
           localStorage.removeItem(learnerPreviewKey);
         } catch {

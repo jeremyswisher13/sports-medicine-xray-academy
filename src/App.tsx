@@ -5,7 +5,7 @@ import { Footer } from './components/layout/Footer';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { useProgress } from './hooks/useProgress';
-import { hasCourseAssessment } from './utils/progress';
+import { hasCourseAssessment, hasPreviewCourseAssessment } from './utils/progress';
 import { LoginPage } from './pages/Login';
 import { WelcomePage } from './pages/Welcome';
 import { DashboardPage } from './pages/Dashboard';
@@ -67,6 +67,7 @@ function CourseBaselineGate({ children }: { children: ReactNode }) {
   const { learnerPreview, isAdminAccount } = useAuth();
   const { snapshot, loading } = useProgress();
   const location = useLocation();
+  const requestedPath = `${location.pathname}${location.search}${location.hash}`;
 
   if (isAdminAccount && !learnerPreview) return <>{children}</>;
   if (loading) return <RouteFallback />;
@@ -75,10 +76,10 @@ function CourseBaselineGate({ children }: { children: ReactNode }) {
     snapshot.quizzes,
     snapshot.confidence,
     'pre',
-  );
+  ) || (learnerPreview && hasPreviewCourseAssessment('pre'));
 
   if (!baselineComplete) {
-    return <Navigate to="/quiz/pre" state={{ from: location.pathname }} replace />;
+    return <Navigate to="/quiz/pre" state={{ from: requestedPath }} replace />;
   }
 
   return <>{children}</>;

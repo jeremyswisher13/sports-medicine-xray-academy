@@ -6,6 +6,7 @@ import { ConfidenceScale } from '../components/ConfidenceScale';
 import { confidenceDomains, postCourseQuiz, preCourseQuiz } from '../data/quizzes';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveConfidenceRating, saveQuizAttempt } from '../services/firestore';
+import { markPreviewCourseAssessment } from '../utils/progress';
 
 interface Props {
   scope: 'pre' | 'post';
@@ -22,13 +23,14 @@ export function QuizPage({ scope }: Props) {
   const [confidences, setConfidences] = useState<Record<string, 1 | 2 | 3 | 4 | 5>>({});
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
-  const [startedAt] = useState(Date.now());
+  const [startedAt, setStartedAt] = useState(Date.now());
 
   useEffect(() => {
     setAnswers({});
     setConfidences({});
     setSubmitted(false);
     setStep('quiz');
+    setStartedAt(Date.now());
   }, [scope]);
 
   const total = questions.length;
@@ -64,6 +66,9 @@ export function QuizPage({ scope }: Props) {
   async function submitConfidence() {
     if (!allConfidenceRated) return;
     if (!user || learnerPreview) {
+      if (learnerPreview) {
+        markPreviewCourseAssessment(scope);
+      }
       setStep('done');
       return;
     }

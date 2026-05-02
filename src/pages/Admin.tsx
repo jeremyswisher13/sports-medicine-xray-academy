@@ -131,8 +131,8 @@ function buildPerLearner(
 }
 
 export function AdminPage() {
-  const { user } = useAuth();
-  const { data, loading, error, refresh } = useAdminData(user?.role === 'admin');
+  const { isAdminAccount } = useAuth();
+  const { data, loading, error, refresh } = useAdminData(isAdminAccount);
   const [tab, setTab] = useState<'overview' | 'learners' | 'modules' | 'audit'>('overview');
   const [search, setSearch] = useState('');
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
@@ -351,7 +351,7 @@ export function AdminPage() {
     };
   }, [selectedLearner, data]);
 
-  if (user?.role !== 'admin') {
+  if (!isAdminAccount) {
     return (
       <div className="container-page py-12">
         <div className="card mx-auto max-w-md p-6 text-center">
