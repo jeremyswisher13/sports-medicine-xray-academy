@@ -1,6 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <rect width="1024" height="1024" rx="230" fill="#F4EFE6"></rect>
-  <g transform="translate(192 192) scale(5.333)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 200" width="920" height="200" fill="none">
+  <g transform="translate(20 40)">
     <path d="M60 8 L102 22 L102 64 C 102 88 84 104 60 114 C 36 104 18 88 18 64 L18 22 Z" fill="#2774AE"></path>
     <path d="M60 18 L94 28 L94 64 C 94 84 80 96 60 104 C 40 96 26 84 26 64 L26 28 Z" fill="#003B5C"></path>
     <g fill="#F4EFE6">
@@ -10,5 +9,9 @@
       <rect x="48" y="72" width="24" height="10" rx="3"></rect>
       <rect x="50" y="86" width="20" height="10" rx="3"></rect>
     </g>
+  </g>
+  <g font-family="Archivo, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif" fill="#F4EFE6">
+    <text x="170" y="100" font-size="44" font-weight="800" letter-spacing="-1">Sports Medicine X-Ray Academy</text>
+    <text x="172" y="132" font-size="13" font-weight="500" letter-spacing="3" font-family="&#39;JetBrains Mono&#39;, ui-monospace, Menlo, monospace" fill="#8A95A3">RADIOLOGY · MUSCULOSKELETAL</text>
   </g>
 </svg>

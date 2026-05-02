@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Logo } from '../ui/Logo';
+import { Wordmark } from '../ui/Logo';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -10,15 +10,10 @@ export function Footer() {
       <div className="container-page py-8 lg:py-10">
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           <div>
-            <div className="flex items-center gap-3">
-              <Logo size={34} variant="white" />
-              <div>
-                <div className="font-serif text-base font-semibold leading-tight text-white">
-                  Sports Medicine X-Ray Academy
-                </div>
-                <div className="text-[12px] leading-tight text-gold-200">
-                  Jeremy Swisher, MD &nbsp;·&nbsp; UCLA Sports Medicine
-                </div>
+            <div>
+              <Wordmark height={44} variant="white" className="h-12 w-auto max-w-full" />
+              <div className="mt-2 text-[12px] leading-tight text-gold-200">
+                Jeremy Swisher, MD &nbsp;·&nbsp; UCLA Sports Medicine
               </div>
             </div>
             <p className="mt-4 max-w-prose text-[13px] leading-relaxed text-slate-300">

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Logo } from '../ui/Logo';
+import { Logo, Wordmark } from '../ui/Logo';
 import { Icon } from '../ui/Icon';
 import { useAuth } from '../../context/AuthContext';
 
@@ -31,17 +31,10 @@ export function Header() {
       <div className="container-page">
         <div className="flex h-16 items-center justify-between gap-4">
           <Link to="/dashboard" className="flex items-center gap-2.5 no-underline">
-            <span className="rounded-2xl shadow-soft ring-1 ring-white/20">
+            <span className="rounded-2xl shadow-soft ring-1 ring-white/20 sm:hidden">
               <Logo size={34} variant="white" />
             </span>
-            <div className="hidden sm:block">
-              <div className="text-sm font-semibold leading-tight text-white">
-                Sports Medicine X-Ray Academy
-              </div>
-              <div className="text-[11px] leading-tight text-gold-200">
-                UCLA Sports Medicine
-              </div>
-            </div>
+            <Wordmark height={42} variant="white" className="hidden h-10 w-auto sm:block" />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">

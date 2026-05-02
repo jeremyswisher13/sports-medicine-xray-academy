@@ -1,0 +1,22 @@
+{
+  "name": "Sports Medicine X-Ray Academy",
+  "short_name": "X-Ray Academy",
+  "description": "High-yield musculoskeletal radiograph interpretation for UCLA family medicine residents and sports medicine fellows.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F4EFE6",
+  "theme_color": "#2774AE",
+  "icons": [
+    {
+      "src": "/brand/app-icon-bone.svg",
+      "sizes": "1024x1024",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Logo } from '../components/ui/Logo';
+import { Logo, Wordmark } from '../components/ui/Logo';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { firebaseEnabled } from '../services/firebase';
@@ -41,15 +41,10 @@ export function LoginPage() {
       <div className="container-page flex min-h-screen items-center justify-center py-12">
         <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-2 lg:items-center">
           <div className="hidden lg:block">
-            <div className="flex items-center gap-3">
-              <Logo size={42} />
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
-                  UCLA Sports Medicine
-                </div>
-                <div className="text-base font-semibold text-ucla-900">
-                  Jeremy Swisher, MD
-                </div>
+            <div>
+              <Wordmark height={58} className="h-14 w-auto" />
+              <div className="mt-3 text-base font-semibold text-ucla-900">
+                Jeremy Swisher, MD · UCLA Sports Medicine
               </div>
             </div>
             <h1 className="mt-6 text-4xl text-balance">
@@ -78,11 +73,11 @@ export function LoginPage() {
           </div>
 
           <div className="card p-6 sm:p-8">
-            <div className="flex items-center justify-center gap-3 lg:hidden">
+            <div className="flex items-center justify-center gap-3 sm:hidden">
               <Logo size={36} />
-              <div className="text-base font-semibold text-ucla-900">
-                Sports Medicine X-Ray Academy
-              </div>
+            </div>
+            <div className="hidden justify-center sm:flex lg:hidden">
+              <Wordmark height={42} className="h-10 w-auto" />
             </div>
             <h2 className="mt-2 text-center text-2xl text-balance lg:text-left">
               Sign in to continue
