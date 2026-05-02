@@ -70,14 +70,15 @@ export function DashboardPage() {
 
   return (
     <div className="container-page py-8 sm:py-12">
-      <section className="overflow-hidden rounded-xl border border-ucla-800 bg-ucla-950 p-6 text-white shadow-elevated sm:p-8">
+      <section className="overflow-hidden rounded-xl border border-ucla-100 bg-white p-6 shadow-soft sm:p-8">
+        <div className="-mx-6 -mt-6 mb-6 h-1 bg-ucla-400 sm:-mx-8 sm:-mt-8" />
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-end">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-200">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
               UCLA Sports Medicine • Jeremy Swisher, MD
             </div>
-            <h1 className="mt-2 text-balance text-white">Sports Medicine X-Ray Academy</h1>
-            <p className="mt-3 max-w-prose leading-relaxed text-slate-200">
+            <h1 className="mt-2 text-balance text-ucla-950">Sports Medicine X-Ray Academy</h1>
+            <p className="mt-3 max-w-prose leading-relaxed text-slate-600">
               A high-yield radiograph interpretation platform for UCLA family medicine residents
               and sports medicine fellows.
             </p>
@@ -86,7 +87,7 @@ export function DashboardPage() {
                 Start X-Ray Foundations
                 <Icon name="arrow-right" size={14} />
               </Link>
-              <Link to="/quiz/pre" className="btn border-white/15 bg-white/10 text-white hover:bg-white/15">
+              <Link to="/quiz/pre" className="btn-secondary">
                 Pre-course assessment
               </Link>
             </div>

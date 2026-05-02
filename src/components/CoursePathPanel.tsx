@@ -93,27 +93,27 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
   ];
 
   return (
-    <section className="overflow-hidden rounded-xl border border-ucla-800 bg-white shadow-soft">
+    <section className="overflow-hidden rounded-xl border border-ucla-100 bg-white shadow-soft">
       <div className="grid gap-0 lg:grid-cols-[0.95fr_1.4fr]">
-        <div className="bg-ucla-950 p-5 text-white sm:p-6">
-          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-200">
+        <div className="border-b border-ucla-100 bg-ucla-50/80 p-5 sm:border-b-0 sm:border-r sm:p-6">
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ucla-700">
             Course path
           </div>
-          <h2 className="mt-1 text-2xl text-white">{nextStep.title}</h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-200">{nextStep.body}</p>
+          <h2 className="mt-1 text-2xl text-ucla-900">{nextStep.title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{nextStep.body}</p>
           {learnerPreview && (
-            <div className="mt-4 rounded-xl border border-gold-200/30 bg-white/10 p-3 text-xs leading-relaxed text-gold-100">
+            <div className="mt-4 rounded-xl border border-gold-200 bg-gold-50 p-3 text-xs leading-relaxed text-gold-900">
               Learner preview is active. This panel is showing the fresh learner path.
             </div>
           )}
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link to={nextStep.href} className="btn-gold">
+            <Link to={nextStep.href} className="btn-primary">
               {nextStep.cta}
               <Icon name="arrow-right" size={14} />
             </Link>
             <Link
               to="/cheatsheets"
-              className="btn border-white/15 bg-white/10 text-white hover:bg-white/15"
+              className="btn-secondary"
             >
               Cheat sheets
               <Icon name="printer" size={14} />
@@ -141,7 +141,7 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
                     step.done
                       ? 'bg-emerald-600 text-white'
                       : step.active
-                        ? 'bg-ucla-800 text-white'
+                        ? 'bg-ucla-500 text-white'
                         : 'bg-slate-100 text-slate-500',
                   ].join(' ')}
                 >

@@ -89,7 +89,7 @@ export function ModulesPage() {
               className={[
                 'rounded-full border px-3 py-1.5 text-xs font-semibold',
                 active
-                  ? 'border-ucla-600 bg-ucla-600 text-white'
+                  ? 'border-ucla-200 bg-ucla-50 text-ucla-900 ring-1 ring-ucla-100'
                   : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
               ].join(' ')}
             >

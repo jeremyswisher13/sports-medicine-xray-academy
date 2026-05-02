@@ -24,7 +24,7 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
     <article
       className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-soft transition-shadow hover:shadow-card"
     >
-      <div className="h-1 bg-ucla-800" />
+      <div className="h-1 bg-ucla-400" />
       <Link to={`/modules/${module.id}`} className="flex flex-1 flex-col p-5 no-underline">
       <div className="flex items-start justify-between gap-3">
         <span className={['pill border', regionTone[module.region]].join(' ')}>

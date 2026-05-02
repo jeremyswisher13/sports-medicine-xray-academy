@@ -42,7 +42,7 @@ export function Tabs({ items, active, onChange, ariaLabel = 'Module sections' }:
             className={[
               'whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors',
               isActive
-                ? 'bg-ucla-900 text-white shadow-soft'
+                ? 'bg-ucla-500 text-white shadow-soft'
                 : 'text-slate-600 hover:bg-ucla-50 hover:text-ucla-900',
             ].join(' ')}
           >

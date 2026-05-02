@@ -188,7 +188,7 @@ export function ModuleDetailPage() {
         </div>
         <Link
           to={`/modules/${module.id}/cheatsheet`}
-          className="inline-flex items-center gap-1.5 rounded-full border border-ucla-800 bg-ucla-800 px-3 py-1.5 text-xs font-semibold text-white shadow-soft hover:bg-ucla-900 no-underline"
+          className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-ucla-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100 no-underline"
         >
           <Icon name="printer" size={12} />
           Cheat sheet
@@ -286,20 +286,20 @@ export function ModuleDetailPage() {
 
       {!contentUnlocked ? (
         <section className="mt-6 grid gap-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <aside className="overflow-hidden rounded-xl border border-ucla-800 bg-white shadow-soft">
-            <div className="bg-ucla-950 px-5 py-4 text-white">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-200">
+          <aside className="overflow-hidden rounded-xl border border-ucla-100 bg-white shadow-soft">
+            <div className="border-b border-ucla-100 bg-ucla-50/80 px-5 py-4">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ucla-700">
                 Module entry check
               </div>
-              <h2 className="mt-1 text-xl text-white">Capture your baseline first.</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-200">
+              <h2 className="mt-1 text-xl text-ucla-900">Capture your baseline first.</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 Three knowledge questions and one confidence rating unlock the lesson.
               </p>
             </div>
             <ol className="space-y-2 p-5 text-sm text-slate-700">
               {['Answer the short knowledge check', 'Rate your confidence', 'Work through the module', 'Finish with the post-check'].map((step, idx) => (
                 <li key={step} className="flex items-start gap-2">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ucla-800 text-xs font-bold text-white">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ucla-500 text-xs font-bold text-white">
                     {idx + 1}
                   </span>
                   <span>{step}</span>

@@ -57,7 +57,7 @@ export function ModulePhaseGuide({ active, onChange, className = '' }: Props) {
       </div>
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-ucla-800 transition-all"
+          className="h-full rounded-full bg-ucla-500 transition-all"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -73,7 +73,7 @@ export function ModulePhaseGuide({ active, onChange, className = '' }: Props) {
               aria-label={`Go to ${phase.label}`}
               className={[
                 'h-1.5 rounded-full transition-colors',
-                isActive ? 'bg-ucla-900' : isPast ? 'bg-ucla-300' : 'bg-slate-200',
+                isActive ? 'bg-ucla-500' : isPast ? 'bg-ucla-300' : 'bg-slate-200',
               ].join(' ')}
             />
           );

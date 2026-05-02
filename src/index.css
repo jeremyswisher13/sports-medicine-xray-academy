@@ -70,7 +70,7 @@
   }
 
   .btn-primary {
-    @apply btn bg-ucla-800 text-white hover:bg-ucla-900 active:bg-ucla-950 shadow-soft;
+    @apply btn bg-ucla-500 text-white hover:bg-ucla-600 active:bg-ucla-700 shadow-soft;
   }
 
   .btn-secondary {
