@@ -137,7 +137,8 @@ export function AtlasPage() {
               </div>
               <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
                 Review normal alignment, joint spacing, cortical contours, and growth plates before
-                pathology. The next image-sourcing pass should keep filling normal comparison views.
+                pathology. This view keeps the learner anchored to normal before introducing
+                abnormal patterns.
               </p>
             </div>
           </div>
@@ -174,11 +175,9 @@ export function AtlasPage() {
 
       <div className="mt-10 card p-5 text-xs text-slate-500 leading-relaxed">
         <div className="font-semibold text-ucla-900 mb-1">Licensing and patient-image policy</div>
-        Images in this atlas are sourced from Wikimedia Commons under CC0, public domain, CC BY-SA
-        3.0, CC BY-SA 4.0, or compatible CC licenses. Each image is attributed to its contributor
-        and links back to the original Wikimedia file page. Patient images should only be added
-        after institutional educational-use approval, complete de-identification, metadata removal,
-        and review for this distribution context.
+        Images in this atlas are open-license radiographs from Wikimedia Commons or original
+        non-patient teaching assets. Each radiograph is attributed to its contributor and links back
+        to the original file page. Real patient images are not used in this deployed academy.
       </div>
     </div>
   );
