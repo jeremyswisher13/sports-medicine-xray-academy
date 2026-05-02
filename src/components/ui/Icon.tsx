@@ -28,7 +28,13 @@ export type IconName =
   | 'star'
   | 'lightning'
   | 'graduation'
-  | 'lock';
+  | 'lock'
+  | 'book-open'
+  | 'printer'
+  | 'maximize'
+  | 'x'
+  | 'bar-chart'
+  | 'clock';
 
 const paths: Record<IconName, string> = {
   check: 'M5 12.5l4 4 10-10',
@@ -68,6 +74,15 @@ const paths: Record<IconName, string> = {
   graduation: 'M3 9l9-4 9 4-9 4-9-4Zm4 2v6c2 1.5 8 1.5 10 0v-6',
   lock:
     'M8 11V8a4 4 0 1 1 8 0v3M6 11h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z',
+  'book-open':
+    'M4 5.5c2.5 0 4.5.5 6 1.7V20c-1.5-1.2-3.5-1.7-6-1.7V5.5Zm16 0c-2.5 0-4.5.5-6 1.7V20c1.5-1.2 3.5-1.7 6-1.7V5.5ZM12 7.2V20',
+  printer:
+    'M7 8V3h10v5M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7v-7Z',
+  maximize:
+    'M8 3H3v5m13-5h5v5M8 21H3v-5m18 0v5h-5',
+  x: 'M6 6l12 12M18 6 6 18',
+  'bar-chart': 'M4 20V10m5 10V4m5 16v-7m5 7V8',
+  clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-5v5l3 2',
 };
 
 export function Icon({ name, size = 18, ...rest }: Props) {

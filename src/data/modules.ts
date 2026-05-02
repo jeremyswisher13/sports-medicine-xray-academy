@@ -1497,16 +1497,7 @@ export const moduleContents: ModuleContent[] = [
   doNotMiss,
 ];
 
-export const moduleSummaries: ModuleSummary[] = moduleContents.map((m) => ({
-  id: m.id,
-  title: m.title,
-  shortTitle: m.shortTitle,
-  region: m.region,
-  description: m.description,
-  estimatedMinutes: m.estimatedMinutes,
-  status: m.status,
-  emphasis: m.emphasis,
-}));
+export { moduleSummaries } from './moduleSummaries';
 
 export function getModule(id: string): ModuleContent | undefined {
   return moduleContents.find((m) => m.id === id);

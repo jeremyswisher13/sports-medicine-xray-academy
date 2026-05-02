@@ -1,6 +1,6 @@
 # Sourcing teaching radiographs
 
-This app ships with original SVG **illustrative diagrams** in `public/diagrams/` (no real x-rays) so the curriculum is teaching-effective from day one. As you license real radiographs, drop them into the registry below and they replace the placeholders automatically.
+This app ships with original illustrative teaching cards plus open-license radiographs so the curriculum is teaching-effective from day one. As you license real radiographs, register them through the protocol below and they replace the placeholders automatically.
 
 ## Where images live in the codebase
 
@@ -17,14 +17,15 @@ This app ships with original SVG **illustrative diagrams** in `public/diagrams/`
    - **Open-i (NIH)** — many open-access medical images.
    - **PubMed Open Access subset** — many CC-BY figures.
    - **Original drawings** — fine, label as `isDiagram: true`.
-   - **Never** use copyrighted radiology textbook scans, AMSSM slide screenshots, or images with patient identifiers.
+   - Patient images should only be used if they are institution-approved for education, fully de-identified, stripped of metadata, and cleared for this exact distribution context.
+   - **Never** use copyrighted radiology textbook scans, AMSSM slide screenshots, casual patient exports, or images with patient identifiers.
 
 2. **Save the file.**
    - Diagrams: `public/diagrams/<short-name>.svg`
    - Bitmaps: `public/uploads/<short-name>.jpg` (or .png, .webp)
    - Keep filenames lowercase-kebab-case.
 
-3. **Strip identifiers.** Open the file and confirm there are no patient IDs, dates, or names burned into the image. Crop annotations away. If in doubt, don't use it.
+3. **Strip identifiers and metadata.** Open the file and confirm there are no patient IDs, dates, accession numbers, facility names, or names burned into the image. Remove metadata and crop annotations away. If in doubt, don't use it.
 
 4. **Register it.** Add an entry to `imageRegistry` in `src/data/images.ts`:
 
@@ -72,4 +73,4 @@ Do **not** generate AI imagery that looks like real radiographs and do not prese
 
 ## Why the placeholder fallback exists
 
-Every slot that doesn't yet have a registered entry renders a clean labeled placeholder ("X-ray image placeholder. Add de-identified licensed teaching image here."). You can ship the curriculum to learners while images get sourced — and the moment you add a registry entry, the placeholder swaps for the real thing on the next deploy.
+Every slot that doesn't yet have a registered entry renders a clean labeled placeholder ("Licensed teaching radiograph pending."). You can ship the curriculum to learners while images get sourced — and the moment you add a registry entry, the placeholder swaps for the real thing on the next deploy.

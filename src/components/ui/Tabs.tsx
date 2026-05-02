@@ -27,7 +27,7 @@ export function Tabs({ items, active, onChange, ariaLabel = 'Module sections' }:
       ref={listRef}
       role="tablist"
       aria-label={ariaLabel}
-      className="flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scroll-smooth"
+      className="-mx-1 flex gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-white p-1 shadow-soft scroll-smooth"
     >
       {items.map((item) => {
         const isActive = item.id === active;
@@ -42,8 +42,8 @@ export function Tabs({ items, active, onChange, ariaLabel = 'Module sections' }:
             className={[
               'whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-semibold transition-colors',
               isActive
-                ? 'bg-ucla-800 text-white shadow-soft'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                ? 'bg-ucla-900 text-white shadow-soft'
+                : 'text-slate-600 hover:bg-ucla-50 hover:text-ucla-900',
             ].join(' ')}
           >
             {item.label}

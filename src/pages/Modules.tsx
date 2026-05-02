@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ModuleCard } from '../components/ModuleCard';
 import { Icon } from '../components/ui/Icon';
-import { moduleSummaries } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../hooks/useProgress';
 import type { ModuleRegion } from '../types';

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Icon } from './ui/Icon';
-import { moduleSummaries } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
 import { videoResources } from '../data/videoResources';
 import type { ProgressSnapshot } from '../hooks/useProgress';
 

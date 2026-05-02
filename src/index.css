@@ -13,7 +13,7 @@
   }
 
   body {
-    @apply bg-[#F7F8FA] text-slate-900 font-sans antialiased;
+    @apply bg-[#F3F6FA] text-slate-900 font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01', 'kern';
     -webkit-font-smoothing: antialiased;
   }
@@ -46,7 +46,7 @@
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-slate-200/80 shadow-soft;
+    @apply bg-white rounded-xl border border-slate-200/80 shadow-soft;
   }
 
   .card-hover {

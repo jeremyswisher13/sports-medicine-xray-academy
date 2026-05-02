@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Icon } from '../components/ui/Icon';
 import { XRayImage } from '../components/XRayImage';
 import { getAllRealImages } from '../data/images';
-import { moduleSummaries } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
 
 type AtlasKind = 'all' | 'normal' | 'pathology';
 
@@ -154,12 +154,12 @@ export function AtlasPage() {
       </div>
 
       <div className="mt-10 card p-5 text-xs text-slate-500 leading-relaxed">
-        <div className="font-semibold text-slate-700 mb-1">Licensing</div>
+        <div className="font-semibold text-ucla-900 mb-1">Licensing and patient-image policy</div>
         Images in this atlas are sourced from Wikimedia Commons under CC0, public domain, CC BY-SA
         3.0, CC BY-SA 4.0, or compatible CC licenses. Each image is attributed to its contributor
-        and links back to the original Wikimedia file page. Original UCLA / Swisher curriculum
-        diagrams are clearly labeled "Illustrative diagram" and are licensed for use within this
-        educational platform.
+        and links back to the original Wikimedia file page. Patient images should only be added
+        after institutional educational-use approval, complete de-identification, metadata removal,
+        and review for this distribution context.
       </div>
     </div>
   );

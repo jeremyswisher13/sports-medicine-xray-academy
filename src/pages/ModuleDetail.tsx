@@ -16,6 +16,7 @@ import { QuizQuestion } from '../components/QuizQuestion';
 import { VideoResourceCard } from '../components/VideoResourceCard';
 import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
+import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import {
@@ -36,17 +37,12 @@ import {
 } from '../services/firestore';
 
 const TABS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'views', label: 'Views to Order' },
-  { id: 'systematic', label: 'Systematic Read' },
-  { id: 'anatomy', label: 'Normal Anatomy' },
-  { id: 'pathology', label: 'Common Pathology' },
-  { id: 'do-not-miss', label: 'Do Not Miss' },
-  { id: 'pitfalls', label: 'Pitfalls and Mimics' },
-  { id: 'cases', label: 'Case Practice' },
-  { id: 'videos', label: 'Supplemental AMSSM Videos' },
+  { id: 'learn', label: 'Learn' },
+  { id: 'views', label: 'Views' },
+  { id: 'images', label: 'Images' },
+  { id: 'practice', label: 'Practice' },
   { id: 'quiz', label: 'Quiz' },
-  { id: 'takeaways', label: 'Key Takeaways' },
+  { id: 'takeaways', label: 'Takeaways' },
 ];
 
 export function ModuleDetailPage() {
@@ -55,7 +51,7 @@ export function ModuleDetailPage() {
   const module = getModule(moduleId);
   const { user, learnerPreview, isAdminAccount } = useAuth();
   const { snapshot, refresh } = useProgress();
-  const [active, setActive] = useState('overview');
+  const [active, setActive] = useState('learn');
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string>>({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
@@ -71,7 +67,7 @@ export function ModuleDetailPage() {
   }, [user, module, learnerPreview]);
 
   useEffect(() => {
-    setActive('overview');
+    setActive('learn');
     setQuizAnswers({});
     setQuizSubmitted(false);
     setPreCheckCompletedNow(false);
@@ -199,9 +195,9 @@ export function ModuleDetailPage() {
         </div>
         <Link
           to={`/modules/${module.id}/cheatsheet`}
-          className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:border-slate-300 no-underline"
+          className="inline-flex items-center gap-1.5 rounded-full border border-ucla-800 bg-ucla-800 px-3 py-1.5 text-xs font-semibold text-white shadow-soft hover:bg-ucla-900 no-underline"
         >
-          <Icon name="clipboard" size={12} />
+          <Icon name="printer" size={12} />
           Cheat sheet
         </Link>
       </div>
@@ -210,7 +206,7 @@ export function ModuleDetailPage() {
         <div>
           <span className="pill">{module.region}</span>
           {module.status === 'placeholder' && (
-            <span className="pill ml-2">Coming soon</span>
+            <span className="pill ml-2">In build</span>
           )}
           <h1 className="mt-2 text-balance">{module.title}</h1>
           <p className="mt-2 max-w-prose text-slate-600 leading-relaxed">
@@ -297,17 +293,20 @@ export function ModuleDetailPage() {
 
       {!contentUnlocked ? (
         <section className="mt-6 grid gap-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <aside className="rounded-2xl border border-ucla-100 bg-white p-5 shadow-soft">
-            <div className="section-title">Start here</div>
-            <h2 className="mt-1 text-xl text-ucla-900">Capture your baseline first.</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Each module begins with three knowledge questions and one confidence rating. After
-              you save both, the full lesson opens automatically.
-            </p>
-            <ol className="mt-4 space-y-2 text-sm text-slate-700">
+          <aside className="overflow-hidden rounded-xl border border-ucla-800 bg-white shadow-soft">
+            <div className="bg-ucla-950 px-5 py-4 text-white">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gold-200">
+                Module entry check
+              </div>
+              <h2 className="mt-1 text-xl text-white">Capture your baseline first.</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-200">
+                Three knowledge questions and one confidence rating unlock the lesson.
+              </p>
+            </div>
+            <ol className="space-y-2 p-5 text-sm text-slate-700">
               {['Answer the short knowledge check', 'Rate your confidence', 'Work through the module', 'Finish with the post-check'].map((step, idx) => (
                 <li key={step} className="flex items-start gap-2">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ucla-50 text-xs font-bold text-ucla-800">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ucla-800 text-xs font-bold text-white">
                     {idx + 1}
                   </span>
                   <span>{step}</span>
@@ -382,12 +381,13 @@ export function ModuleDetailPage() {
             )}
           </div>
 
-          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F7F8FA]/85 px-4 backdrop-blur sm:mx-0 sm:px-0">
+          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#F3F6FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
             <Tabs items={TABS} active={active} onChange={setActive} />
           </div>
 
           <div className="mt-6 animate-fade-in">
-        {active === 'overview' && (
+        {active === 'learn' && (
+          <div className="space-y-4">
           <section className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
             <article className="card p-5 sm:p-6">
               <h3 className="text-ucla-900">Module overview</h3>
@@ -443,22 +443,7 @@ export function ModuleDetailPage() {
               </div>
             </aside>
           </section>
-        )}
-
-        {active === 'views' && (
-          <section className="space-y-4">
-            <ViewSelector views={module.views} />
-            {realImages.length > 0 && (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {realImages.slice(0, 3).map((img) => (
-                  <XRayImage key={img.id} entry={img} />
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-
-        {active === 'systematic' && (
+          <CheatSheetPromo module={module} compact />
           <section className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
             <SystematicReadChecklist
               items={module.systematicChecklist}
@@ -476,9 +461,24 @@ export function ModuleDetailPage() {
               </ul>
             </article>
           </section>
+          <AnatomyLandmarkCard landmarks={module.anatomy} />
+          </div>
         )}
 
-        {active === 'anatomy' && (
+        {active === 'views' && (
+          <section className="space-y-4">
+            <ViewSelector views={module.views} />
+            {realImages.length > 0 && (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {realImages.slice(0, 3).map((img) => (
+                  <XRayImage key={img.id} entry={img} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {active === 'images' && (
           <div className="space-y-5">
             {normalImages.length > 0 && (
               <section>
@@ -504,8 +504,8 @@ export function ModuleDetailPage() {
           </div>
         )}
 
-        {active === 'pathology' && (
-          <div className="space-y-4">
+        {active === 'images' && (
+          <div className="mt-5 space-y-4">
             {pathologyImages.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between">
@@ -538,11 +538,11 @@ export function ModuleDetailPage() {
           </div>
         )}
 
-        {active === 'do-not-miss' && (
-          <section className="grid gap-3 sm:grid-cols-2">
+        {active === 'images' && (
+          <section className="mt-5 grid gap-3 sm:grid-cols-2">
             {module.doNotMiss.length === 0 && (
               <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                Do-not-miss items are being curated for this module.
+                Do-not-miss references are in build for this module.
               </div>
             )}
             {module.doNotMiss.map((d) => (
@@ -559,11 +559,11 @@ export function ModuleDetailPage() {
           </section>
         )}
 
-        {active === 'pitfalls' && (
-          <section className="grid gap-3 sm:grid-cols-2">
+        {active === 'images' && (
+          <section className="mt-5 grid gap-3 sm:grid-cols-2">
             {module.pitfalls.length === 0 && module.pearls.length === 0 && (
               <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                Pitfalls and pearls are being curated for this module.
+                Pitfalls and pearls are in build for this module.
               </div>
             )}
             {module.pitfalls.map((p) => (
@@ -579,11 +579,11 @@ export function ModuleDetailPage() {
           </section>
         )}
 
-        {active === 'cases' && (
+        {active === 'practice' && (
           <section className="space-y-4">
             {module.cases.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
-                Case-based practice is being curated for this module. Try the{' '}
+                Case-based practice is in build for this module. Try the{' '}
                 <Link to="/cases" className="underline">
                   curated case library
                 </Link>{' '}
@@ -596,8 +596,8 @@ export function ModuleDetailPage() {
           </section>
         )}
 
-        {active === 'videos' && (
-          <section className="space-y-4">
+        {active === 'practice' && (
+          <section className="mt-5 space-y-4">
             {videos.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
                 No supplemental AMSSM video has been added for this module yet.
@@ -623,7 +623,7 @@ export function ModuleDetailPage() {
           <section className="space-y-4">
             {module.quiz.length === 0 ? (
               <div className="card p-5 text-sm text-slate-500">
-                Module quiz is being curated. Try the{' '}
+                Module quiz is in build. Try the{' '}
                 <Link to="/quiz/pre" className="underline">
                   pre-course assessment
                 </Link>{' '}
@@ -733,6 +733,11 @@ export function ModuleDetailPage() {
                 <div className="card p-5">
                   <div className="label">Next steps</div>
                   <ul className="mt-2 space-y-2">
+                    <li>
+                      <Link to={`/modules/${module.id}/cheatsheet`} className="text-sm font-semibold text-ucla-700">
+                        Open the one-page cheat sheet →
+                      </Link>
+                    </li>
                     <li>
                       <Link to="/cases" className="text-sm font-semibold text-ucla-700">
                         Practice with the case library →

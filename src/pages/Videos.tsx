@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Icon } from '../components/ui/Icon';
 import { VideoResourceCard } from '../components/VideoResourceCard';
-import { moduleSummaries } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
 import { videoResources } from '../data/videoResources';
 import { useProgress } from '../hooks/useProgress';
 import type { LearnerLevel } from '../types';

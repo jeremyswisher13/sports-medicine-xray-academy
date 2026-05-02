@@ -9,7 +9,7 @@ export function ViewSelector({ views }: Props) {
   if (!views.length) {
     return (
       <div className="card p-5 text-sm text-slate-500">
-        Recommended views are being curated for this module.
+        Recommended views are in build for this module.
       </div>
     );
   }

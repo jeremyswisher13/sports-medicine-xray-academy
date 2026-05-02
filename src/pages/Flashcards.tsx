@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { Flashcard } from '../components/Flashcard';
 import { flashcards } from '../data/flashcards';
-import { moduleSummaries } from '../data/modules';
+import { moduleSummaries } from '../data/moduleSummaries';
 
 const STORAGE_KEY = 'sxra:flashcards-state';
 

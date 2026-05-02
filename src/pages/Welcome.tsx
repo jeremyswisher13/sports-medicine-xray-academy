@@ -32,14 +32,14 @@ export function WelcomePage() {
             {
               title: 'Work through the modules',
               body:
-                'Each module follows the same structure: Overview → Views → Systematic Read → Anatomy → Pathology → Do Not Miss → Pitfalls → Cases → AMSSM Videos → Quiz → Takeaways.',
+                'Each module follows a simpler learner path: Learn → Views → Images → Practice → Quiz → Takeaways.',
               href: '/modules',
               icon: 'graduation' as const,
             },
             {
               title: 'Practice with cases',
               body:
-                'Case-based interpretation with placeholder x-rays awaiting de-identified, licensed teaching images.',
+                'Case-based interpretation with open-license teaching radiographs where available.',
               href: '/cases',
               icon: 'clipboard' as const,
             },

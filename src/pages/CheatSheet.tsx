@@ -40,27 +40,27 @@ export function CheatSheetPage() {
   return (
     <div className="bg-white">
       {/* Screen-only top bar */}
-      <div className="screen-only border-b border-slate-200 bg-white">
+      <div className="screen-only border-b border-gold-500/50 bg-ucla-950 text-white">
         <div className="container-page flex flex-wrap items-center justify-between gap-3 py-3">
           <div className="flex items-center gap-3 text-sm">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="text-slate-500 hover:text-slate-800"
+              className="text-slate-200 hover:text-white"
             >
               ← Back
             </button>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-700 font-medium">
+            <span className="text-white/30">/</span>
+            <span className="font-medium text-white">
               {module.title} · Cheat Sheet
             </span>
           </div>
           <div className="flex gap-2">
-            <Link to="/cheatsheets" className="btn-ghost">
+            <Link to="/cheatsheets" className="btn border-white/15 text-white hover:bg-white/10">
               All cheat sheets
             </Link>
-            <button type="button" className="btn-primary" onClick={() => window.print()}>
-              <Icon name="clipboard" size={14} />
+            <button type="button" className="btn-gold" onClick={() => window.print()}>
+              <Icon name="printer" size={14} />
               Print / Save as PDF
             </button>
           </div>

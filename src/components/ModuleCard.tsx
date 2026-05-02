@@ -21,16 +21,17 @@ const regionTone: Record<ModuleSummary['region'], string> = {
 export function ModuleCard({ module, progressPercent = 0, completed, confidence }: Props) {
   const isPlaceholder = module.status === 'placeholder';
   return (
-    <Link
-      to={`/modules/${module.id}`}
-      className="group relative flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-soft transition-shadow hover:shadow-card focus:outline-none"
+    <article
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-soft transition-shadow hover:shadow-card"
     >
+      <div className="h-1 bg-ucla-800" />
+      <Link to={`/modules/${module.id}`} className="flex flex-1 flex-col p-5 no-underline">
       <div className="flex items-start justify-between gap-3">
         <span className={['pill border', regionTone[module.region]].join(' ')}>
           {module.region}
         </span>
         {isPlaceholder ? (
-          <span className="pill">Coming soon</span>
+          <span className="pill">In build</span>
         ) : completed ? (
           <span className="pill-primary">
             <Icon name="check" size={12} /> Completed
@@ -69,6 +70,17 @@ export function ModuleCard({ module, progressPercent = 0, completed, confidence 
           </div>
         )}
       </div>
-    </Link>
+      </Link>
+      <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 bg-slate-50/70 px-5 py-3">
+        <Link to={`/modules/${module.id}`} className="btn-primary px-3 py-2 text-xs">
+          Open module
+          <Icon name="arrow-right" size={13} />
+        </Link>
+        <Link to={`/modules/${module.id}/cheatsheet`} className="btn-secondary px-3 py-2 text-xs">
+          <Icon name="printer" size={13} />
+          Cheat sheet
+        </Link>
+      </div>
+    </article>
   );
 }

@@ -135,6 +135,7 @@ export function XRayImage({
   className = '',
 }: Props) {
   const [errored, setErrored] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
 
   if (!entry || errored) {
     return (
@@ -151,9 +152,10 @@ export function XRayImage({
   }
 
   return (
+    <>
     <figure
       className={[
-        'group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50',
+        'group relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-soft',
         className,
       ].join(' ')}
     >
@@ -164,6 +166,14 @@ export function XRayImage({
         onError={() => setErrored(true)}
         className="absolute inset-0 h-full w-full object-contain"
       />
+      <button
+        type="button"
+        onClick={() => setViewerOpen(true)}
+        className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-slate-950/70 text-white opacity-90 backdrop-blur transition-opacity hover:opacity-100"
+        aria-label={`Open larger view of ${entry.caption ?? entry.alt}`}
+      >
+        <Icon name="maximize" size={14} />
+      </button>
       <div className="absolute left-2 top-2 flex flex-wrap gap-1.5">
         {entry.isDiagram ? (
           <span className="pill-primary">
@@ -211,5 +221,59 @@ export function XRayImage({
         </figcaption>
       )}
     </figure>
+    {viewerOpen && (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 p-4"
+        role="dialog"
+        aria-modal="true"
+        aria-label={entry.caption ?? entry.alt}
+      >
+        <div className="flex max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-950 shadow-elevated">
+          <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 text-white">
+            <div className="min-w-0">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-gold-200">
+                X-ray viewer
+              </div>
+              <div className="truncate text-sm font-semibold">
+                {entry.caption ?? entry.alt}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setViewerOpen(false)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white hover:bg-white/15"
+              aria-label="Close x-ray viewer"
+            >
+              <Icon name="x" size={16} />
+            </button>
+          </div>
+          <div className="flex min-h-0 flex-1 items-center justify-center bg-black p-3">
+            <img
+              src={entry.src}
+              alt={entry.alt}
+              className="max-h-[72vh] w-full object-contain"
+            />
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/10 px-4 py-3 text-xs text-slate-300">
+            <div>
+              {entry.view}
+              {entry.license ? ` · ${entry.license}` : ''}
+              {entry.attribution ? ` · ${entry.attribution}` : ''}
+            </div>
+            {entry.sourceUrl && (
+              <a
+                href={entry.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-gold-200 hover:text-gold-100"
+              >
+                Source
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
