@@ -156,6 +156,147 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       explanation: 'Acromiohumeral narrowing implies chronic cuff dysfunction.',
     },
   ],
+  elbow: [
+    {
+      id: 'elbow-pre-q1',
+      moduleId: 'elbow',
+      domain: 'elbow',
+      prompt: 'A posterior fat pad on an elbow lateral radiograph most strongly suggests:',
+      options: [
+        { id: 'a', text: 'Normal elbow variant' },
+        { id: 'b', text: 'Occult intra-articular fracture until proven otherwise' },
+        { id: 'c', text: 'Isolated tendinopathy' },
+        { id: 'd', text: 'Olecranon bursitis only' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'A posterior fat pad is abnormal. Think radial head/neck fracture in adults and occult supracondylar fracture in children.',
+    },
+    {
+      id: 'elbow-pre-q2',
+      moduleId: 'elbow',
+      domain: 'elbow',
+      prompt: 'Which line should intersect the capitellum on every elbow view?',
+      options: [
+        { id: 'a', text: 'Radiocapitellar line' },
+        { id: 'b', text: "Shenton's line" },
+        { id: 'c', text: "Klein's line" },
+        { id: 'd', text: 'Gilula arc' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'The radiocapitellar line runs through the radial neck and should intersect the capitellum on every view.',
+    },
+    {
+      id: 'elbow-pre-q3',
+      moduleId: 'elbow',
+      domain: 'views',
+      prompt: 'Oblique elbow views are most helpful when you need more detail of the:',
+      options: [
+        { id: 'a', text: 'Radial head, radial neck, or coronoid' },
+        { id: 'b', text: 'Femoral head coverage' },
+        { id: 'c', text: 'Scapholunate interval' },
+        { id: 'd', text: 'Ankle mortise' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Obliques help profile the radial head/neck and coronoid when AP/lateral are not enough.',
+    },
+  ],
+  'wrist-hand': [
+    {
+      id: 'wrist-hand-pre-q1',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'The standard wrist trauma series should include:',
+      options: [
+        { id: 'a', text: 'PA, lateral, and oblique' },
+        { id: 'b', text: 'AP shoulder and scapular Y' },
+        { id: 'c', text: 'AP pelvis and frog-leg lateral' },
+        { id: 'd', text: 'Mortise ankle view only' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Standard wrist trauma radiographs are PA, lateral, and oblique; add targeted views based on suspicion.',
+    },
+    {
+      id: 'wrist-hand-pre-q2',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'A clenched-fist or stress wrist view is most useful for suspected:',
+      options: [
+        { id: 'a', text: 'Dynamic scapholunate instability' },
+        { id: 'b', text: 'Posterior shoulder dislocation' },
+        { id: 'c', text: 'SCFE' },
+        { id: 'd', text: 'Lisfranc injury' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Stress/clenched-fist views can reveal dynamic scapholunate widening that neutral films miss.',
+    },
+    {
+      id: 'wrist-hand-pre-q3',
+      moduleId: 'wrist-hand',
+      domain: 'do-not-miss',
+      prompt: 'On the lateral wrist, the capitate no longer stacks on the lunate. The dangerous diagnosis is:',
+      options: [
+        { id: 'a', text: 'Perilunate or lunate dislocation' },
+        { id: 'b', text: 'TFCC sprain only' },
+        { id: 'c', text: 'Mallet finger' },
+        { id: 'd', text: 'Normal carpal alignment' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Perilunate/lunate injuries are commonly missed and require urgent reduction and hand surgery evaluation.',
+    },
+  ],
+  'pelvis-hip': [
+    {
+      id: 'pelvis-hip-pre-q1',
+      moduleId: 'pelvis-hip',
+      domain: 'views',
+      prompt: 'Acute hip fracture is suspected. Which lateral view strategy is safest?',
+      options: [
+        { id: 'a', text: 'Cross-table lateral of the symptomatic hip' },
+        { id: 'b', text: 'Frog-leg lateral of the painful hip' },
+        { id: 'c', text: 'Sunrise/Merchant view' },
+        { id: 'd', text: 'Clenched-fist view' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Avoid frog-leg positioning when acute fracture is suspected; cross-table lateral is safer.',
+    },
+    {
+      id: 'pelvis-hip-pre-q2',
+      moduleId: 'pelvis-hip',
+      domain: 'pediatric',
+      prompt: 'An adolescent with knee pain but no knee injury should make you deliberately evaluate the:',
+      options: [
+        { id: 'a', text: 'Hip, including SCFE screening' },
+        { id: 'b', text: 'Cervical spine first' },
+        { id: 'c', text: 'Wrist alignment' },
+        { id: 'd', text: 'Contralateral shoulder only' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'SCFE and other hip pathology can present as thigh or knee pain. The hip must stay in the differential.',
+    },
+    {
+      id: 'pelvis-hip-pre-q3',
+      moduleId: 'pelvis-hip',
+      domain: 'occult',
+      prompt: 'A distance runner has focal femoral neck pain and negative x-rays. Best next step if suspicion remains high?',
+      options: [
+        { id: 'a', text: 'MRI and protected/non-weightbearing management while evaluating' },
+        { id: 'b', text: 'Reassurance because x-rays are normal' },
+        { id: 'c', text: 'Ignore until a fracture line appears' },
+        { id: 'd', text: 'Only repeat x-rays in one year' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Femoral neck stress fractures can be radiographically occult and can complete catastrophically.',
+    },
+  ],
   knee: [
     {
       id: 'knee-pre-q1',
@@ -248,6 +389,100 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'b',
       explanation: 'Jones fractures have higher nonunion risk; NWB and surgical evaluation are standard.',
+    },
+  ],
+  spine: [
+    {
+      id: 'spine-pre-q1',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'Adult acute low back pain without red flags usually warrants:',
+      options: [
+        { id: 'a', text: 'No routine initial imaging' },
+        { id: 'b', text: 'Immediate lumbar x-rays for everyone' },
+        { id: 'c', text: 'Immediate MRI for everyone' },
+        { id: 'd', text: 'CT before clinical exam' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Knowing when not to image is part of high-value spine care. Red flags change the pathway.',
+    },
+    {
+      id: 'spine-pre-q2',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'Suspected adolescent spondylolysis generally starts with:',
+      options: [
+        { id: 'a', text: 'AP and lateral radiographs' },
+        { id: 'b', text: 'Routine CT for every athlete' },
+        { id: 'c', text: 'Hand radiographs' },
+        { id: 'd', text: 'No imaging even with persistent focal extension pain' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'AP and lateral radiographs are the starting study; MRI is useful when films are negative but suspicion remains or active stress injury matters.',
+    },
+    {
+      id: 'spine-pre-q3',
+      moduleId: 'spine',
+      domain: 'escalation',
+      prompt: 'Which spine presentation warrants prompt escalation regardless of plain-film appearance?',
+      options: [
+        { id: 'a', text: 'Progressive neurologic deficit or urinary retention' },
+        { id: 'b', text: 'Mild soreness after a new workout with normal exam' },
+        { id: 'c', text: 'Improving mechanical pain only' },
+        { id: 'd', text: 'Chronic stiffness without red flags' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Neurologic or cauda equina-type symptoms are disposition-changing red flags.',
+    },
+  ],
+  'pediatric-adolescent': [
+    {
+      id: 'pediatric-adolescent-pre-q1',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'What normal pediatric finding commonly mimics fracture for trainees?',
+      options: [
+        { id: 'a', text: 'Open physes, ossification centers, and apophyses' },
+        { id: 'b', text: 'Primary osteoarthritis' },
+        { id: 'c', text: 'Chronic rotator cuff arthropathy' },
+        { id: 'd', text: 'Adult-type degenerative scoliosis only' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Pediatric normal variants are a major source of overcalls and undercalls; normal-first exposure matters.',
+    },
+    {
+      id: 'pediatric-adolescent-pre-q2',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'Stable SCFE is typically evaluated with:',
+      options: [
+        { id: 'a', text: 'Bilateral AP pelvis and frog-leg lateral hips' },
+        { id: 'b', text: 'Single AP knee only' },
+        { id: 'c', text: 'Scaphoid view' },
+        { id: 'd', text: 'Ankle mortise only' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Stable SCFE is commonly evaluated with bilateral AP and frog-leg lateral hips; unstable/acute SCFE needs a safer lateral strategy.',
+    },
+    {
+      id: 'pediatric-adolescent-pre-q3',
+      moduleId: 'pediatric-adolescent',
+      domain: 'do-not-miss',
+      prompt: 'Which limping-child diagnosis is an orthopedic emergency?',
+      options: [
+        { id: 'a', text: 'Septic arthritis' },
+        { id: 'b', text: 'Osgood-Schlatter disease' },
+        { id: 'c', text: 'Accessory ossicle' },
+        { id: 'd', text: 'Mild Sever disease' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Septic arthritis is a do-not-miss emergency; refusal to bear weight, systemic symptoms, and severe pain should escalate care.',
     },
   ],
   'xray-foundations': [
@@ -397,6 +632,147 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
       explanation: 'Compare CC distance to the opposite side and grade with Rockwood.',
     },
   ],
+  elbow: [
+    {
+      id: 'elbow-post-q1',
+      moduleId: 'elbow',
+      domain: 'elbow',
+      prompt: 'In a child, the anterior humeral line should normally:',
+      options: [
+        { id: 'a', text: 'Bisect the middle third of the capitellum on lateral' },
+        { id: 'b', text: 'Intersect the femoral head' },
+        { id: 'c', text: 'Outline the ankle mortise' },
+        { id: 'd', text: 'Measure the scapholunate interval' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Posterior displacement of the capitellum relative to the anterior humeral line suggests pediatric supracondylar fracture.',
+    },
+    {
+      id: 'elbow-post-q2',
+      moduleId: 'elbow',
+      domain: 'do-not-miss',
+      prompt: 'A posterior fat pad with no obvious fracture line in an adult is most classically associated with:',
+      options: [
+        { id: 'a', text: 'Occult radial head or neck fracture' },
+        { id: 'b', text: 'Normal exam finding' },
+        { id: 'c', text: 'SCFE' },
+        { id: 'd', text: 'Posterior shoulder dislocation' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'In adults, occult radial head/neck fracture is the classic posterior-fat-pad scenario.',
+    },
+    {
+      id: 'elbow-post-q3',
+      moduleId: 'elbow',
+      domain: 'pediatric',
+      prompt: 'Medial elbow pain in a young thrower with physeal widening most suggests:',
+      options: [
+        { id: 'a', text: 'Medial epicondyle apophysitis or avulsion spectrum' },
+        { id: 'b', text: 'Perilunate dislocation' },
+        { id: 'c', text: 'Lisfranc injury' },
+        { id: 'd', text: 'Femoral neck stress fracture' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Little League elbow and medial epicondyle avulsion are high-yield pediatric throwing injuries.',
+    },
+  ],
+  'wrist-hand': [
+    {
+      id: 'wrist-hand-post-q1',
+      moduleId: 'wrist-hand',
+      domain: 'occult',
+      prompt: 'FOOSH + snuffbox tenderness + normal initial wrist x-rays should be managed with:',
+      options: [
+        { id: 'a', text: 'Thumb spica immobilization plus repeat films or MRI when indicated' },
+        { id: 'b', text: 'Immediate reassurance and return to play' },
+        { id: 'c', text: 'No immobilization unless displaced' },
+        { id: 'd', text: 'Only elbow x-rays' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Occult scaphoid fracture is a high-yield “normal x-ray, abnormal patient” scenario.',
+    },
+    {
+      id: 'wrist-hand-post-q2',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'Which finding most suggests carpal instability/perilunate injury?',
+      options: [
+        { id: 'a', text: 'Broken Gilula arcs or loss of radius-lunate-capitate stacking' },
+        { id: 'b', text: 'Normal smooth Gilula arcs' },
+        { id: 'c', text: 'Normal scapholunate angle' },
+        { id: 'd', text: 'Normal AP shoulder alignment' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Carpal alignment lines prevent high-morbidity misses when an obvious fracture distracts the reader.',
+    },
+    {
+      id: 'wrist-hand-post-q3',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'The normal scapholunate angle on lateral wrist is roughly:',
+      options: [
+        { id: 'a', text: '30 to 60 degrees' },
+        { id: 'b', text: '0 to 10 degrees' },
+        { id: 'c', text: '90 to 120 degrees' },
+        { id: 'd', text: 'Always irrelevant' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'A scapholunate angle around 30 to 60 degrees is a useful lateral-view anchor when assessing carpal alignment.',
+    },
+  ],
+  'pelvis-hip': [
+    {
+      id: 'pelvis-hip-post-q1',
+      moduleId: 'pelvis-hip',
+      domain: 'views',
+      prompt: 'Initial radiographs for non-fracture hip pain usually include:',
+      options: [
+        { id: 'a', text: 'AP pelvis and frog-leg lateral of the symptomatic hip' },
+        { id: 'b', text: 'AP wrist and clenched-fist view' },
+        { id: 'c', text: 'Only a single AP hip' },
+        { id: 'd', text: 'Ankle mortise and oblique foot' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'AP pelvis plus frog-leg lateral is the standard non-fracture hip pain starting point.',
+    },
+    {
+      id: 'pelvis-hip-post-q2',
+      moduleId: 'pelvis-hip',
+      domain: 'pelvis-hip',
+      prompt: 'Which landmark helps screen hip congruity and proximal femur alignment on AP pelvis?',
+      options: [
+        { id: 'a', text: "Shenton's line" },
+        { id: 'b', text: 'Anterior humeral line' },
+        { id: 'c', text: 'Gilula arc' },
+        { id: 'd', text: 'Medial clear space' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        "Shenton's line is a key AP pelvis landmark for femoral head/neck relationship and alignment.",
+    },
+    {
+      id: 'pelvis-hip-post-q3',
+      moduleId: 'pelvis-hip',
+      domain: 'pediatric',
+      prompt: 'Unstable or acute SCFE should be imaged with:',
+      options: [
+        { id: 'a', text: 'AP plus cross-table lateral of the involved side' },
+        { id: 'b', text: 'Painful frog-leg lateral as the only view' },
+        { id: 'c', text: 'Wrist scaphoid view' },
+        { id: 'd', text: 'No imaging if knee films are normal' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Unstable SCFE needs a safer lateral strategy; avoid forcing frog-leg positioning.',
+    },
+  ],
   knee: [
     {
       id: 'knee-post-q1',
@@ -484,6 +860,100 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'b',
       explanation: 'The fracture zone (tuberosity, metaphyseal-diaphyseal junction, proximal diaphysis) drives management.',
+    },
+  ],
+  spine: [
+    {
+      id: 'spine-post-q1',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'Initial imaging for adolescent scoliosis evaluation is generally:',
+      options: [
+        { id: 'a', text: 'Complete-spine radiography' },
+        { id: 'b', text: 'Single lateral wrist view' },
+        { id: 'c', text: 'Ankle mortise view' },
+        { id: 'd', text: 'No imaging ever' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Complete-spine radiography is the standard starting imaging study for scoliosis evaluation.',
+    },
+    {
+      id: 'spine-post-q2',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'Scheuermann kyphosis classically shows:',
+      options: [
+        { id: 'a', text: 'Anterior wedging of three consecutive vertebrae with endplate irregularity' },
+        { id: 'b', text: 'Broken Gilula arcs' },
+        { id: 'c', text: 'Posterior fat pad only' },
+        { id: 'd', text: 'Medial clear space widening' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Scheuermann disease is a spine pattern: consecutive anterior vertebral wedging plus endplate changes.',
+    },
+    {
+      id: 'spine-post-q3',
+      moduleId: 'spine',
+      domain: 'escalation',
+      prompt: 'Which pediatric back pain feature should prompt further evaluation?',
+      options: [
+        { id: 'a', text: 'Night pain, neurologic findings, systemic symptoms, or symptoms lasting more than four weeks' },
+        { id: 'b', text: 'Mild improving soreness only' },
+        { id: 'c', text: 'Normal exam and one day of symptoms' },
+        { id: 'd', text: 'Pain only during a new workout and resolving' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Pediatric spine red flags include night pain, systemic symptoms, neurologic signs, bowel/bladder symptoms, and prolonged symptoms.',
+    },
+  ],
+  'pediatric-adolescent': [
+    {
+      id: 'pediatric-adolescent-post-q1',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'A smooth, corticated structure at a predictable age/location is more likely:',
+      options: [
+        { id: 'a', text: 'Normal apophysis or ossification center' },
+        { id: 'b', text: 'Acute displaced fracture in every case' },
+        { id: 'c', text: 'Posterior shoulder dislocation' },
+        { id: 'd', text: 'Lisfranc injury' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Normal pediatric ossification centers and apophyses often have smooth corticated margins and predictable locations.',
+    },
+    {
+      id: 'pediatric-adolescent-post-q2',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'Hip pathology in children and adolescents can present as:',
+      options: [
+        { id: 'a', text: 'Knee pain' },
+        { id: 'b', text: 'Only wrist pain' },
+        { id: 'c', text: 'Only shoulder pain' },
+        { id: 'd', text: 'No referred symptoms ever' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'SCFE and other hip pathology can refer pain to the thigh or knee, so knee pain can still require hip review.',
+    },
+    {
+      id: 'pediatric-adolescent-post-q3',
+      moduleId: 'pediatric-adolescent',
+      domain: 'occult',
+      prompt: 'A child refuses to bear weight, has systemic symptoms, and initial radiographs are unrevealing. Best mindset?',
+      options: [
+        { id: 'a', text: 'Negative x-rays do not reassure; escalate based on the clinical story' },
+        { id: 'b', text: 'Discharge because x-rays are normal' },
+        { id: 'c', text: 'Ignore fever if the film is negative' },
+        { id: 'd', text: 'Only repeat imaging in six months' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Septic arthritis, osteomyelitis, early Perthes, stress fracture, and toddler fracture can have subtle or initially normal radiographs.',
     },
   ],
   'xray-foundations': [

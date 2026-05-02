@@ -88,3 +88,20 @@ Learners need repeated normal comparisons before pathology feels obvious. The cu
 - **Do-not-miss comparisons:** normal carpal alignment PA/lateral, normal pediatric hip AP/frog-leg, normal ankle mortise comparison.
 
 For patient-derived images, use them only after educational-use approval, full de-identification, metadata stripping, and review for this web distribution context. Prefer open-license repositories when an equivalent normal image is available.
+
+## Deep Research candidate list
+
+These are candidate Wikimedia Commons file pages surfaced by the May 2026 Deep Research pass. They are **not registered in `src/data/images.ts` yet**; verify the file-page license and attribution immediately before adding them through the 5-step protocol above.
+
+| Module | Candidate | Type | Reported license | File page |
+|---|---|---|---|---|
+| Shoulder | Normal shoulder Y projection | Normal | CC0 1.0 | https://commons.wikimedia.org/wiki/File:Y-projection_X-ray_of_a_normal_shoulder.jpg |
+| Elbow | Normal elbow external oblique projection | Normal | CC0 1.0 | https://commons.wikimedia.org/wiki/File:X-ray_of_normal_elbow_by_30_degrees_external_oblique_projection.jpg |
+| Wrist/hand | Dynamic scapholunate instability | Pathology | CC0 1.0 | https://commons.wikimedia.org/wiki/File:X-ray_of_dynamic_scapholunate_instability.jpg |
+| Pelvis/hip | Normal hip measurements | Normal | CC BY 4.0 | https://commons.wikimedia.org/wiki/File:X-ray_of_measurements_on_a_normal_hip.jpg |
+| Knee | Normal AP knee | Normal | CC0 1.0 | https://commons.wikimedia.org/wiki/File:X-ray_of_a_normal_knee_by_anteroposterior_projection.jpg |
+| Ankle/foot | Normal dorsoplantar foot | Normal | CC0 1.0 | https://commons.wikimedia.org/wiki/File:X-ray_of_normal_right_foot_by_dorsoplantar_projection.jpg |
+| Spine | Normal lateral cervical spine | Normal | Public domain | https://commons.wikimedia.org/wiki/File:X-ray_of_the_cervical_spine_of_a_20_year_old_male_-_lateral.jpg |
+| Pediatric/adolescent | Trethowan sign in SCFE | Pathology | CC0 1.0 | https://commons.wikimedia.org/wiki/File:Trethowan%27s_sign_seen_in_SCFE.jpg |
+| Do not miss | Posterior shoulder dislocation light-bulb sign | Pathology | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:Lightbulb_sign_-_posterior_shoulder_dislocation_-_Roe_vor_und_nach_Reposition_001_-_Annotation.jpg |
+| Pediatric/adolescent | Residual Osgood-Schlatter lesion | Pathology | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Residuum_bei_Zn_Morbus_Osgood-Schlatter_24W_-_CR_seitlich_-_001.jpg |

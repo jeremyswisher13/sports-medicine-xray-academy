@@ -106,8 +106,12 @@ export interface QuizQuestionData {
     | 'pediatric'
     | 'escalation'
     | 'shoulder'
+    | 'elbow'
+    | 'wrist-hand'
+    | 'pelvis-hip'
     | 'knee'
     | 'ankle-foot'
+    | 'spine'
     | 'foundations';
   prompt: string;
   options: { id: string; text: string }[];
