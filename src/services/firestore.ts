@@ -56,10 +56,10 @@ export async function logAuditEvent(input: {
     id: newId(),
     userId: input.userId,
     type: input.type,
-    moduleId: input.moduleId,
-    refId: input.refId,
-    details: input.details,
     createdAt: Date.now(),
+    ...(input.moduleId !== undefined ? { moduleId: input.moduleId } : {}),
+    ...(input.refId !== undefined ? { refId: input.refId } : {}),
+    ...(input.details !== undefined ? { details: input.details } : {}),
   };
   if (firestore) {
     try {

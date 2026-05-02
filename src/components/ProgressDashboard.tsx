@@ -25,7 +25,6 @@ export function ProgressDashboard({ snapshot }: Props) {
     const postConfidence = snapshot.confidence
       .filter((c) => c.scope === 'post')
       .map((c) => c.value);
-    const moduleConfidence = snapshot.confidence.filter((c) => c.scope === 'module');
     const videosCompleted = snapshot.videos.filter((v) => v.markedComplete).length;
     const videosTotal = videoResources.length;
     const videoCompletionPct = videosTotal === 0 ? 0 : (videosCompleted / videosTotal) * 100;
@@ -41,7 +40,6 @@ export function ProgressDashboard({ snapshot }: Props) {
       postQuizScore: postQuiz?.scorePercent,
       preConfidenceAvg: avg(preConfidence),
       postConfidenceAvg: avg(postConfidence),
-      moduleConfidence,
       videosCompleted,
       videosTotal,
       videoCompletionPct,
@@ -126,9 +124,7 @@ export function ProgressDashboard({ snapshot }: Props) {
           <ul className="mt-3 space-y-2">
             {moduleSummaries.map((m) => {
               const p = snapshot.modules.find((mp) => mp.moduleId === m.id);
-              const conf = snapshot.confidence
-                .filter((c) => c.scope === 'module' && c.moduleId === m.id)
-                .at(-1);
+              const latestConfidence = p?.postCheckConfidence ?? p?.preCheckConfidence;
               const scoreDelta =
                 p?.preCheckScore !== undefined && p?.postCheckScore !== undefined
                   ? p.postCheckScore - p.preCheckScore
@@ -185,10 +181,10 @@ export function ProgressDashboard({ snapshot }: Props) {
                       {confDelta}
                     </span>
                   )}
-                  {!scoreDelta && conf && (
+                  {scoreDelta === null && latestConfidence !== undefined && (
                     <span className="pill-gold">
                       <Icon name="star" size={11} />
-                      {conf.value}/5
+                      {latestConfidence}/5
                     </span>
                   )}
                 </li>

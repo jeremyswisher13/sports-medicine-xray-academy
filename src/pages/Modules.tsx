@@ -56,6 +56,11 @@ export function ModulesPage() {
     return p.visited ? 10 : 0;
   }
 
+  function confidenceFor(moduleId: string): number | null {
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
+    return p?.postCheckConfidence ?? p?.preCheckConfidence ?? null;
+  }
+
   return (
     <div className="container-page py-8 sm:py-12">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -121,6 +126,7 @@ export function ModulesPage() {
                 module={m}
                 progressPercent={progressFor(m.id)}
                 completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                confidence={confidenceFor(m.id)}
                 saved={isModuleSaved(m.id)}
                 onToggleSaved={(module) => void toggleModuleBookmark(module)}
               />
@@ -150,6 +156,7 @@ export function ModulesPage() {
                 module={m}
                 progressPercent={progressFor(m.id)}
                 completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                confidence={confidenceFor(m.id)}
                 saved={isModuleSaved(m.id)}
                 onToggleSaved={(module) => void toggleModuleBookmark(module)}
               />

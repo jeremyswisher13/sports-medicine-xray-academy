@@ -1,9 +1,10 @@
 import { lazy, Suspense, type ReactNode } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { useProgress } from './hooks/useProgress';
 import { LoginPage } from './pages/Login';
 import { WelcomePage } from './pages/Welcome';
 import { DashboardPage } from './pages/Dashboard';
@@ -61,10 +62,29 @@ function ProtectedShell({ children }: { children: ReactNode }) {
   );
 }
 
+function CourseBaselineGate({ children }: { children: ReactNode }) {
+  const { learnerPreview, isAdminAccount } = useAuth();
+  const { snapshot, loading } = useProgress();
+  const location = useLocation();
+
+  if (isAdminAccount && !learnerPreview) return <>{children}</>;
+  if (loading) return <RouteFallback />;
+
+  const baselineComplete =
+    snapshot.quizzes.some((quiz) => quiz.scope === 'pre') &&
+    snapshot.confidence.some((rating) => rating.scope === 'pre');
+
+  if (!baselineComplete) {
+    return <Navigate to="/quiz/pre" state={{ from: location.pathname }} replace />;
+  }
+
+  return <>{children}</>;
+}
+
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<LoginPage />} />
@@ -88,7 +108,9 @@ export default function App() {
             path="/modules"
             element={
               <ProtectedShell>
-                <ModulesPage />
+                <CourseBaselineGate>
+                  <ModulesPage />
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -96,9 +118,11 @@ export default function App() {
             path="/modules/:moduleId"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <ModuleDetailPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <ModuleDetailPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -186,9 +210,11 @@ export default function App() {
             path="/modules/:moduleId/cheatsheet"
             element={
               <ProtectedRoute>
-                <LazyPage>
-                  <CheatSheetPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <CheatSheetPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedRoute>
             }
           />

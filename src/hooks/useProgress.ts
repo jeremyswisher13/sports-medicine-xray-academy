@@ -38,11 +38,12 @@ export function useProgress(): {
 } {
   const { user, learnerPreview } = useAuth();
   const [snapshot, setSnapshot] = useState<ProgressSnapshot>(emptySnapshot);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     if (!user || learnerPreview) {
       setSnapshot(emptySnapshot);
+      setLoading(false);
       return;
     }
     setLoading(true);

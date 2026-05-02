@@ -25,15 +25,15 @@ const quickAccess = [
 ];
 
 export function DashboardPage() {
-  const { user, learnerPreview } = useAuth();
+  const { user, learnerPreview, isAdminAccount } = useAuth();
   const { snapshot } = useProgress();
   const { bookmarks, isModuleSaved, toggleModuleBookmark } = useBookmarks();
   const [query, setQuery] = useState('');
   const learnerModules = learnerPreview ? [] : snapshot.modules;
-  const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
   const learnerCases = learnerPreview ? [] : snapshot.cases;
   const learnerVideos = learnerPreview ? [] : snapshot.videos;
   const learnerQuizzes = learnerPreview ? [] : snapshot.quizzes;
+  const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
 
   const filteredModules = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -53,6 +53,24 @@ export function DashboardPage() {
   const completedCount = learnerModules.filter((m) => m.completed).length;
   const totalCount = moduleSummaries.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
+  const hasCourseBaseline =
+    learnerQuizzes.some((q) => q.scope === 'pre') &&
+    learnerConfidence.some((c) => c.scope === 'pre');
+  const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
+  const nextModule =
+    moduleSummaries.find((module) => {
+      const progress = learnerModules.find((m) => m.moduleId === module.id);
+      return module.status === 'full' && !progress?.completed;
+    }) ?? moduleSummaries[0];
+  const heroPrimary = canOpenModules
+    ? {
+        label: `Continue ${nextModule.shortTitle}`,
+        to: `/modules/${nextModule.id}`,
+      }
+    : {
+        label: 'Start pre-course baseline',
+        to: '/quiz/pre',
+      };
   const savedModuleIds = new Set(bookmarks.map((bookmark) => bookmark.moduleId));
   const savedModules = moduleSummaries.filter((module) => savedModuleIds.has(module.id));
 
@@ -67,9 +85,8 @@ export function DashboardPage() {
   }
 
   function confidenceFor(moduleId: string): number | null {
-    const c = learnerConfidence.filter((c) => c.scope === 'module' && c.moduleId === moduleId);
-    if (!c.length) return null;
-    return c.at(-1)!.value;
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
+    return p?.postCheckConfidence ?? p?.preCheckConfidence ?? null;
   }
 
   return (
@@ -87,12 +104,13 @@ export function DashboardPage() {
               and sports medicine fellows.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link to="/modules/xray-foundations" className="btn-gold">
-                Start X-Ray Foundations
+              <Link to={heroPrimary.to} className="btn-gold">
+                {heroPrimary.label}
                 <Icon name="arrow-right" size={14} />
               </Link>
-              <Link to="/quiz/pre" className="btn-secondary">
-                Pre-course assessment
+              <Link to="/cheatsheets" className="btn-secondary">
+                Cheat sheets
+                <Icon name="printer" size={14} />
               </Link>
             </div>
           </div>
@@ -150,7 +168,7 @@ export function DashboardPage() {
         <CheatSheetPromo />
       </div>
 
-      {savedModules.length > 0 && (
+      {canOpenModules && savedModules.length > 0 && (
         <section className="mt-10">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
@@ -181,7 +199,73 @@ export function DashboardPage() {
 
       <section className="mt-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <h2>Quick access</h2>
+          <div>
+            <h2>Continue modules</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              {canOpenModules
+                ? 'Each module follows the Systematic X-Ray Read framework.'
+                : 'Complete the course baseline first so your knowledge and confidence shift can be measured.'}
+            </p>
+          </div>
+          {canOpenModules && (
+            <div className="relative w-full sm:max-w-xs">
+              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                <Icon name="search" size={14} />
+              </span>
+              <input
+                className="input pl-9"
+                placeholder="Search modules…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-label="Search modules"
+              />
+            </div>
+          )}
+        </div>
+        {canOpenModules ? (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredModules.map((m) => (
+              <ModuleCard
+                key={m.id}
+                module={m}
+                progressPercent={progressFor(m.id)}
+                completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
+                confidence={confidenceFor(m.id)}
+                saved={isModuleSaved(m.id)}
+                onToggleSaved={(module) => void toggleModuleBookmark(module)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-4 rounded-2xl border border-gold-200 bg-gold-50/70 p-5 shadow-soft">
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-900">
+                <Icon name="lock" size={16} />
+              </span>
+              <div>
+                <h3 className="text-lg text-ucla-900">Modules unlock after the baseline.</h3>
+                <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-700">
+                  Start with the short pre-course knowledge quiz and confidence scale. After that,
+                  each module will capture its own entry check and post-check.
+                </p>
+                <Link to="/quiz/pre" className="btn-primary mt-4">
+                  Start baseline
+                  <Icon name="arrow-right" size={14} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section className="mt-10">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2>Resource library</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Jump into cases, videos, flashcards, atlas images, or assessments when you need them.
+            </p>
+          </div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {quickAccess.map((q) => (
@@ -195,42 +279,6 @@ export function DashboardPage() {
               </span>
               <span className="text-sm font-semibold text-slate-800">{q.label}</span>
             </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="mt-10">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2>Modules</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Each module follows the Systematic X-Ray Read framework.
-            </p>
-          </div>
-          <div className="relative w-full sm:max-w-xs">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              <Icon name="search" size={14} />
-            </span>
-            <input
-              className="input pl-9"
-              placeholder="Search modules…"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Search modules"
-            />
-          </div>
-        </div>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredModules.map((m) => (
-            <ModuleCard
-              key={m.id}
-              module={m}
-              progressPercent={progressFor(m.id)}
-              completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
-              confidence={confidenceFor(m.id)}
-              saved={isModuleSaved(m.id)}
-              onToggleSaved={(module) => void toggleModuleBookmark(module)}
-            />
           ))}
         </div>
       </section>
