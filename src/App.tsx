@@ -1,3 +1,4 @@
+import { lazy, Suspense, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
@@ -7,18 +8,48 @@ import { LoginPage } from './pages/Login';
 import { WelcomePage } from './pages/Welcome';
 import { DashboardPage } from './pages/Dashboard';
 import { ModulesPage } from './pages/Modules';
-import { ModuleDetailPage } from './pages/ModuleDetail';
-import { CasesPage } from './pages/Cases';
-import { VideosPage } from './pages/Videos';
-import { QuizPage } from './pages/Quiz';
-import { ProgressPage } from './pages/Progress';
-import { FlashcardsPage } from './pages/Flashcards';
-import { CheatSheetsPage } from './pages/CheatSheets';
-import { CheatSheetPage } from './pages/CheatSheet';
-import { AtlasPage } from './pages/Atlas';
-import { AdminPage } from './pages/Admin';
 
-function ProtectedShell({ children }: { children: React.ReactNode }) {
+const ModuleDetailPage = lazy(() =>
+  import('./pages/ModuleDetail').then((m) => ({ default: m.ModuleDetailPage })),
+);
+const CasesPage = lazy(() => import('./pages/Cases').then((m) => ({ default: m.CasesPage })));
+const VideosPage = lazy(() => import('./pages/Videos').then((m) => ({ default: m.VideosPage })));
+const QuizPage = lazy(() => import('./pages/Quiz').then((m) => ({ default: m.QuizPage })));
+const ProgressPage = lazy(() =>
+  import('./pages/Progress').then((m) => ({ default: m.ProgressPage })),
+);
+const FlashcardsPage = lazy(() =>
+  import('./pages/Flashcards').then((m) => ({ default: m.FlashcardsPage })),
+);
+const CheatSheetsPage = lazy(() =>
+  import('./pages/CheatSheets').then((m) => ({ default: m.CheatSheetsPage })),
+);
+const CheatSheetPage = lazy(() =>
+  import('./pages/CheatSheet').then((m) => ({ default: m.CheatSheetPage })),
+);
+const AtlasPage = lazy(() => import('./pages/Atlas').then((m) => ({ default: m.AtlasPage })));
+const AdminPage = lazy(() => import('./pages/Admin').then((m) => ({ default: m.AdminPage })));
+
+function RouteFallback() {
+  return (
+    <div className="container-page py-8 sm:py-12">
+      <div className="card mx-auto max-w-md p-5">
+        <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
+          Loading
+        </div>
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-full w-1/2 animate-pulse rounded-full bg-ucla-800" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LazyPage({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<RouteFallback />}>{children}</Suspense>;
+}
+
+function ProtectedShell({ children }: { children: ReactNode }) {
   return (
     <ProtectedRoute>
       <div className="flex min-h-screen flex-col">
@@ -65,7 +96,9 @@ export default function App() {
             path="/modules/:moduleId"
             element={
               <ProtectedShell>
-                <ModuleDetailPage />
+                <LazyPage>
+                  <ModuleDetailPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -73,7 +106,9 @@ export default function App() {
             path="/cases"
             element={
               <ProtectedShell>
-                <CasesPage />
+                <LazyPage>
+                  <CasesPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -81,7 +116,9 @@ export default function App() {
             path="/videos"
             element={
               <ProtectedShell>
-                <VideosPage />
+                <LazyPage>
+                  <VideosPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -89,7 +126,9 @@ export default function App() {
             path="/quiz/pre"
             element={
               <ProtectedShell>
-                <QuizPage scope="pre" />
+                <LazyPage>
+                  <QuizPage scope="pre" />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -97,7 +136,9 @@ export default function App() {
             path="/quiz/post"
             element={
               <ProtectedShell>
-                <QuizPage scope="post" />
+                <LazyPage>
+                  <QuizPage scope="post" />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -105,7 +146,9 @@ export default function App() {
             path="/progress"
             element={
               <ProtectedShell>
-                <ProgressPage />
+                <LazyPage>
+                  <ProgressPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -113,7 +156,9 @@ export default function App() {
             path="/flashcards"
             element={
               <ProtectedShell>
-                <FlashcardsPage />
+                <LazyPage>
+                  <FlashcardsPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -121,7 +166,9 @@ export default function App() {
             path="/cheatsheets"
             element={
               <ProtectedShell>
-                <CheatSheetsPage />
+                <LazyPage>
+                  <CheatSheetsPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -129,7 +176,9 @@ export default function App() {
             path="/atlas"
             element={
               <ProtectedShell>
-                <AtlasPage />
+                <LazyPage>
+                  <AtlasPage />
+                </LazyPage>
               </ProtectedShell>
             }
           />
@@ -137,7 +186,9 @@ export default function App() {
             path="/modules/:moduleId/cheatsheet"
             element={
               <ProtectedRoute>
-                <CheatSheetPage />
+                <LazyPage>
+                  <CheatSheetPage />
+                </LazyPage>
               </ProtectedRoute>
             }
           />
@@ -148,7 +199,9 @@ export default function App() {
                 <div className="flex min-h-screen flex-col">
                   <Header />
                   <main className="flex-1">
-                    <AdminPage />
+                    <LazyPage>
+                      <AdminPage />
+                    </LazyPage>
                   </main>
                   <Footer />
                 </div>
