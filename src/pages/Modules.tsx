@@ -110,9 +110,9 @@ export function ModulesPage() {
         <section className="mt-6">
           <div className="flex items-baseline justify-between gap-3">
             <div>
-              <h2 className="text-xl text-ucla-900">Ready modules</h2>
+              <h2 className="text-xl text-ucla-900">Core course modules</h2>
               <p className="mt-1 text-sm text-slate-500">
-                Fully built lessons with entry checks, cases, images, quizzes, and cheat sheets.
+                Fully built lessons that count toward course completion.
               </p>
             </div>
             <span className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
@@ -142,8 +142,8 @@ export function ModulesPage() {
               <div>
                 <h2 className="text-xl text-ucla-900">In-build modules</h2>
                 <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
-                  These regions are visible for preview and navigation, but the polished learner
-                  experience is still being expanded.
+                  Expanded regions are visible for preview and practice, but they are not required
+                  for core course completion yet.
                 </p>
               </div>
               <span className="pill-primary">Preview content</span>

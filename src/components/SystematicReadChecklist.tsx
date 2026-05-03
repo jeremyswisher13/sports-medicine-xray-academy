@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveQuizAttempt } from '../services/firestore';
-import type { SystematicChecklistItem } from '../types';
+import type { SystematicChecklistItem, XRayImageEntry } from '../types';
 
 type SystematicStep = SystematicChecklistItem['step'];
 type StudyMode = 'challenge' | 'checklist';
@@ -29,6 +29,7 @@ interface StepGuidance {
 
 interface Props {
   items: SystematicChecklistItem[];
+  practiceImage?: XRayImageEntry;
   storageKey?: string;
   onChangeChecked?: (checkedKeys: string[]) => void;
   defaultExpandedAll?: boolean;
@@ -217,6 +218,7 @@ function readChallengeAnswers(storageKey?: string): Record<string, string> {
 
 export function SystematicReadChecklist({
   items,
+  practiceImage,
   storageKey,
   onChangeChecked,
   defaultExpandedAll = false,
@@ -571,14 +573,51 @@ export function SystematicReadChecklist({
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4 xl:w-72">
-                <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
-                  <Icon name="eye" size={16} className="text-ucla-700" />
-                  Normal anchor
+              <div className="space-y-3 xl:w-72">
+                {practiceImage && (
+                  <div className="overflow-hidden rounded-2xl border border-ucla-100 bg-white shadow-soft">
+                    <div className="relative aspect-[4/3] bg-slate-950">
+                      <img
+                        src={practiceImage.src}
+                        alt="Systematic read practice radiograph"
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-contain"
+                      />
+                      <div className="absolute left-2 top-2 rounded-full border border-white/70 bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ucla-900 shadow-soft">
+                        Read lab
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
+                        <Icon name="clipboard" size={15} className="text-ucla-700" />
+                        Apply this step
+                      </div>
+                      <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                        Use {activeItem.step.toLowerCase()} on this image before moving on.
+                      </p>
+                      {activeAnswer && (
+                        <div className="mt-2 rounded-xl border border-ucla-100 bg-ucla-50/70 p-2 text-xs leading-relaxed text-slate-700">
+                          <span className="font-semibold text-ucla-900">Image answer: </span>
+                          {practiceImage.isNormal ? 'Normal anatomy' : 'Pathology'} ·{' '}
+                          {practiceImage.view}. {practiceImage.caption ?? practiceImage.alt}
+                        </div>
+                      )}
+                    </div>
+                    <div className="border-t border-ucla-100 bg-ucla-50/60 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
+                      {practiceImage.attribution ?? practiceImage.source ?? 'Open-license teaching image'}
+                      {practiceImage.license ? ` · ${practiceImage.license}` : ''}
+                    </div>
+                  </div>
+                )}
+                <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
+                    <Icon name="eye" size={16} className="text-ucla-700" />
+                    Normal anchor
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                    {guidance.normalAnchor}
+                  </p>
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  {guidance.normalAnchor}
-                </p>
               </div>
             </div>
 

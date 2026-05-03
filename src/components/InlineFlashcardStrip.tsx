@@ -6,6 +6,10 @@ import { Icon } from './ui/Icon';
 interface InlineFlashcardStripProps {
   moduleId: string;
   maxCards?: number;
+  startIndex?: number;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
   className?: string;
 }
 
@@ -20,6 +24,10 @@ function clampCardCount(count: number): number {
 export function InlineFlashcardStrip({
   moduleId,
   maxCards = DEFAULT_CARD_COUNT,
+  startIndex = 0,
+  eyebrow = 'Active recall',
+  title = 'Quick flashcards',
+  description,
   className = '',
 }: InlineFlashcardStripProps) {
   const [revealedCardIds, setRevealedCardIds] = useState<ReadonlySet<string>>(
@@ -28,8 +36,13 @@ export function InlineFlashcardStrip({
 
   const cards = useMemo(() => {
     const limit = clampCardCount(maxCards);
-    return flashcards.filter((card) => card.moduleId === moduleId).slice(0, limit);
-  }, [maxCards, moduleId]);
+    const moduleCards = flashcards.filter((card) => card.moduleId === moduleId);
+    if (moduleCards.length <= limit) return moduleCards;
+    return Array.from({ length: limit }, (_, idx) => {
+      const safeIndex = (startIndex + idx) % moduleCards.length;
+      return moduleCards[safeIndex];
+    });
+  }, [maxCards, moduleId, startIndex]);
 
   useEffect(() => {
     setRevealedCardIds(new Set<string>());
@@ -55,8 +68,13 @@ export function InlineFlashcardStrip({
     <section className={['space-y-3', className].filter(Boolean).join(' ')}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <div className="section-title">Active recall</div>
-          <h2 className="mt-1 text-xl text-ucla-900 sm:text-2xl">Quick flashcards</h2>
+          <div className="section-title">{eyebrow}</div>
+          <h2 className="mt-1 text-xl text-ucla-900 sm:text-2xl">{title}</h2>
+          {description && (
+            <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
+              {description}
+            </p>
+          )}
         </div>
         <Link
           to={`/flashcards?module=${encodeURIComponent(moduleId)}`}

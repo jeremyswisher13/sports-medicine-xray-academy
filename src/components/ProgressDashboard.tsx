@@ -15,8 +15,12 @@ function avg(nums: number[]): number {
 
 export function ProgressDashboard({ snapshot }: Props) {
   const summary = useMemo(() => {
-    const completedModules = snapshot.modules.filter((m) => m.completed).length;
-    const totalModules = moduleSummaries.length;
+    const coreModules = moduleSummaries.filter((module) => module.status === 'full');
+    const coreModuleIds = new Set(coreModules.map((module) => module.id));
+    const completedModules = snapshot.modules.filter(
+      (m) => coreModuleIds.has(m.moduleId) && m.completed,
+    ).length;
+    const totalModules = coreModules.length;
     const preQuiz = snapshot.quizzes.find((q) => q.scope === 'pre');
     const postQuiz = snapshot.quizzes.find((q) => q.scope === 'post');
     const preConfidence = snapshot.confidence
@@ -81,7 +85,7 @@ export function ProgressDashboard({ snapshot }: Props) {
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
           iconName="check-circle"
-          label="Modules completed"
+          label="Core modules completed"
           value={`${summary.completedModules} / ${summary.totalModules}`}
         />
         <Stat
@@ -119,7 +123,7 @@ export function ProgressDashboard({ snapshot }: Props) {
         <div className="card p-5 lg:col-span-2">
           <h3 className="text-base text-ucla-900">Module progress</h3>
           <p className="mt-1 text-sm text-slate-500">
-            Pre/post check deltas across the curriculum.
+            Core modules drive course completion; expanded modules stay visible for extra practice.
           </p>
           <ul className="mt-3 space-y-2">
             {moduleSummaries.map((m) => {
@@ -142,6 +146,16 @@ export function ProgressDashboard({ snapshot }: Props) {
                     {m.title}
                   </span>
                   <span className="pill">{m.region}</span>
+                  <span
+                    className={[
+                      'pill',
+                      m.status === 'full'
+                        ? 'border-ucla-100 bg-ucla-50 text-ucla-800'
+                        : '',
+                    ].join(' ')}
+                  >
+                    {m.status === 'full' ? 'Core' : 'Expanded'}
+                  </span>
                   {p?.completed ? (
                     <span className="pill-primary">Complete</span>
                   ) : p?.visited ? (

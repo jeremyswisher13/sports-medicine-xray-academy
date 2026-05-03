@@ -288,7 +288,8 @@ export type AuditEventType =
   | 'bookmark_removed'
   | 'active_learning_completed'
   | 'systematic_read_step_answered'
-  | 'atlas_practice_answered';
+  | 'atlas_practice_answered'
+  | 'flashcard_reviewed';
 
 export interface AuditEvent {
   id: string;

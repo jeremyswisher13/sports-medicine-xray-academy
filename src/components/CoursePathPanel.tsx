@@ -16,12 +16,18 @@ interface Props {
 export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
   const preQuiz = snapshot.quizzes.find((q) => q.scope === 'pre');
   const postQuiz = snapshot.quizzes.find((q) => q.scope === 'post');
+  const coreModules = moduleSummaries.filter((module) => module.status === 'full');
+  const coreModuleIds = new Set(coreModules.map((module) => module.id));
   const hasPreConfidence = hasCompleteCourseConfidence(snapshot.confidence, 'pre');
   const hasPostConfidence = hasCompleteCourseConfidence(snapshot.confidence, 'post');
-  const completedModules = snapshot.modules.filter((m) => m.completed).length;
-  const startedModules = snapshot.modules.filter((m) => m.visited || m.completed).length;
+  const completedModules = snapshot.modules.filter(
+    (m) => coreModuleIds.has(m.moduleId) && m.completed,
+  ).length;
+  const startedModules = snapshot.modules.filter(
+    (m) => coreModuleIds.has(m.moduleId) && (m.visited || m.completed),
+  ).length;
   const completedVideos = snapshot.videos.filter((v) => v.markedComplete).length;
-  const totalModules = moduleSummaries.length;
+  const totalModules = coreModules.length;
 
   const baselineDone =
     hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'pre') ||
@@ -31,7 +37,8 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
     hasCourseAssessment(snapshot.quizzes, snapshot.confidence, 'post') ||
     (learnerPreview && hasPreviewCourseAssessment('post'));
   const nextModule =
-    moduleSummaries.find((m) => !snapshot.modules.find((p) => p.moduleId === m.id)?.completed) ??
+    coreModules.find((m) => !snapshot.modules.find((p) => p.moduleId === m.id)?.completed) ??
+    coreModules[0] ??
     moduleSummaries[0];
 
   const nextStep = !baselineDone
@@ -44,7 +51,7 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
     : !modulesDone
       ? {
           title: `Continue ${nextModule.shortTitle}`,
-          body: 'Work module by module: entry check, learning phases, then post-check.',
+          body: 'Work the core course module by module: entry check, learning phases, then post-check.',
           href: `/modules/${nextModule.id}`,
           cta: 'Continue module',
         }
@@ -75,7 +82,7 @@ export function CoursePathPanel({ snapshot, learnerPreview = false }: Props) {
     },
     {
       label: 'Modules',
-      detail: `${completedModules}/${totalModules} complete, ${startedModules} started`,
+      detail: `${completedModules}/${totalModules} core complete, ${startedModules} started`,
       href: '/modules',
       done: modulesDone,
       active: baselineDone && !modulesDone,

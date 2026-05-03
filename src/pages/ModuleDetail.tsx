@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
-import { Tabs } from '../components/ui/Tabs';
 import { Icon, type IconName } from '../components/ui/Icon';
 import { SystematicReadChecklist } from '../components/SystematicReadChecklist';
 import { ViewSelector } from '../components/ViewSelector';
@@ -18,8 +17,9 @@ import { ModuleCheck } from '../components/ModuleCheck';
 import { XRayImage } from '../components/XRayImage';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoach';
-import { ModulePhaseNavigator } from '../components/ModulePhaseNavigator';
 import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
+import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
+import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -101,6 +101,11 @@ export function ModuleDetailPage() {
   const pathologyImages = useMemo(
     () => (module ? getPathologyImagesForModule(module.id) : []),
     [module],
+  );
+  const systematicPracticeImage = normalImages[0] ?? realImages.find((img) => !img.isDiagram);
+  const imageFlashcards = useMemo(
+    () => [...normalImages, ...pathologyImages],
+    [normalImages, pathologyImages],
   );
 
   if (!module) {
@@ -420,7 +425,7 @@ export function ModuleDetailPage() {
             )}
           </div>
 
-          <ModulePhaseNavigator
+          <ModuleNextTaskPanel
             module={module}
             activePhaseId={active}
             onPhaseChange={handlePhaseChange}
@@ -428,10 +433,6 @@ export function ModuleDetailPage() {
             postCheckPending={!moduleProgress?.postCheckAt}
             className="mt-5"
           />
-
-          <div className="mt-6 sticky top-16 z-20 -mx-4 bg-[#EAF3FA]/90 px-4 py-2 backdrop-blur sm:mx-0 sm:px-0">
-            <Tabs items={modulePhases} active={active} onChange={handlePhaseChange} />
-          </div>
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
@@ -493,12 +494,20 @@ export function ModuleDetailPage() {
             </aside>
           </section>
           <CheatSheetPromo module={module} compact />
+          <InlineFlashcardStrip
+            moduleId={module.id}
+            maxCards={3}
+            startIndex={0}
+            title="Recall before you read"
+            description="Answer these first so the framework is active before you inspect images."
+          />
           <section
             id="systematic-read"
             className="grid scroll-mt-28 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
           >
             <SystematicReadChecklist
               items={module.systematicChecklist}
+              practiceImage={systematicPracticeImage}
               storageKey={module.id}
             />
             <article className="card p-5 sm:p-6">
@@ -520,6 +529,14 @@ export function ModuleDetailPage() {
         {active === 'views' && (
           <section className="space-y-4">
             <ViewSelector views={module.views} />
+            <InlineFlashcardStrip
+              moduleId={module.id}
+              maxCards={3}
+              startIndex={2}
+              eyebrow="View recall"
+              title="Which view catches the miss?"
+              description="Use these before looking at the example images."
+            />
             {realImages.length > 0 && (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {realImages.slice(0, 3).map((img) => (
@@ -532,6 +549,12 @@ export function ModuleDetailPage() {
 
         {active === 'images' && (
           <div className="space-y-5">
+            <ImageFlashcardStrip
+              images={imageFlashcards}
+              maxCards={3}
+              title="Call the image first"
+              description="Normal-first reps: decide view and normal-versus-pathology before the caption appears."
+            />
             {normalImages.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between gap-3">
@@ -560,6 +583,14 @@ export function ModuleDetailPage() {
               </div>
             )}
             <AnatomyLandmarkCard landmarks={module.anatomy} />
+            <InlineFlashcardStrip
+              moduleId={module.id}
+              maxCards={3}
+              startIndex={4}
+              eyebrow="Landmark recall"
+              title="Name the normal anchors"
+              description="Use active recall to lock in the normal anatomy before pathology."
+            />
           </div>
         )}
 
@@ -640,6 +671,14 @@ export function ModuleDetailPage() {
 
         {active === 'practice' && (
           <section className="space-y-4">
+            <InlineFlashcardStrip
+              moduleId={module.id}
+              maxCards={3}
+              startIndex={6}
+              eyebrow="Case warm-up"
+              title="Commit these before cases"
+              description="A quick readiness check before you diagnose and choose management."
+            />
             {module.cases.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
                 Case-based practice is in build for this module. Try the{' '}
@@ -680,6 +719,14 @@ export function ModuleDetailPage() {
 
         {active === 'quiz' && (
           <section className="space-y-4">
+            <InlineFlashcardStrip
+              moduleId={module.id}
+              maxCards={3}
+              startIndex={8}
+              eyebrow="Quiz warm-up"
+              title="Rapid readiness cards"
+              description="If these feel shaky, review the phase content before submitting the quiz."
+            />
             {module.quiz.length === 0 ? (
               <div className="card p-5 text-sm text-slate-500">
                 Module quiz is in build. Try the{' '}
@@ -853,10 +900,10 @@ export function ModuleDetailPage() {
           <section className="mt-5 rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft sm:p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
-                <div className="section-title">Optional active practice</div>
-                <h2 className="mt-1 text-xl text-ucla-900">Flashcards and phase coach</h2>
+                <div className="section-title">Extra phase challenge</div>
+                <h2 className="mt-1 text-xl text-ucla-900">Phase coach</h2>
                 <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
-                  Use these when you want a quick recall check before moving to the next phase.
+                  Use this when you want one more commit-first check before moving on.
                 </p>
               </div>
               <button
@@ -876,7 +923,6 @@ export function ModuleDetailPage() {
                   activePhaseId={active}
                   onPhaseChange={handlePhaseChange}
                 />
-                <InlineFlashcardStrip moduleId={module.id} maxCards={3} />
               </div>
             )}
           </section>

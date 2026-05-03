@@ -17,6 +17,10 @@ import type {
   VideoProgress,
 } from '../types';
 
+const coreModuleSummaries = moduleSummaries.filter((module) => module.status === 'full');
+const coreModuleIds = new Set(coreModuleSummaries.map((module) => module.id));
+const activeLearningScopes = ['module-coach', 'systematic-read', 'atlas-practice'] as const;
+
 function avg(nums: number[]): number {
   if (!nums.length) return 0;
   return nums.reduce((a, b) => a + b, 0) / nums.length;
@@ -128,7 +132,7 @@ function buildPerLearner(
 
   return {
     user,
-    modulesCompleted: myMods.filter((m) => m.completed).length,
+    modulesCompleted: myMods.filter((m) => coreModuleIds.has(m.moduleId) && m.completed).length,
     preCourseScore: myQuiz.find((q) => q.scope === 'pre')?.scorePercent,
     postCourseScore: myQuiz.find((q) => q.scope === 'post')?.scorePercent,
     preCourseConfidenceAvg: avgOrUndefined(myConf.filter((c) => c.scope === 'pre').map((c) => c.value)),
@@ -140,9 +144,11 @@ function buildPerLearner(
       (a, e) => (a && a > (e.createdAt ?? 0) ? a : e.createdAt),
       undefined,
     ),
-    modulePreChecks: myMods.filter((m) => Boolean(m.preCheckAt)).length,
-    modulePostChecks: myMods.filter((m) => Boolean(m.postCheckAt)).length,
-    moduleOutcomesPending: myMods.filter((m) => Boolean(m.preCheckAt) && !m.postCheckAt).length,
+    modulePreChecks: myMods.filter((m) => coreModuleIds.has(m.moduleId) && Boolean(m.preCheckAt)).length,
+    modulePostChecks: myMods.filter((m) => coreModuleIds.has(m.moduleId) && Boolean(m.postCheckAt)).length,
+    moduleOutcomesPending: myMods.filter(
+      (m) => coreModuleIds.has(m.moduleId) && Boolean(m.preCheckAt) && !m.postCheckAt,
+    ).length,
     modulePreAvg: avgOrUndefined(modulePreScores),
     modulePostAvg: avgOrUndefined(modulePostScores),
     modulePreConfAvg: avgOrUndefined(modulePreConf),
@@ -224,6 +230,10 @@ export function AdminPage() {
     const coachAttempts = data.quizzes.filter((q) => q.scope === 'module-coach');
     const systematicAttempts = data.quizzes.filter((q) => q.scope === 'systematic-read');
     const atlasAttempts = data.quizzes.filter((q) => q.scope === 'atlas-practice');
+    const flashcardEvents = data.audit.filter((event) => event.type === 'flashcard_reviewed');
+    const flashcardsNeedReview = flashcardEvents.filter(
+      (event) => event.details?.outcome === 'review',
+    ).length;
     const activeAttempts = [...coachAttempts, ...systematicAttempts, ...atlasAttempts];
     const correctAttempts = activeAttempts.filter((attempt) =>
       attempt.answers.every((answer) => answer.correct),
@@ -246,14 +256,21 @@ export function AdminPage() {
       coach: coachAttempts.length,
       systematic: systematicAttempts.length,
       atlas: atlasAttempts.length,
+      flashcards: flashcardEvents.length,
+      flashcardsNeedReview,
       correctRate: activeAttempts.length === 0 ? 0 : (correctAttempts / activeAttempts.length) * 100,
       highConfidenceIncorrect,
     };
-  }, [data.confidence, data.quizzes]);
+  }, [data.audit, data.confidence, data.quizzes]);
 
   const moduleAnalytics = useMemo(() => {
     return moduleSummaries.map((m) => {
       const progress = data.modules.filter((p) => p.moduleId === m.id);
+      const activeAttempts = data.quizzes.filter(
+        (attempt) =>
+          attempt.moduleId === m.id &&
+          activeLearningScopes.some((scope) => scope === attempt.scope),
+      );
       const views = progress.length;
       const completions = progress.filter((p) => p.completed).length;
       const preCheckCount = progress.filter((p) => Boolean(p.preCheckAt)).length;
@@ -280,9 +297,16 @@ export function AdminPage() {
         postAvg: avgOrUndefined(postScores),
         preConfAvg: avgOrUndefined(preConf),
         postConfAvg: avgOrUndefined(postConf),
+        activeAttemptCount: activeAttempts.length,
+        activeCorrectRate:
+          activeAttempts.length === 0
+            ? undefined
+            : (activeAttempts.filter((attempt) => attempt.scorePercent >= 100).length /
+                activeAttempts.length) *
+              100,
       };
     });
-  }, [data.modules]);
+  }, [data.modules, data.quizzes]);
 
   const questionBank = useMemo(() => {
     const bank = new Map<string, { prompt: string; moduleId?: string; domain?: string }>();
@@ -591,10 +615,12 @@ export function AdminPage() {
               <Mini label="Coach commits" value={activeLearningMetrics.coach.toString()} />
               <Mini label="Read steps" value={activeLearningMetrics.systematic.toString()} />
               <Mini label="Atlas reps" value={activeLearningMetrics.atlas.toString()} />
+              <Mini label="Flashcard reps" value={activeLearningMetrics.flashcards.toString()} />
               <Mini
-                label="Overconfident misses"
-                value={activeLearningMetrics.highConfidenceIncorrect.toString()}
+                label="Need review"
+                value={activeLearningMetrics.flashcardsNeedReview.toString()}
               />
+              <Mini label="Overconfident misses" value={activeLearningMetrics.highConfidenceIncorrect.toString()} />
             </div>
             <p className="mt-3 text-xs text-slate-500">
               Overconfident misses are module-coach questions missed with confidence rated 4 or 5.
@@ -728,7 +754,7 @@ export function AdminPage() {
                           {l.user.role}
                         </td>
                         <td className="px-4 py-2 tabular-nums">
-                          {l.modulesCompleted}/{moduleSummaries.length}
+                          {l.modulesCompleted}/{coreModuleSummaries.length}
                         </td>
                         <td className="px-4 py-2 tabular-nums">
                           {l.modulePreChecks}/{l.modulePostChecks}
@@ -774,11 +800,11 @@ export function AdminPage() {
                 <dl className="grid grid-cols-2 gap-y-2 text-sm">
                   <dt className="text-slate-500">Modules done</dt>
                   <dd className="font-semibold tabular-nums">
-                    {selectedLearner.modulesCompleted}/{moduleSummaries.length}
+                    {selectedLearner.modulesCompleted}/{coreModuleSummaries.length}
                   </dd>
                   <dt className="text-slate-500">Module baselines</dt>
                   <dd className="font-semibold tabular-nums">
-                    {selectedLearner.modulePreChecks}/{moduleSummaries.length}
+                    {selectedLearner.modulePreChecks}/{coreModuleSummaries.length}
                   </dd>
                   <dt className="text-slate-500">Module outcomes</dt>
                   <dd className="font-semibold tabular-nums">
@@ -873,10 +899,12 @@ export function AdminPage() {
                 <tr className="border-b border-slate-100 text-left text-[11px] uppercase tracking-wide text-slate-500">
                   <th className="px-4 py-2">Module</th>
                   <th className="px-4 py-2">Region</th>
+                  <th className="px-4 py-2">Track</th>
                   <th className="px-4 py-2">Views</th>
                   <th className="px-4 py-2">Pre</th>
                   <th className="px-4 py-2">Post</th>
                   <th className="px-4 py-2">Completions</th>
+                  <th className="px-4 py-2">Active reps</th>
                   <th className="px-4 py-2">Score Δ</th>
                   <th className="px-4 py-2">Conf Δ</th>
                 </tr>
@@ -897,10 +925,21 @@ export function AdminPage() {
                         {m.module.title}
                       </td>
                       <td className="px-4 py-2 text-slate-600">{m.module.region}</td>
+                      <td className="px-4 py-2 text-slate-600">
+                        {m.module.status === 'full' ? 'Core' : 'Expanded'}
+                      </td>
                       <td className="px-4 py-2 tabular-nums">{m.views}</td>
                       <td className="px-4 py-2 tabular-nums">{m.preCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.postCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.completions}</td>
+                      <td className="px-4 py-2 tabular-nums">
+                        {m.activeAttemptCount}
+                        {m.activeCorrectRate !== undefined && (
+                          <span className="ml-1 text-xs text-slate-500">
+                            ({Math.round(m.activeCorrectRate)}%)
+                          </span>
+                        )}
+                      </td>
                       <td
                         className={[
                           'px-4 py-2 tabular-nums',

@@ -4,6 +4,9 @@ import { Icon } from '../components/ui/Icon';
 import { Flashcard } from '../components/Flashcard';
 import { flashcards } from '../data/flashcards';
 import { moduleSummaries } from '../data/moduleSummaries';
+import { useAuth } from '../context/AuthContext';
+import { logAuditEvent } from '../services/firestore';
+import type { Flashcard as FlashcardData } from '../types';
 
 const STORAGE_KEY = 'sxra:flashcards-state';
 
@@ -46,6 +49,7 @@ function validModuleFilter(moduleId: string | null): string {
 }
 
 export function FlashcardsPage() {
+  const { user, learnerPreview } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleParam = searchParams.get('module');
   const [moduleFilter, setModuleFilter] = useState<string>(() =>
@@ -91,8 +95,23 @@ export function FlashcardsPage() {
 
   const card = deck[index];
 
+  function recordFlashcardReview(
+    outcome: 'got-it' | 'review' | 'skip',
+    reviewedCard: FlashcardData,
+  ) {
+    if (!user || learnerPreview) return;
+    void logAuditEvent({
+      userId: user.uid,
+      type: 'flashcard_reviewed',
+      moduleId: reviewedCard.moduleId,
+      refId: reviewedCard.id,
+      details: { outcome },
+    });
+  }
+
   function handleResult(outcome: 'got-it' | 'review') {
     if (!card) return;
+    recordFlashcardReview(outcome, card);
     setPersisted((prev) => {
       const reviewedIds = Array.from(new Set([...prev.reviewedIds, card.id]));
       let needsReviewIds = prev.needsReviewIds.filter((id) => id !== card.id);
@@ -105,6 +124,7 @@ export function FlashcardsPage() {
   }
 
   function handleSkip() {
+    if (card) recordFlashcardReview('skip', card);
     setIndex((i) => (i + 1) % Math.max(deck.length, 1));
   }
 

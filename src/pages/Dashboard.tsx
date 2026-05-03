@@ -35,6 +35,8 @@ export function DashboardPage() {
   const learnerVideos = learnerPreview ? [] : snapshot.videos;
   const learnerQuizzes = learnerPreview ? [] : snapshot.quizzes;
   const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
+  const coreModules = moduleSummaries.filter((module) => module.status === 'full');
+  const coreModuleIds = new Set(coreModules.map((module) => module.id));
 
   const filteredModules = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -51,18 +53,20 @@ export function DashboardPage() {
     );
   }, [query]);
 
-  const completedCount = learnerModules.filter((m) => m.completed).length;
-  const totalCount = moduleSummaries.length;
+  const completedCount = learnerModules.filter(
+    (m) => coreModuleIds.has(m.moduleId) && m.completed,
+  ).length;
+  const totalCount = coreModules.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
   const hasCourseBaseline =
     hasCourseAssessment(learnerQuizzes, learnerConfidence, 'pre') ||
     (learnerPreview && hasPreviewCourseAssessment('pre'));
   const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
   const nextModule =
-    moduleSummaries.find((module) => {
+    coreModules.find((module) => {
       const progress = learnerModules.find((m) => m.moduleId === module.id);
-      return module.status === 'full' && !progress?.completed;
-    }) ?? moduleSummaries[0];
+      return !progress?.completed;
+    }) ?? coreModules[0] ?? moduleSummaries[0];
   const heroPrimary = canOpenModules
     ? {
         label: `Continue ${nextModule.shortTitle}`,
@@ -123,7 +127,7 @@ export function DashboardPage() {
               <span className="text-3xl font-bold tabular-nums text-ucla-900">
                 {completedCount}
               </span>
-              <span className="text-sm text-slate-500">of {totalCount} modules</span>
+              <span className="text-sm text-slate-500">of {totalCount} core modules</span>
             </div>
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
               <div
@@ -204,7 +208,7 @@ export function DashboardPage() {
             <h2>Continue modules</h2>
             <p className="mt-1 text-sm text-slate-500">
               {canOpenModules
-                ? 'Each module follows the Systematic X-Ray Read framework.'
+                ? 'Start with the core modules, then use expanded modules for extra practice as they are built.'
                 : 'Complete the course baseline first so your knowledge and confidence shift can be measured.'}
             </p>
           </div>
