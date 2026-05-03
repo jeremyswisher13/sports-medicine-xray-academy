@@ -10,6 +10,8 @@ interface Props {
   onPhaseChange: (id: string) => void;
   completedPhaseIds?: string[];
   postCheckPending?: boolean;
+  compact?: boolean;
+  showPhaseJump?: boolean;
   className?: string;
 }
 
@@ -52,6 +54,8 @@ export function ModuleNextTaskPanel({
   onPhaseChange,
   completedPhaseIds = [],
   postCheckPending = false,
+  compact = false,
+  showPhaseJump = true,
   className = '',
 }: Props) {
   const activeIndex = Math.max(
@@ -64,6 +68,55 @@ export function ModuleNextTaskPanel({
   const task = phaseTasks[phase.id];
   const completedPhaseIdSet = new Set(completedPhaseIds);
   const progressPercent = Math.round(((activeIndex + 1) / modulePhases.length) * 100);
+
+  if (compact) {
+    return (
+      <section
+        className={[
+          'rounded-xl border border-ucla-100 bg-white/95 px-4 py-3 shadow-soft',
+          className,
+        ].join(' ')}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ucla-500 text-white shadow-soft">
+              <Icon name={task.icon} size={16} />
+            </span>
+            <div className="min-w-0">
+              <div className="section-title">Next step</div>
+              <h2 className="mt-0.5 text-base text-ucla-950 sm:text-lg">
+                {phase.label}: {task.task}
+              </h2>
+            </div>
+          </div>
+
+          {phase.id !== 'takeaways' ? (
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => next && onPhaseChange(next.id)}
+              disabled={!next}
+            >
+              {next ? `Next: ${next.label}` : 'Next'}
+              <Icon name="arrow-right" size={14} />
+            </button>
+          ) : (
+            <span
+              className={[
+                'pill',
+                postCheckPending
+                  ? 'border-gold-200 bg-gold-50 text-gold-900'
+                  : 'border-emerald-100 bg-emerald-50 text-emerald-700',
+              ].join(' ')}
+            >
+              <Icon name={postCheckPending ? 'flag' : 'check-circle'} size={14} />
+              {postCheckPending ? 'Post-check pending' : 'Outcome saved'}
+            </span>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -143,42 +196,44 @@ export function ModuleNextTaskPanel({
         </div>
       </div>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
-        {modulePhases.map((candidate, index) => {
-          const isActive = candidate.id === phase.id;
-          const isComplete = completedPhaseIdSet.has(candidate.id);
-          return (
-            <button
-              key={candidate.id}
-              type="button"
-              onClick={() => onPhaseChange(candidate.id)}
-              aria-current={isActive ? 'step' : undefined}
-              className={[
-                'flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition-colors',
-                isActive
-                  ? 'border-ucla-500 bg-ucla-500 text-white shadow-soft'
-                  : isComplete
-                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-ucla-200 hover:bg-ucla-50 hover:text-ucla-900',
-              ].join(' ')}
-            >
-              <span
+      {showPhaseJump && (
+        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+          {modulePhases.map((candidate, index) => {
+            const isActive = candidate.id === phase.id;
+            const isComplete = completedPhaseIdSet.has(candidate.id);
+            return (
+              <button
+                key={candidate.id}
+                type="button"
+                onClick={() => onPhaseChange(candidate.id)}
+                aria-current={isActive ? 'step' : undefined}
                 className={[
-                  'flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
+                  'flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition-colors',
                   isActive
-                    ? 'bg-white/20 text-white'
+                    ? 'border-ucla-500 bg-ucla-500 text-white shadow-soft'
                     : isComplete
-                      ? 'bg-emerald-100 text-emerald-700'
-                      : 'bg-slate-100 text-slate-500',
+                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-ucla-200 hover:bg-ucla-50 hover:text-ucla-900',
                 ].join(' ')}
               >
-                {isComplete ? <Icon name="check" size={12} /> : index + 1}
-              </span>
-              {candidate.label}
-            </button>
-          );
-        })}
-      </div>
+                <span
+                  className={[
+                    'flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
+                    isActive
+                      ? 'bg-white/20 text-white'
+                      : isComplete
+                        ? 'bg-emerald-100 text-emerald-700'
+                        : 'bg-slate-100 text-slate-500',
+                  ].join(' ')}
+                >
+                  {isComplete ? <Icon name="check" size={12} /> : index + 1}
+                </span>
+                {candidate.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

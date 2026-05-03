@@ -20,6 +20,7 @@ import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoa
 import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
 import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
 import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
+import { ModuleStartHerePanel } from '../components/ModuleStartHerePanel';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -40,7 +41,7 @@ import {
   saveModuleProgress,
   saveQuizAttempt,
 } from '../services/firestore';
-import type { ModuleProgress } from '../types';
+import type { ModuleProgress, XRayImageEntry } from '../types';
 
 export function ModuleDetailPage() {
   const params = useParams<{ moduleId: string }>();
@@ -55,6 +56,7 @@ export function ModuleDetailPage() {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
   const [practiceToolsOpen, setPracticeToolsOpen] = useState(false);
+  const [learnDetailsOpen, setLearnDetailsOpen] = useState(false);
 
   useEffect(() => {
     if (!user || !module || learnerPreview) return;
@@ -72,12 +74,14 @@ export function ModuleDetailPage() {
     setQuizSubmitted(false);
     setPreCheckCompletedNow(false);
     setPracticeToolsOpen(false);
+    setLearnDetailsOpen(false);
   }, [moduleId]);
 
   useEffect(() => {
     if (location.hash !== '#systematic') return;
     setActive('learn');
     setPracticeToolsOpen(false);
+    setLearnDetailsOpen(true);
     window.setTimeout(() => {
       document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
     }, 0);
@@ -204,6 +208,15 @@ export function ModuleDetailPage() {
     await refresh();
   }
 
+  const heroImage = getModuleHeroImage(module.id, normalImages, realImages);
+
+  function openGuidedRead() {
+    setLearnDetailsOpen(true);
+    window.setTimeout(() => {
+      document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
+    }, 0);
+  }
+
   return (
     <div className="container-page py-8 sm:py-10">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
@@ -246,91 +259,83 @@ export function ModuleDetailPage() {
         </div>
       </div>
 
-      <header className="mt-3 grid gap-4 rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft lg:grid-cols-[1.4fr_1fr] lg:items-end">
-        <div>
-          <span className="pill">{module.region}</span>
-          {module.status === 'placeholder' && (
-            <span className="pill ml-2">In build</span>
-          )}
-          <h1 className="mt-2 text-balance">{module.title}</h1>
-          <p className="mt-2 max-w-prose text-slate-600 leading-relaxed">
-            {module.description}
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <span>{module.estimatedMinutes} min</span>
-            <span>•</span>
-            <span>{module.cases.length} cases</span>
-            <span>•</span>
-            <span>{module.quiz.length} quiz questions</span>
-            <span>•</span>
-            <span>{videos.length} AMSSM videos</span>
+      <header className="mt-3 rounded-2xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white p-5 shadow-soft sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex flex-wrap gap-2">
+              <span className="pill">{module.region}</span>
+              {module.status === 'placeholder' && <span className="pill">In build</span>}
+              {!contentUnlocked ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
+                  <Icon name="lock" size={12} />
+                  Baseline required
+                </span>
+              ) : isComplete ? (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                  <Icon name="check-circle" size={12} />
+                  Completed
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-white px-2.5 py-1 text-xs font-semibold text-ucla-900">
+                  <Icon name="book-open" size={12} />
+                  Guided lesson
+                </span>
+              )}
+              {learnerPreview && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
+                  <Icon name="eye" size={12} />
+                  Learner preview
+                </span>
+              )}
+              {isAdminBypass && !hasPreCheck && (
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-white px-2.5 py-1 text-xs font-semibold text-ucla-900">
+                  <Icon name="shield" size={12} />
+                  Admin bypass
+                </span>
+              )}
+            </div>
+            <h1 className="mt-3 text-balance">{module.title}</h1>
+            <p className="mt-2 max-w-3xl text-slate-600 leading-relaxed">
+              {module.description}
+            </p>
           </div>
+
+          {contentUnlocked && !isComplete && (
+            <div className="flex flex-wrap gap-2 sm:justify-end">
+              {moduleProgress?.postCheckAt ? (
+                <button className="btn-primary" onClick={markComplete} disabled={!user}>
+                  Mark complete
+                  <Icon name="check" size={14} />
+                </button>
+              ) : (
+                <button className="btn-secondary" onClick={() => handlePhaseChange('takeaways')}>
+                  Post-check
+                  <Icon name="arrow-right" size={14} />
+                </button>
+              )}
+            </div>
+          )}
         </div>
-        <div className="rounded-xl border border-ucla-100 bg-white/90 p-4 shadow-soft">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Module status
-          </div>
-          {!contentUnlocked ? (
-            <div className="mt-2 rounded-xl border border-gold-200 bg-gold-50/70 p-3">
-              <div className="flex items-center gap-2 font-semibold text-gold-900">
-                <Icon name="lock" size={15} />
-                Baseline required
-              </div>
-              <p className="mt-1 text-xs leading-relaxed text-slate-700">
-                Complete the entry quiz and confidence rating to unlock this module.
-              </p>
-            </div>
-          ) : isComplete ? (
-            <div className="mt-2 flex items-center gap-2 text-emerald-700">
-              <Icon name="check-circle" size={16} />
-              <span className="font-semibold">Completed</span>
-            </div>
-          ) : moduleProgress?.postCheckAt ? (
-            <button className="btn-primary mt-2 w-full" onClick={markComplete} disabled={!user}>
-              Mark module complete
-              <Icon name="check" size={14} />
-            </button>
-          ) : learnerPreview ? (
-            <div className="mt-2 rounded-xl border border-gold-200 bg-gold-50/70 p-3">
-              <div className="flex items-center gap-2 font-semibold text-gold-900">
-                <Icon name="eye" size={15} />
-                Learner preview active
-              </div>
-              <p className="mt-1 text-xs leading-relaxed text-slate-700">
-                You are seeing the fresh learner flow. Preview checks do not save to analytics.
-              </p>
-            </div>
-          ) : isAdminBypass ? (
-            <div className="mt-2 rounded-xl border border-ucla-100 bg-ucla-50/70 p-3">
-              <div className="flex items-center gap-2 font-semibold text-ucla-900">
-                <Icon name="shield" size={15} />
-                Admin bypass active
-              </div>
-              <p className="mt-1 text-xs leading-relaxed text-slate-700">
-                You can preview content without completing the learner baseline.
-              </p>
-            </div>
-          ) : (
-            <button className="btn-primary mt-2 w-full" onClick={() => handlePhaseChange('takeaways')}>
-              Take post-check to complete
-              <Icon name="arrow-right" size={14} />
-            </button>
-          )}
+
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+          <span>{module.estimatedMinutes} min</span>
+          <span>•</span>
+          <span>{module.cases.length} cases</span>
+          <span>•</span>
+          <span>{module.quiz.length} quiz questions</span>
+          <span>•</span>
+          <span>{videos.length} AMSSM videos</span>
           {moduleProgress?.preCheckAt && (
-            <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-              <div className="rounded-xl border border-ucla-100 bg-ucla-50/60 px-3 py-2">
-                <div className="text-slate-500">Pre score</div>
-                <div className="font-semibold tabular-nums text-ucla-900">
-                  {Math.round(moduleProgress.preCheckScore ?? 0)}%
-                </div>
-              </div>
-              <div className="rounded-xl border border-ucla-100 bg-ucla-50/60 px-3 py-2">
-                <div className="text-slate-500">Pre confidence</div>
-                <div className="font-semibold tabular-nums text-ucla-900">
-                  {moduleProgress.preCheckConfidence ?? '—'}/5
-                </div>
-              </div>
-            </div>
+            <>
+              <span>•</span>
+              <span className="font-semibold text-ucla-800">
+                Pre {Math.round(moduleProgress.preCheckScore ?? 0)}%
+              </span>
+              <span>•</span>
+              <span className="font-semibold text-ucla-800">
+                Confidence {moduleProgress.preCheckConfidence ?? '—'}/5
+              </span>
+            </>
           )}
         </div>
       </header>
@@ -374,56 +379,27 @@ export function ModuleDetailPage() {
         </section>
       ) : (
         <>
-          <div
-            className={[
-              'mt-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4',
-              isAdminBypass && !hasPreCheck
-                ? 'border-ucla-100 bg-ucla-50/70'
-                : learnerPreview
-                  ? 'border-gold-200 bg-gold-50/70'
-                : 'border-emerald-200 bg-emerald-50/70',
-            ].join(' ')}
-          >
-            <div className="flex items-start gap-3">
-              <span
-                className={[
-                  'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
-                  isAdminBypass && !hasPreCheck
-                    ? 'bg-ucla-100 text-ucla-800'
-                    : learnerPreview
-                      ? 'bg-gold-100 text-gold-900'
-                    : 'bg-emerald-100 text-emerald-700',
-                ].join(' ')}
-              >
-                <Icon
-                  name={isAdminBypass && !hasPreCheck ? 'shield' : learnerPreview ? 'eye' : 'check-circle'}
-                  size={16}
-                />
-              </span>
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {isAdminBypass && !hasPreCheck
-                    ? 'Admin preview mode'
-                    : learnerPreview
-                      ? 'Learner preview mode'
-                      : 'Baseline captured'}
-                </div>
-                <p className="text-sm leading-relaxed text-slate-700">
-                  {isAdminBypass && !hasPreCheck
-                    ? 'Learners will see the entry gate here. Your admin account can review the content directly.'
-                    : learnerPreview
-                      ? 'This is the learner path with admin bypass and saved admin progress ignored.'
-                    : 'The module is open. Complete the post-check on Key Takeaways when you finish.'}
-                </p>
-              </div>
+          {((isAdminBypass && !hasPreCheck) || learnerPreview) && (
+            <div
+              className={[
+                'mt-5 flex items-start gap-3 rounded-xl border px-4 py-3 text-sm shadow-soft',
+                learnerPreview
+                  ? 'border-gold-200 bg-gold-50/80 text-slate-700'
+                  : 'border-ucla-100 bg-ucla-50/80 text-slate-700',
+              ].join(' ')}
+            >
+              <Icon
+                name={learnerPreview ? 'eye' : 'shield'}
+                size={15}
+                className={learnerPreview ? 'mt-0.5 text-gold-900' : 'mt-0.5 text-ucla-800'}
+              />
+              <p className="leading-relaxed">
+                {learnerPreview
+                  ? 'Learner preview is active; checks do not save to analytics.'
+                  : 'Admin bypass is active. Learners still complete the entry check before this content opens.'}
+              </p>
             </div>
-            {!isComplete && (
-              <button className="btn-secondary" onClick={() => handlePhaseChange('takeaways')}>
-                Go to post-check
-                <Icon name="arrow-right" size={14} />
-              </button>
-            )}
-          </div>
+          )}
 
           <ModuleNextTaskPanel
             module={module}
@@ -431,98 +407,105 @@ export function ModuleDetailPage() {
             onPhaseChange={handlePhaseChange}
             completedPhaseIds={moduleProgress?.completedTabs ?? []}
             postCheckPending={!moduleProgress?.postCheckAt}
+            compact={active === 'learn' && !learnDetailsOpen}
+            showPhaseJump={active !== 'learn' || learnDetailsOpen}
             className="mt-5"
           />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
           <div className="space-y-4">
-          <section className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-            <article className="card p-5 sm:p-6">
-              <h3 className="text-ucla-900">Module overview</h3>
-              <ul className="mt-3 space-y-2 prose-clinical">
-                {module.overview.map((line) => (
-                  <li key={line} className="flex items-start gap-2.5">
-                    <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-              {module.emphasis.length > 0 && (
-                <div className="mt-4">
-                  <div className="label">Emphasis</div>
-                  <ul className="mt-1 flex flex-wrap gap-1.5">
-                    {module.emphasis.map((e) => (
-                      <li key={e} className="pill-primary">
-                        {e}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </article>
-            <aside className="space-y-4">
-              {(() => {
-                const heroImageKey =
-                  module.id === 'xray-foundations'
-                    ? 'foundations:systematic-read'
-                    : module.id === 'shoulder'
-                      ? 'shoulder:ac-cc-distance'
-                      : module.id === 'knee'
-                        ? 'knee-segond'
-                        : module.id === 'ankle-foot'
-                          ? 'ankle-mortise-clear-spaces'
-                          : module.id === 'do-not-miss'
-                            ? 'do-not-miss-klein-line'
-                            : null;
-                const heroImage =
-                  normalImages[0] ?? realImages[0] ?? (heroImageKey ? getImage(heroImageKey) : null);
-                if (!heroImage) return null;
-                return <XRayImage entry={heroImage} />;
-              })()}
-              <div className="card p-5">
-                <div className="label">When to escalate</div>
-                <ul className="mt-2 space-y-2">
-                  {module.whenToEscalate.map((line) => (
-                    <li key={line} className="flex items-start gap-2 text-sm text-slate-700">
-                      <Icon name="lightning" size={14} className="mt-0.5 text-ucla-700" />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </aside>
-          </section>
-          <CheatSheetPromo module={module} compact />
-          <InlineFlashcardStrip
-            moduleId={module.id}
-            maxCards={3}
-            startIndex={0}
-            title="Recall before you read"
-            description="Answer these first so the framework is active before you inspect images."
-          />
-          <section
-            id="systematic-read"
-            className="grid scroll-mt-28 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
-          >
-            <SystematicReadChecklist
-              items={module.systematicChecklist}
-              practiceImage={systematicPracticeImage}
-              storageKey={module.id}
+            <ModuleStartHerePanel
+              module={module}
+              heroImage={heroImage}
+              onReviewImages={() => handlePhaseChange('images')}
+              onStartGuidedRead={openGuidedRead}
             />
-            <article className="card p-5 sm:p-6">
-              <h3 className="text-ucla-900">Read it like a sports doc</h3>
-              <ul className="mt-3 space-y-2">
-                {module.systematicNotes.map((n) => (
-                  <li key={n} className="flex items-start gap-2.5 text-sm text-slate-700">
-                    <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
-                    <span>{n}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          </section>
-          <AnatomyLandmarkCard landmarks={module.anatomy} />
+
+            {learnDetailsOpen ? (
+              <div className="space-y-4 animate-fade-in">
+                <InlineFlashcardStrip
+                  moduleId={module.id}
+                  maxCards={3}
+                  startIndex={0}
+                  title="Recall before you read"
+                  description="Answer these first so the framework is active before you inspect images."
+                />
+                <section
+                  id="systematic-read"
+                  className="grid scroll-mt-28 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
+                >
+                  <SystematicReadChecklist
+                    items={module.systematicChecklist}
+                    practiceImage={systematicPracticeImage}
+                    storageKey={module.id}
+                  />
+                  <article className="card p-5 sm:p-6">
+                    <h3 className="text-ucla-900">Read it like a sports doc</h3>
+                    <ul className="mt-3 space-y-2">
+                      {module.systematicNotes.map((n) => (
+                        <li key={n} className="flex items-start gap-2.5 text-sm text-slate-700">
+                          <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
+                          <span>{n}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                </section>
+
+                <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+                  <article className="card p-5 sm:p-6">
+                    <h3 className="text-ucla-900">Module map</h3>
+                    <ul className="mt-3 space-y-2 prose-clinical">
+                      {module.overview.map((line) => (
+                        <li key={line} className="flex items-start gap-2.5">
+                          <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {module.emphasis.length > 0 && (
+                      <div className="mt-4">
+                        <div className="label">Emphasis</div>
+                        <ul className="mt-1 flex flex-wrap gap-1.5">
+                          {module.emphasis.map((e) => (
+                            <li key={e} className="pill-primary">
+                              {e}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </article>
+                  <aside className="card p-5">
+                    <div className="label">When to escalate</div>
+                    <ul className="mt-2 space-y-2">
+                      {module.whenToEscalate.map((line) => (
+                        <li key={line} className="flex items-start gap-2 text-sm text-slate-700">
+                          <Icon name="lightning" size={14} className="mt-0.5 text-ucla-700" />
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </aside>
+                </section>
+
+                <AnatomyLandmarkCard landmarks={module.anatomy} />
+                <CheatSheetPromo module={module} compact />
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-ucla-100 bg-ucla-50/70 px-4 py-3 text-left text-sm font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100"
+                onClick={openGuidedRead}
+              >
+                <span className="flex items-center gap-2">
+                  <Icon name="book-open" size={15} />
+                  Open the guided checklist and recall cards
+                </span>
+                <Icon name="arrow-right" size={14} />
+              </button>
+            )}
           </div>
         )}
 
@@ -897,39 +880,57 @@ export function ModuleDetailPage() {
         )}
           </div>
 
-          <section className="mt-5 rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft sm:p-5">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="section-title">Extra phase challenge</div>
-                <h2 className="mt-1 text-xl text-ucla-900">Phase coach</h2>
-                <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
-                  Use this when you want one more commit-first check before moving on.
-                </p>
+          {(active !== 'learn' || learnDetailsOpen) && (
+            <section className="mt-5 rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft sm:p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="section-title">Extra phase challenge</div>
+                  <h2 className="mt-1 text-xl text-ucla-900">Phase coach</h2>
+                  <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
+                    Use this when you want one more commit-first check before moving on.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setPracticeToolsOpen((open) => !open)}
+                  aria-expanded={practiceToolsOpen}
+                >
+                  {practiceToolsOpen ? 'Hide practice' : 'Open practice'}
+                  <Icon name={practiceToolsOpen ? 'chevron-left' : 'chevron-right'} size={14} />
+                </button>
               </div>
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={() => setPracticeToolsOpen((open) => !open)}
-                aria-expanded={practiceToolsOpen}
-              >
-                {practiceToolsOpen ? 'Hide practice' : 'Open practice'}
-                <Icon name={practiceToolsOpen ? 'chevron-left' : 'chevron-right'} size={14} />
-              </button>
-            </div>
-            {practiceToolsOpen && (
-              <div className="mt-4 space-y-4 border-t border-ucla-100 pt-4 animate-fade-in">
-                <ModuleActiveLearningCoach
-                  module={module}
-                  activePhaseId={active}
-                  onPhaseChange={handlePhaseChange}
-                />
-              </div>
-            )}
-          </section>
+              {practiceToolsOpen && (
+                <div className="mt-4 space-y-4 border-t border-ucla-100 pt-4 animate-fade-in">
+                  <ModuleActiveLearningCoach
+                    module={module}
+                    activePhaseId={active}
+                    onPhaseChange={handlePhaseChange}
+                  />
+                </div>
+              )}
+            </section>
+          )}
         </>
       )}
     </div>
   );
+}
+
+function getModuleHeroImage(
+  moduleId: string,
+  normalImages: XRayImageEntry[],
+  realImages: XRayImageEntry[],
+): XRayImageEntry | null {
+  const schematicImageKeyByModule: Partial<Record<string, string>> = {
+    'xray-foundations': 'foundations:systematic-read',
+    shoulder: 'shoulder:ac-cc-distance',
+    knee: 'knee-segond',
+    'ankle-foot': 'ankle-mortise-clear-spaces',
+    'do-not-miss': 'do-not-miss-klein-line',
+  };
+  const fallbackKey = schematicImageKeyByModule[moduleId];
+  return normalImages[0] ?? realImages[0] ?? (fallbackKey ? getImage(fallbackKey) : null);
 }
 
 function moduleReadinessVerdict(progress?: ModuleProgress): {
