@@ -22,6 +22,26 @@ function avg(nums: number[]): number {
   return nums.reduce((a, b) => a + b, 0) / nums.length;
 }
 
+function avgOrUndefined(nums: number[]): number | undefined {
+  return nums.length ? avg(nums) : undefined;
+}
+
+function formatOptionalFixed(value: number | undefined, digits: number): string {
+  return value !== undefined ? value.toFixed(digits) : '';
+}
+
+function formatOptionalPercent(value: number | undefined): string {
+  return value !== undefined ? `${Math.round(value)}%` : '—';
+}
+
+function formatDeltaPercent(value: number | undefined): string {
+  return value !== undefined ? `${value > 0 ? '+' : ''}${value.toFixed(0)}%` : '—';
+}
+
+function formatDeltaNumber(value: number | undefined): string {
+  return value !== undefined ? `${value > 0 ? '+' : ''}${value.toFixed(1)}` : '—';
+}
+
 function formatDate(ms?: number) {
   if (!ms) return '—';
   return new Date(ms).toLocaleString();
@@ -111,8 +131,8 @@ function buildPerLearner(
     modulesCompleted: myMods.filter((m) => m.completed).length,
     preCourseScore: myQuiz.find((q) => q.scope === 'pre')?.scorePercent,
     postCourseScore: myQuiz.find((q) => q.scope === 'post')?.scorePercent,
-    preCourseConfidenceAvg: avg(myConf.filter((c) => c.scope === 'pre').map((c) => c.value)),
-    postCourseConfidenceAvg: avg(myConf.filter((c) => c.scope === 'post').map((c) => c.value)),
+    preCourseConfidenceAvg: avgOrUndefined(myConf.filter((c) => c.scope === 'pre').map((c) => c.value)),
+    postCourseConfidenceAvg: avgOrUndefined(myConf.filter((c) => c.scope === 'post').map((c) => c.value)),
     videosCompleted: myVid.filter((v) => v.markedComplete).length,
     cases: myCases.length,
     casesCorrect: myCases.filter((c) => c.correct).length,
@@ -123,10 +143,10 @@ function buildPerLearner(
     modulePreChecks: myMods.filter((m) => Boolean(m.preCheckAt)).length,
     modulePostChecks: myMods.filter((m) => Boolean(m.postCheckAt)).length,
     moduleOutcomesPending: myMods.filter((m) => Boolean(m.preCheckAt) && !m.postCheckAt).length,
-    modulePreAvg: avg(modulePreScores),
-    modulePostAvg: avg(modulePostScores),
-    modulePreConfAvg: avg(modulePreConf),
-    modulePostConfAvg: avg(modulePostConf),
+    modulePreAvg: avgOrUndefined(modulePreScores),
+    modulePostAvg: avgOrUndefined(modulePostScores),
+    modulePreConfAvg: avgOrUndefined(modulePreConf),
+    modulePostConfAvg: avgOrUndefined(modulePostConf),
   };
 }
 
@@ -188,9 +208,9 @@ export function AdminPage() {
       totalModulePostChecks,
       moduleOutcomeRate:
         totalModulePreChecks === 0 ? 0 : (totalModulePostChecks / totalModulePreChecks) * 100,
-      avgCourseDelta: avg(courseScoreDeltas),
-      avgModuleDelta: avg(moduleScoreDeltas),
-      avgModuleConfDelta: avg(moduleConfDeltas),
+      avgCourseDelta: avgOrUndefined(courseScoreDeltas),
+      avgModuleDelta: avgOrUndefined(moduleScoreDeltas),
+      avgModuleConfDelta: avgOrUndefined(moduleConfDeltas),
       videoCompletionRate:
         videoResources.length === 0
           ? 0
@@ -256,10 +276,10 @@ export function AdminPage() {
         completions,
         preCheckCount,
         postCheckCount,
-        preAvg: avg(preScores),
-        postAvg: avg(postScores),
-        preConfAvg: avg(preConf),
-        postConfAvg: avg(postConf),
+        preAvg: avgOrUndefined(preScores),
+        postAvg: avgOrUndefined(postScores),
+        preConfAvg: avgOrUndefined(preConf),
+        postConfAvg: avgOrUndefined(postConf),
       };
     });
   }, [data.modules]);
@@ -397,15 +417,15 @@ export function AdminPage() {
       l.modulesCompleted,
       l.preCourseScore ?? '',
       l.postCourseScore ?? '',
-      l.preCourseConfidenceAvg ? l.preCourseConfidenceAvg.toFixed(2) : '',
-      l.postCourseConfidenceAvg ? l.postCourseConfidenceAvg.toFixed(2) : '',
+      formatOptionalFixed(l.preCourseConfidenceAvg, 2),
+      formatOptionalFixed(l.postCourseConfidenceAvg, 2),
       l.modulePreChecks,
       l.modulePostChecks,
       l.moduleOutcomesPending,
-      l.modulePreAvg ? l.modulePreAvg.toFixed(1) : '',
-      l.modulePostAvg ? l.modulePostAvg.toFixed(1) : '',
-      l.modulePreConfAvg ? l.modulePreConfAvg.toFixed(2) : '',
-      l.modulePostConfAvg ? l.modulePostConfAvg.toFixed(2) : '',
+      formatOptionalFixed(l.modulePreAvg, 1),
+      formatOptionalFixed(l.modulePostAvg, 1),
+      formatOptionalFixed(l.modulePreConfAvg, 2),
+      formatOptionalFixed(l.modulePostConfAvg, 2),
       l.cases,
       l.casesCorrect,
       l.videosCompleted,
@@ -480,20 +500,12 @@ export function AdminPage() {
         />
         <Stat
           label="Course score Δ"
-          value={
-            topMetrics.avgCourseDelta
-              ? `${topMetrics.avgCourseDelta > 0 ? '+' : ''}${topMetrics.avgCourseDelta.toFixed(0)}%`
-              : '—'
-          }
+          value={formatDeltaPercent(topMetrics.avgCourseDelta)}
           sub="Avg post − pre"
         />
         <Stat
           label="Module score Δ"
-          value={
-            topMetrics.avgModuleDelta
-              ? `${topMetrics.avgModuleDelta > 0 ? '+' : ''}${topMetrics.avgModuleDelta.toFixed(0)}%`
-              : '—'
-          }
+          value={formatDeltaPercent(topMetrics.avgModuleDelta)}
           sub="Per-module pre→post"
         />
         <Stat
@@ -546,7 +558,7 @@ export function AdminPage() {
                     <span className="pill">{m.preCheckCount} pre</span>
                     <span className="pill">{m.postCheckCount} post</span>
                     <span className="pill-primary">{m.completions} done</span>
-                    {m.preAvg && m.postAvg ? (
+                    {m.preAvg !== undefined && m.postAvg !== undefined ? (
                       <span className="pill bg-emerald-50 text-emerald-800 border-emerald-100">
                         {Math.round(m.postAvg - m.preAvg) >= 0 ? '+' : ''}
                         {Math.round(m.postAvg - m.preAvg)}%
@@ -562,7 +574,7 @@ export function AdminPage() {
               Average per-module pre/post confidence delta.
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <Mini label="Module Δ" value={`${(topMetrics.avgModuleConfDelta ?? 0).toFixed(2)}`} />
+              <Mini label="Module Δ" value={formatDeltaNumber(topMetrics.avgModuleConfDelta)} />
               <Mini label="Outcome capture" value={`${topMetrics.moduleOutcomeRate.toFixed(0)}%`} />
               <Mini label="Video completion" value={`${topMetrics.videoCompletionRate.toFixed(0)}%`} />
             </div>
@@ -790,15 +802,11 @@ export function AdminPage() {
                   </dd>
                   <dt className="text-slate-500">Mod pre avg</dt>
                   <dd className="font-semibold tabular-nums">
-                    {selectedLearner.modulePreAvg
-                      ? `${Math.round(selectedLearner.modulePreAvg)}%`
-                      : '—'}
+                    {formatOptionalPercent(selectedLearner.modulePreAvg)}
                   </dd>
                   <dt className="text-slate-500">Mod post avg</dt>
                   <dd className="font-semibold tabular-nums">
-                    {selectedLearner.modulePostAvg
-                      ? `${Math.round(selectedLearner.modulePostAvg)}%`
-                      : '—'}
+                    {formatOptionalPercent(selectedLearner.modulePostAvg)}
                   </dd>
                   <dt className="text-slate-500">Cases (correct)</dt>
                   <dd className="font-semibold tabular-nums">
@@ -876,9 +884,13 @@ export function AdminPage() {
               <tbody>
                 {moduleAnalytics.map((m) => {
                   const scoreDelta =
-                    m.preAvg && m.postAvg ? m.postAvg - m.preAvg : null;
+                    m.preAvg !== undefined && m.postAvg !== undefined
+                      ? m.postAvg - m.preAvg
+                      : null;
                   const confDelta =
-                    m.preConfAvg && m.postConfAvg ? m.postConfAvg - m.preConfAvg : null;
+                    m.preConfAvg !== undefined && m.postConfAvg !== undefined
+                      ? m.postConfAvg - m.preConfAvg
+                      : null;
                   return (
                     <tr key={m.module.id} className="border-b border-slate-50">
                       <td className="px-4 py-2 font-medium text-slate-800">
