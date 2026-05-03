@@ -348,9 +348,9 @@ export function SystematicReadChecklist({
       <div className="border-b border-ucla-100 bg-gradient-to-br from-ucla-50 via-white to-sky-50 px-5 py-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <div className="section-title">Systematic Read Challenges</div>
+            <div className="section-title">Systematic read drill</div>
             <p className="mt-1 text-xs text-slate-600">
-              Confirm → Alignment → Bone → Cartilage → Soft Tissues → Impression
+              One image, one read step, one decision at a time.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -389,9 +389,12 @@ export function SystematicReadChecklist({
       </div>
 
       {mode === 'challenge' ? (
-        <div className="grid gap-0 xl:grid-cols-[220px_1fr]">
-          <nav className="border-b border-ucla-100 bg-slate-50/70 p-3 xl:border-b-0 xl:border-r">
-            <div className="grid gap-2 sm:grid-cols-3 xl:grid-cols-1">
+        <div className="p-5 sm:p-6">
+          <details className="mb-4 rounded-2xl border border-ucla-100 bg-slate-50/70 p-3">
+            <summary className="cursor-pointer text-sm font-semibold text-ucla-900">
+              Jump to another read step
+            </summary>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((item, index) => {
                 const isActive = item.step === activeItem.step;
                 const complete = stepComplete(item);
@@ -432,9 +435,9 @@ export function SystematicReadChecklist({
                 );
               })}
             </div>
-          </nav>
+          </details>
 
-          <section className="p-5 sm:p-6">
+          <section>
             <div className="flex flex-col gap-4 xl:flex-row xl:items-start">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">

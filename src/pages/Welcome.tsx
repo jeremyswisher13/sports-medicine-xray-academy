@@ -1,12 +1,9 @@
 import { Link } from 'react-router-dom';
-import { CoursePathPanel } from '../components/CoursePathPanel';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
-import { useProgress } from '../hooks/useProgress';
 
 export function WelcomePage() {
-  const { user, learnerPreview } = useAuth();
-  const { snapshot } = useProgress();
+  const { user } = useAuth();
   const firstName = user?.displayName?.split(' ')[0] ?? 'Learner';
   const greeting = greetingFor(new Date());
 
@@ -23,38 +20,44 @@ export function WelcomePage() {
           common musculoskeletal radiographs — and knowing when x-rays are not enough.
         </p>
 
-        <div className="mt-6">
-          <CoursePathPanel snapshot={snapshot} learnerPreview={learnerPreview} />
+        <div className="mt-6 flex flex-wrap gap-2">
+          <Link to="/dashboard" className="btn-primary">
+            Go to dashboard
+            <Icon name="arrow-right" size={14} />
+          </Link>
+          <Link to="/quiz/pre" className="btn-secondary">
+            Start baseline
+            <Icon name="lightning" size={14} />
+          </Link>
         </div>
 
-        <ol className="mt-6 space-y-3">
+        <section className="mt-8 rounded-2xl border border-ucla-100 bg-white/95 p-5 shadow-soft sm:p-6">
+          <div className="section-title">How to use this</div>
+          <h2 className="mt-1 text-2xl text-ucla-950">One active pass at a time.</h2>
+          <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
+            The dashboard will tell you the next required step. Modules use short checks,
+            image calls, cases, recall cards, and confidence ratings to keep learning active.
+          </p>
+        </section>
+
+        <ol className="mt-4 grid gap-3 sm:grid-cols-3">
           {[
             {
-              title: 'Take the pre-course assessment',
+              title: 'Baseline first',
               body:
-                'A short knowledge check and confidence survey to establish a baseline for your learning.',
-              href: '/quiz/pre',
+                'Capture knowledge and confidence before the modules so growth is measurable.',
               icon: 'lightning' as const,
             },
             {
-              title: 'Work through the modules',
+              title: 'Read actively',
               body:
-                'Each module follows a simpler learner path: Learn → Views → Images → Practice → Quiz → Takeaways.',
-              href: '/modules',
+                'Call the image, answer the prompt, then reveal the teaching point.',
               icon: 'graduation' as const,
             },
             {
-              title: 'Practice with cases',
+              title: 'Calibrate',
               body:
-                'Case-based interpretation with open-license teaching radiographs where available.',
-              href: '/cases',
-              icon: 'clipboard' as const,
-            },
-            {
-              title: 'Take the post-course assessment',
-              body:
-                'Compare your knowledge and confidence growth across the curriculum.',
-              href: '/quiz/post',
+                'Finish with post-checks and confidence ratings so weak areas stay visible.',
               icon: 'check-circle' as const,
             },
           ].map((step, i) => (
@@ -69,24 +72,11 @@ export function WelcomePage() {
                     <h3 className="text-base text-ucla-900">{step.title}</h3>
                   </div>
                   <p className="mt-1 text-sm text-slate-600 leading-relaxed">{step.body}</p>
-                  <Link to={step.href} className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-ucla-700 hover:text-ucla-900">
-                    Continue <Icon name="arrow-right" size={14} />
-                  </Link>
                 </div>
               </div>
             </li>
           ))}
         </ol>
-
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link to="/dashboard" className="btn-primary">
-            Go to dashboard
-            <Icon name="arrow-right" size={14} />
-          </Link>
-          <Link to="/quiz/pre" className="btn-secondary">
-            Start pre-course assessment
-          </Link>
-        </div>
       </div>
     </div>
   );

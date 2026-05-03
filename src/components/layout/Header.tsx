@@ -10,6 +10,8 @@ const baseNavItems = [
   { to: '/cheatsheets', label: 'Cheat Sheets' },
   { to: '/cases', label: 'Cases' },
   { to: '/videos', label: 'Videos' },
+  { to: '/flashcards', label: 'Flashcards' },
+  { to: '/atlas', label: 'Atlas' },
   { to: '/progress', label: 'Progress' },
 ];
 

@@ -47,20 +47,32 @@ export function ModuleCheck({
   const [submitted, setSubmitted] = useState(false);
   const [confidence, setConfidence] = useState<1 | 2 | 3 | 4 | 5 | undefined>();
   const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
+  const [quizIndex, setQuizIndex] = useState(0);
   const persistedProgress = learnerPreview ? undefined : existingProgress;
 
   const total = questions.length;
+  const currentQuestion = questions[quizIndex] ?? questions[0];
   const correct = useMemo(
     () => questions.filter((q) => answers[q.id] === q.correctOptionId).length,
     [questions, answers],
   );
   const scorePercent = total === 0 ? 0 : (correct / total) * 100;
   const allAnswered = Object.keys(answers).length === total;
+  const currentAnswered = currentQuestion ? Boolean(answers[currentQuestion.id]) : false;
 
   const alreadyDone =
     phase === 'pre'
       ? Boolean(persistedProgress?.preCheckAt)
       : Boolean(persistedProgress?.postCheckAt);
+
+  function resetCheckFlow() {
+    setAnswers({});
+    setSubmitted(false);
+    setConfidence(undefined);
+    setStep('quiz');
+    setQuizIndex(0);
+    setOpen(true);
+  }
 
   if (variant === 'banner' && !open) {
     return (
@@ -104,7 +116,7 @@ export function ModuleCheck({
         </div>
         <div className="flex gap-2">
           {alreadyDone ? (
-            <button className="btn-secondary" onClick={() => setOpen(true)}>
+            <button className="btn-secondary" onClick={resetCheckFlow}>
               Retake
             </button>
           ) : (
@@ -114,7 +126,7 @@ export function ModuleCheck({
                   Skip
                 </button>
               )}
-              <button className="btn-primary" onClick={() => setOpen(true)}>
+              <button className="btn-primary" onClick={resetCheckFlow}>
                 Start
                 <Icon name="arrow-right" size={14} />
               </button>
@@ -235,50 +247,97 @@ export function ModuleCheck({
       <div className="p-5 sm:p-6">
         {step === 'quiz' && (
           <div className="space-y-3">
-            {questions.map((q, idx) => (
-              <QuizQuestion
-                key={q.id}
-                question={q}
-                index={idx}
-                total={total}
-                selectedOptionId={answers[q.id]}
-                showFeedback={submitted}
-                locked={submitted}
-                cheatSheetModuleId={moduleId}
-                onSelect={(id) =>
-                  setAnswers((p) => ({ ...p, [q.id]: id }))
-                }
-              />
-            ))}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-              {submitted ? (
-                <div className="text-sm text-slate-700">
+            {!submitted && currentQuestion && (
+              <>
+                <div className="rounded-2xl border border-ucla-100 bg-ucla-50/60 p-3">
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+                    <span>
+                      Question {quizIndex + 1} of {total}
+                    </span>
+                    <span>{Object.keys(answers).length}/{total} answered</span>
+                  </div>
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-white ring-1 ring-ucla-100">
+                    <div
+                      className="h-full rounded-full bg-ucla-600 transition-all"
+                      style={{ width: `${((quizIndex + 1) / Math.max(total, 1)) * 100}%` }}
+                    />
+                  </div>
+                </div>
+                <QuizQuestion
+                  question={currentQuestion}
+                  index={quizIndex}
+                  total={total}
+                  selectedOptionId={answers[currentQuestion.id]}
+                  cheatSheetModuleId={moduleId}
+                  onSelect={(id) =>
+                    setAnswers((p) => ({ ...p, [currentQuestion.id]: id }))
+                  }
+                />
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    onClick={() => setQuizIndex((idx) => Math.max(0, idx - 1))}
+                    disabled={quizIndex === 0}
+                  >
+                    <Icon name="chevron-left" size={14} />
+                    Previous
+                  </button>
+                  {quizIndex < total - 1 ? (
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={() => setQuizIndex((idx) => Math.min(total - 1, idx + 1))}
+                      disabled={!currentAnswered}
+                    >
+                      Next question
+                      <Icon name="arrow-right" size={14} />
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-primary"
+                      disabled={!allAnswered}
+                      onClick={submitQuiz}
+                    >
+                      Submit answers
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {submitted && (
+              <>
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 text-sm text-slate-700">
                   Score:{' '}
                   <span className="font-bold tabular-nums text-ucla-900">
                     {Math.round(scorePercent)}%
                   </span>{' '}
-                  ({correct}/{total})
+                  ({correct}/{total}). Review the explanations, then rate confidence.
                 </div>
-              ) : (
-                <span className="text-xs text-slate-500">
-                  {Object.keys(answers).length}/{total} answered
-                </span>
-              )}
-              {submitted ? (
-                <button className="btn-primary" onClick={() => setStep('confidence')}>
-                  Continue to confidence
-                  <Icon name="arrow-right" size={14} />
-                </button>
-              ) : (
-                <button
-                  className="btn-primary"
-                  disabled={!allAnswered}
-                  onClick={submitQuiz}
-                >
-                  Submit answers
-                </button>
-              )}
-            </div>
+                {questions.map((q, idx) => (
+                  <QuizQuestion
+                    key={q.id}
+                    question={q}
+                    index={idx}
+                    total={total}
+                    selectedOptionId={answers[q.id]}
+                    showFeedback
+                    locked
+                    cheatSheetModuleId={moduleId}
+                    onSelect={(id) =>
+                      setAnswers((p) => ({ ...p, [q.id]: id }))
+                    }
+                  />
+                ))}
+                <div className="flex justify-end">
+                  <button className="btn-primary" onClick={() => setStep('confidence')}>
+                    Continue to confidence
+                    <Icon name="arrow-right" size={14} />
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 

@@ -169,104 +169,30 @@ export function FlashcardsPage() {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        <select
-          className="input"
-          value={moduleFilter}
-          onChange={(e) => changeModuleFilter(e.target.value)}
-          aria-label="Filter by module"
-        >
-          <option value="all">All modules ({flashcards.length})</option>
-          {moduleDecks.map((d) => (
-            <option key={d.module.id} value={d.module.id}>
-              {d.module.title} ({d.cards.length})
-            </option>
-          ))}
-        </select>
-        <select
-          className="input"
-          value={mode}
-          onChange={(e) => setMode(e.target.value as 'all' | 'review-only')}
-          aria-label="Study mode"
-        >
-          <option value="all">All cards</option>
-          <option value="review-only">Only "Need review"</option>
-        </select>
-        <button
-          type="button"
-          className="btn-secondary"
-          onClick={() => setShuffleSeed((s) => s + 1)}
-        >
-          <Icon name="lightning" size={14} />
-          Shuffle
-        </button>
-        <button type="button" className="btn-ghost" onClick={resetProgress}>
-          Reset progress
-        </button>
-      </div>
-
-      <section className="mt-4">
-        <div className="mb-2 flex items-center justify-between gap-2">
-          <div className="label">Module decks</div>
-          <button
-            type="button"
-            onClick={() => {
-              setMode('all');
-              changeModuleFilter('all');
-            }}
-            className="text-xs font-semibold text-ucla-700 hover:text-ucla-900"
-          >
-            Study all {totalCards}
-          </button>
-        </div>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-          {moduleDecks.map((deckSummary) => {
-            const selected = moduleFilter === deckSummary.module.id;
-            const reviewedCount = deckSummary.cards.filter((deckCard) =>
-              persisted.reviewedIds.includes(deckCard.id),
-            ).length;
-            return (
-              <button
-                key={deckSummary.module.id}
-                type="button"
-                onClick={() => {
-                  setMode('all');
-                  changeModuleFilter(deckSummary.module.id);
-                }}
-                className={[
-                  'rounded-2xl border p-3 text-left shadow-soft transition-colors',
-                  selected
-                    ? 'border-ucla-300 bg-ucla-700 text-white'
-                    : 'border-ucla-100 bg-white/90 text-slate-700 hover:bg-ucla-50',
-                ].join(' ')}
-                aria-pressed={selected}
-              >
-                <div
-                  className={[
-                    'text-sm font-semibold leading-tight',
-                    selected ? 'text-white' : 'text-ucla-900',
-                  ].join(' ')}
-                >
-                  {deckSummary.module.shortTitle}
-                </div>
-                <div className={selected ? 'mt-1 text-xs text-ucla-50' : 'mt-1 text-xs text-slate-500'}>
-                  {reviewedCount}/{deckSummary.cards.length} reviewed
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      <div className="mt-6">
+      <section className="mt-6">
         {card ? (
-          <Flashcard
-            card={card}
-            index={index}
-            total={deck.length}
-            onResult={handleResult}
-            onSkip={handleSkip}
-          />
+          <>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="section-title">Current card</div>
+                <h2 className="mt-1 text-base text-ucla-900">
+                  {moduleFilter === 'all'
+                    ? 'Mixed sports X-ray deck'
+                    : moduleSummaries.find((module) => module.id === moduleFilter)?.title}
+                </h2>
+              </div>
+              <span className="pill border-ucla-100 bg-ucla-50 text-ucla-800">
+                {mode === 'review-only' ? 'Review pile' : `${deck.length} cards`}
+              </span>
+            </div>
+            <Flashcard
+              card={card}
+              index={index}
+              total={deck.length}
+              onResult={handleResult}
+              onSkip={handleSkip}
+            />
+          </>
         ) : (
           <div className="card p-8 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
@@ -295,7 +221,101 @@ export function FlashcardsPage() {
             </div>
           </div>
         )}
-      </div>
+      </section>
+
+      <details className="mt-4 rounded-2xl border border-ucla-100 bg-white/95 p-4 shadow-soft">
+        <summary className="cursor-pointer text-sm font-semibold text-ucla-900">
+          Choose deck and study mode
+        </summary>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <select
+            className="input"
+            value={moduleFilter}
+            onChange={(e) => changeModuleFilter(e.target.value)}
+            aria-label="Filter by module"
+          >
+            <option value="all">All modules ({flashcards.length})</option>
+            {moduleDecks.map((d) => (
+              <option key={d.module.id} value={d.module.id}>
+                {d.module.title} ({d.cards.length})
+              </option>
+            ))}
+          </select>
+          <select
+            className="input"
+            value={mode}
+            onChange={(e) => setMode(e.target.value as 'all' | 'review-only')}
+            aria-label="Study mode"
+          >
+            <option value="all">All cards</option>
+            <option value="review-only">Only "Need review"</option>
+          </select>
+          <button
+            type="button"
+            className="btn-secondary"
+            onClick={() => setShuffleSeed((s) => s + 1)}
+          >
+            <Icon name="lightning" size={14} />
+            Shuffle
+          </button>
+          <button type="button" className="btn-ghost" onClick={resetProgress}>
+            Reset progress
+          </button>
+        </div>
+
+        <section className="mt-4">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <div className="label">Module decks</div>
+            <button
+              type="button"
+              onClick={() => {
+                setMode('all');
+                changeModuleFilter('all');
+              }}
+              className="text-xs font-semibold text-ucla-700 hover:text-ucla-900"
+            >
+              Study all {totalCards}
+            </button>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+            {moduleDecks.map((deckSummary) => {
+              const selected = moduleFilter === deckSummary.module.id;
+              const reviewedCount = deckSummary.cards.filter((deckCard) =>
+                persisted.reviewedIds.includes(deckCard.id),
+              ).length;
+              return (
+                <button
+                  key={deckSummary.module.id}
+                  type="button"
+                  onClick={() => {
+                    setMode('all');
+                    changeModuleFilter(deckSummary.module.id);
+                  }}
+                  className={[
+                    'rounded-2xl border p-3 text-left shadow-soft transition-colors',
+                    selected
+                      ? 'border-ucla-300 bg-ucla-700 text-white'
+                      : 'border-ucla-100 bg-white/90 text-slate-700 hover:bg-ucla-50',
+                  ].join(' ')}
+                  aria-pressed={selected}
+                >
+                  <div
+                    className={[
+                      'text-sm font-semibold leading-tight',
+                      selected ? 'text-white' : 'text-ucla-900',
+                    ].join(' ')}
+                  >
+                    {deckSummary.module.shortTitle}
+                  </div>
+                  <div className={selected ? 'mt-1 text-xs text-ucla-50' : 'mt-1 text-xs text-slate-500'}>
+                    {reviewedCount}/{deckSummary.cards.length} reviewed
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      </details>
     </div>
   );
 }

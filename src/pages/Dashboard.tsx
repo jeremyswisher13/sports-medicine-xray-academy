@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { ModuleCard } from '../components/ModuleCard';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
-import { CoursePathPanel } from '../components/CoursePathPanel';
 import { modulePhaseCount } from '../data/learningFlow';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
@@ -61,12 +60,16 @@ export function DashboardPage() {
   const hasCourseBaseline =
     hasCourseAssessment(learnerQuizzes, learnerConfidence, 'pre') ||
     (learnerPreview && hasPreviewCourseAssessment('pre'));
+  const hasCoursePost =
+    hasCourseAssessment(learnerQuizzes, learnerConfidence, 'post') ||
+    (learnerPreview && hasPreviewCourseAssessment('post'));
   const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
   const nextModule =
     coreModules.find((module) => {
       const progress = learnerModules.find((m) => m.moduleId === module.id);
       return !progress?.completed;
     }) ?? coreModules[0] ?? moduleSummaries[0];
+  const nextModuleProgress = learnerModules.find((m) => m.moduleId === nextModule.id);
   const heroPrimary = canOpenModules
     ? {
         label: `Continue ${nextModule.shortTitle}`,
@@ -78,6 +81,43 @@ export function DashboardPage() {
       };
   const savedModuleIds = new Set(bookmarks.map((bookmark) => bookmark.moduleId));
   const savedModules = moduleSummaries.filter((module) => savedModuleIds.has(module.id));
+  const weakModules = coreModules
+    .filter((module) => {
+      const confidence = confidenceFor(module.id);
+      const progress = learnerModules.find((m) => m.moduleId === module.id);
+      return Boolean(progress) && confidence !== null && confidence < 4;
+    })
+    .slice(0, 3);
+  const nextRequiredTask = !canOpenModules
+    ? {
+        eyebrow: 'Required next',
+        title: 'Take the pre-course baseline',
+        body: 'Seven knowledge questions plus confidence ratings unlock the modules and give you a starting point.',
+        to: '/quiz/pre',
+        cta: 'Start baseline',
+        icon: 'lightning' as const,
+      }
+    : nextModuleProgress?.completed && !hasCoursePost
+      ? {
+          eyebrow: 'Required next',
+          title: 'Take the post-course assessment',
+          body: 'Close the loop with a course-wide score and confidence delta after the core modules.',
+          to: '/quiz/post',
+          cta: 'Start post-course check',
+          icon: 'flag' as const,
+        }
+      : {
+          eyebrow: nextModuleProgress?.visited ? 'Continue learning' : 'Start next module',
+          title: nextModuleProgress?.visited
+            ? `Resume ${nextModule.title}`
+            : `Start ${nextModule.title}`,
+          body: nextModuleProgress?.visited
+            ? 'Pick up with the next active drill, then finish the post-check when ready.'
+            : 'Begin with the module quick check, then work through the guided read.',
+          to: `/modules/${nextModule.id}`,
+          cta: nextModuleProgress?.visited ? 'Resume module' : 'Open module',
+          icon: 'book-open' as const,
+        };
 
   function progressFor(moduleId: string): number {
     const p = learnerModules.find((m) => m.moduleId === moduleId);
@@ -165,9 +205,66 @@ export function DashboardPage() {
         </div>
       </section>
 
-      <div className="mt-5">
-        <CoursePathPanel snapshot={snapshot} learnerPreview={learnerPreview} />
-      </div>
+      <section className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <article className="rounded-2xl border border-ucla-100 bg-white/95 p-5 shadow-soft sm:p-6">
+          <div className="flex items-start gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-ucla-600 text-white shadow-soft">
+              <Icon name={nextRequiredTask.icon} size={18} />
+            </span>
+            <div className="min-w-0">
+              <div className="section-title">{nextRequiredTask.eyebrow}</div>
+              <h2 className="mt-1 text-2xl text-ucla-950">{nextRequiredTask.title}</h2>
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
+                {nextRequiredTask.body}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link to={nextRequiredTask.to} className="btn-primary">
+                  {nextRequiredTask.cta}
+                  <Icon name="arrow-right" size={14} />
+                </Link>
+                <Link to="/flashcards" className="btn-secondary">
+                  Warm up with cards
+                  <Icon name="sparkles" size={14} />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft sm:p-6">
+          <div className="section-title">Review tools</div>
+          <h2 className="mt-1 text-2xl text-ucla-950">Fast support when you get stuck.</h2>
+          {weakModules.length > 0 ? (
+            <div className="mt-3 space-y-2">
+              {weakModules.map((module) => (
+                <Link
+                  key={module.id}
+                  to={`/modules/${module.id}`}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-ucla-100 bg-white px-3 py-2 text-sm font-semibold text-ucla-900 no-underline shadow-soft hover:bg-ucla-50"
+                >
+                  <span>{module.title}</span>
+                  <span className="text-xs text-slate-500">confidence {confidenceFor(module.id)}/5</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Use cheat sheets for clinic thresholds, atlas reps for normal anatomy, and flashcards
+              for quick retrieval practice between modules.
+            </p>
+          )}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link to="/cheatsheets" className="btn-secondary">
+              Cheat sheets
+              <Icon name="printer" size={14} />
+            </Link>
+            <Link to="/atlas" className="btn-secondary">
+              Image atlas
+              <Icon name="image" size={14} />
+            </Link>
+          </div>
+        </article>
+      </section>
 
       <div className="mt-5">
         <CheatSheetPromo />

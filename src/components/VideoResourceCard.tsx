@@ -16,6 +16,9 @@ interface Props {
 export function VideoResourceCard({ video, initialProgress, onProgressChange }: Props) {
   const { user, learnerPreview } = useAuth();
   const [completed, setCompleted] = useState(Boolean(initialProgress?.markedComplete));
+  const [watchStarted, setWatchStarted] = useState(
+    Boolean(initialProgress?.watched || initialProgress?.markedComplete),
+  );
   const [reflection, setReflection] = useState(initialProgress?.reflectionText ?? '');
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [showRecall, setShowRecall] = useState(false);
@@ -26,8 +29,12 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
 
   useEffect(() => {
     setCompleted(Boolean(initialProgress?.markedComplete));
+    setWatchStarted(Boolean(initialProgress?.watched || initialProgress?.markedComplete));
     setReflection(initialProgress?.reflectionText ?? '');
-  }, [initialProgress]);
+    setShowRecall(false);
+    setPvAnswers({});
+    setPvSubmitted(false);
+  }, [initialProgress, video.id]);
 
   const buildProgress = (overrides: Partial<VideoProgress> = {}): VideoProgress => ({
     userId: user?.uid ?? 'anonymous',
@@ -46,6 +53,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
   async function handleMarkComplete() {
     if (!user) return;
     setSavingState('saving');
+    setWatchStarted(true);
     const next = !completed;
     setCompleted(next);
     const progress = buildProgress({
@@ -136,12 +144,48 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
           Supplemental AMSSM Video
         </span>
         <span className="pill">{video.learnerLevel}</span>
-        {video.durationLabel && <span className="pill">{video.durationLabel}</span>}
+      {video.durationLabel && <span className="pill">{video.durationLabel}</span>}
       </div>
       <h3 className="mt-2 text-base text-ucla-900 line-clamp-2">{video.title}</h3>
 
       <div className="mt-3">
-        <YouTubeEmbed youtubeId={video.youtubeId} title={video.title} />
+        {recallQuestions.length > 0 && !watchStarted ? (
+          <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4 sm:p-5">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ucla-700">
+              <Icon name="sparkles" size={14} />
+              Before you watch
+            </div>
+            <p className="mt-2 text-base font-semibold leading-snug text-ucla-950">
+              {recallQuestions[0].prompt}
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              Hold your answer in mind, then watch for the key teaching point. The
+              questions unlock after you mark the video complete.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => setWatchStarted(true)}
+              >
+                <Icon name="play" size={14} />
+                Start video
+              </button>
+              <a
+                className="btn-secondary"
+                href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setWatchStarted(true)}
+              >
+                <Icon name="youtube" size={14} />
+                Watch on YouTube
+              </a>
+            </div>
+          </div>
+        ) : (
+          <YouTubeEmbed youtubeId={video.youtubeId} title={video.title} />
+        )}
       </div>
 
       <p className="mt-3 text-sm text-slate-700 leading-relaxed">{video.summary}</p>
@@ -150,34 +194,36 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
         {video.clinicalWhy}
       </p>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        <a
-          className="btn-secondary"
-          href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Icon name="youtube" size={14} />
-          Watch on YouTube
-        </a>
-        <button
-          type="button"
-          className={completed ? 'btn-primary' : 'btn-secondary'}
-          onClick={handleMarkComplete}
-          disabled={!user}
-        >
-          <Icon name={completed ? 'check-circle' : 'circle'} size={14} />
-          {completed ? 'Completed' : 'Mark video complete'}
-        </button>
-        {savingState === 'saving' && (
-          <span className="self-center text-xs text-slate-500">Saving…</span>
-        )}
-        {savingState === 'saved' && (
-          <span className="self-center text-xs text-emerald-700">
-            {learnerPreview ? 'Previewed' : 'Saved'}
-          </span>
-        )}
-      </div>
+      {watchStarted && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <a
+            className="btn-secondary"
+            href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon name="youtube" size={14} />
+            Watch on YouTube
+          </a>
+          <button
+            type="button"
+            className={completed ? 'btn-primary' : 'btn-secondary'}
+            onClick={handleMarkComplete}
+            disabled={!user}
+          >
+            <Icon name={completed ? 'check-circle' : 'circle'} size={14} />
+            {completed ? 'Completed' : 'Mark video complete'}
+          </button>
+          {savingState === 'saving' && (
+            <span className="self-center text-xs text-slate-500">Saving…</span>
+          )}
+          {savingState === 'saved' && (
+            <span className="self-center text-xs text-emerald-700">
+              {learnerPreview ? 'Previewed' : 'Saved'}
+            </span>
+          )}
+        </div>
+      )}
 
       {recallQuestions.length > 0 && (completed || showRecall) && (
         <div className="mt-4 rounded-xl border border-ucla-100 bg-ucla-50/40 p-3 sm:p-4">

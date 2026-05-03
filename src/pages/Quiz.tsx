@@ -23,6 +23,7 @@ export function QuizPage({ scope }: Props) {
   const [confidences, setConfidences] = useState<Record<string, 1 | 2 | 3 | 4 | 5>>({});
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
+  const [quizIndex, setQuizIndex] = useState(0);
   const [startedAt, setStartedAt] = useState(Date.now());
 
   useEffect(() => {
@@ -30,13 +31,16 @@ export function QuizPage({ scope }: Props) {
     setConfidences({});
     setSubmitted(false);
     setStep('quiz');
+    setQuizIndex(0);
     setStartedAt(Date.now());
   }, [scope]);
 
   const total = questions.length;
+  const currentQuestion = questions[quizIndex] ?? questions[0];
   const correctCount = questions.filter((q) => answers[q.id] === q.correctOptionId).length;
   const scorePercent = total === 0 ? 0 : (correctCount / total) * 100;
   const allAnswered = Object.keys(answers).length === total;
+  const currentAnswered = currentQuestion ? Boolean(answers[currentQuestion.id]) : false;
   const confidenceCount = Object.keys(confidences).length;
   const allConfidenceRated = confidenceDomains.every((domain) => confidences[domain.id]);
 
@@ -156,48 +160,97 @@ export function QuizPage({ scope }: Props) {
 
       {step === 'quiz' && (
         <section className="mt-6 space-y-4">
-          {questions.map((q, idx) => (
-            <QuizQuestion
-              key={q.id}
-              question={q}
-              index={idx}
-              total={total}
-              selectedOptionId={answers[q.id]}
-              showFeedback={submitted}
-              locked={submitted}
-              cheatSheetModuleId={q.moduleId}
-              onSelect={(id) => setAnswers((p) => ({ ...p, [q.id]: id }))}
-            />
-          ))}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            {submitted ? (
-              <div className="text-sm text-slate-700">
+          {!submitted && currentQuestion && (
+            <>
+              <div className="rounded-2xl border border-ucla-100 bg-white/95 p-4 shadow-soft">
+                <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+                  <span>
+                    Question {quizIndex + 1} of {total}
+                  </span>
+                  <span>{Object.keys(answers).length} answered</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-ucla-50 ring-1 ring-ucla-100">
+                  <div
+                    className="h-full rounded-full bg-ucla-600 transition-all"
+                    style={{ width: `${((quizIndex + 1) / Math.max(total, 1)) * 100}%` }}
+                  />
+                </div>
+              </div>
+              <QuizQuestion
+                question={currentQuestion}
+                index={quizIndex}
+                total={total}
+                selectedOptionId={answers[currentQuestion.id]}
+                cheatSheetModuleId={currentQuestion.moduleId}
+                onSelect={(id) =>
+                  setAnswers((p) => ({ ...p, [currentQuestion.id]: id }))
+                }
+              />
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setQuizIndex((idx) => Math.max(0, idx - 1))}
+                  disabled={quizIndex === 0}
+                >
+                  <Icon name="chevron-left" size={14} />
+                  Previous
+                </button>
+                <div className="flex flex-wrap gap-2">
+                  {quizIndex < total - 1 ? (
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={() => setQuizIndex((idx) => Math.min(total - 1, idx + 1))}
+                      disabled={!currentAnswered}
+                    >
+                      Next question
+                      <Icon name="arrow-right" size={14} />
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-primary"
+                      disabled={!allAnswered}
+                      onClick={submitQuiz}
+                    >
+                      Submit quiz
+                    </button>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+
+          {submitted && (
+            <>
+              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-slate-700 shadow-soft">
                 Score:{' '}
                 <span className="font-bold tabular-nums text-ucla-900">
                   {Math.round(scorePercent)}%
                 </span>{' '}
-                ({correctCount} / {total})
+                ({correctCount} / {total}). Review the explanations, then rate confidence.
               </div>
-            ) : (
-              <span className="text-xs text-slate-500">
-                {Object.keys(answers).length} of {total} answered
-              </span>
-            )}
-            {submitted ? (
-              <button className="btn-primary" onClick={() => setStep('confidence')}>
-                Continue to confidence rating
-                <Icon name="arrow-right" size={14} />
-              </button>
-            ) : (
-              <button
-                className="btn-primary"
-                disabled={!allAnswered}
-                onClick={submitQuiz}
-              >
-                Submit quiz
-              </button>
-            )}
-          </div>
+              {questions.map((q, idx) => (
+                <QuizQuestion
+                  key={q.id}
+                  question={q}
+                  index={idx}
+                  total={total}
+                  selectedOptionId={answers[q.id]}
+                  showFeedback
+                  locked
+                  cheatSheetModuleId={q.moduleId}
+                  onSelect={(id) => setAnswers((p) => ({ ...p, [q.id]: id }))}
+                />
+              ))}
+              <div className="flex justify-end">
+                <button className="btn-primary" onClick={() => setStep('confidence')}>
+                  Continue to confidence rating
+                  <Icon name="arrow-right" size={14} />
+                </button>
+              </div>
+            </>
+          )}
         </section>
       )}
 

@@ -57,6 +57,8 @@ export function ModuleDetailPage() {
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
   const [practiceToolsOpen, setPracticeToolsOpen] = useState(false);
   const [learnDetailsOpen, setLearnDetailsOpen] = useState(false);
+  const [moduleCaseIndex, setModuleCaseIndex] = useState(0);
+  const [moduleQuizIndex, setModuleQuizIndex] = useState(0);
 
   useEffect(() => {
     if (!user || !module || learnerPreview) return;
@@ -75,6 +77,8 @@ export function ModuleDetailPage() {
     setPreCheckCompletedNow(false);
     setPracticeToolsOpen(false);
     setLearnDetailsOpen(false);
+    setModuleCaseIndex(0);
+    setModuleQuizIndex(0);
   }, [moduleId]);
 
   useEffect(() => {
@@ -133,6 +137,12 @@ export function ModuleDetailPage() {
     (q) => quizAnswers[q.id] === q.correctOptionId,
   ).length;
   const scorePercent = totalQuiz === 0 ? 0 : (correctCount / totalQuiz) * 100;
+  const currentModuleCase = module.cases[moduleCaseIndex] ?? module.cases[0];
+  const currentModuleQuizQuestion = module.quiz[moduleQuizIndex] ?? module.quiz[0];
+  const moduleQuizAnswered = currentModuleQuizQuestion
+    ? Boolean(quizAnswers[currentModuleQuizQuestion.id])
+    : false;
+  const allModuleQuizAnswered = Object.keys(quizAnswers).length === totalQuiz;
 
   async function submitQuiz() {
     if (!user || !module) return;
@@ -671,9 +681,41 @@ export function ModuleDetailPage() {
                 in the meantime.
               </div>
             )}
-            {module.cases.map((c) => (
-              <CasePracticeCard key={c.id} scenario={c} />
-            ))}
+            {currentModuleCase && (
+              <>
+                <div className="card flex flex-wrap items-center justify-between gap-3 p-4">
+                  <div>
+                    <div className="section-title">Case practice</div>
+                    <h2 className="mt-1 text-base text-ucla-900">
+                      Case {moduleCaseIndex + 1} of {module.cases.length}
+                    </h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={moduleCaseIndex === 0}
+                      onClick={() => setModuleCaseIndex((idx) => Math.max(0, idx - 1))}
+                    >
+                      <Icon name="chevron-left" size={14} />
+                      Previous
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      disabled={moduleCaseIndex >= module.cases.length - 1}
+                      onClick={() =>
+                        setModuleCaseIndex((idx) => Math.min(module.cases.length - 1, idx + 1))
+                      }
+                    >
+                      Next case
+                      <Icon name="arrow-right" size={14} />
+                    </button>
+                  </div>
+                </div>
+                <CasePracticeCard key={currentModuleCase.id} scenario={currentModuleCase} />
+              </>
+            )}
           </section>
         )}
 
@@ -724,47 +766,98 @@ export function ModuleDetailPage() {
               </div>
             ) : (
               <>
-                {module.quiz.map((q, idx) => (
-                  <QuizQuestion
-                    key={q.id}
-                    question={q}
-                    index={idx}
-                    total={module.quiz.length}
-                    selectedOptionId={quizAnswers[q.id]}
-                    showFeedback={quizSubmitted}
-                    locked={quizSubmitted}
-                    formative
-                    cheatSheetModuleId={module.id}
-                    onSelect={(id) =>
-                      setQuizAnswers((prev) => ({ ...prev, [q.id]: id }))
-                    }
-                  />
-                ))}
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  {quizSubmitted ? (
-                    <div className="text-sm text-slate-700">
+                {!quizSubmitted && currentModuleQuizQuestion && (
+                  <>
+                    <div className="rounded-2xl border border-ucla-100 bg-ucla-50/60 p-4 shadow-soft">
+                      <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
+                        <span>
+                          Question {moduleQuizIndex + 1} of {totalQuiz}
+                        </span>
+                        <span>{Object.keys(quizAnswers).length}/{totalQuiz} answered</span>
+                      </div>
+                      <div className="mt-2 h-2 overflow-hidden rounded-full bg-white ring-1 ring-ucla-100">
+                        <div
+                          className="h-full rounded-full bg-ucla-600 transition-all"
+                          style={{ width: `${((moduleQuizIndex + 1) / Math.max(totalQuiz, 1)) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                    <QuizQuestion
+                      question={currentModuleQuizQuestion}
+                      index={moduleQuizIndex}
+                      total={module.quiz.length}
+                      selectedOptionId={quizAnswers[currentModuleQuizQuestion.id]}
+                      formative
+                      cheatSheetModuleId={module.id}
+                      onSelect={(id) =>
+                        setQuizAnswers((prev) => ({
+                          ...prev,
+                          [currentModuleQuizQuestion.id]: id,
+                        }))
+                      }
+                    />
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        disabled={moduleQuizIndex === 0}
+                        onClick={() => setModuleQuizIndex((idx) => Math.max(0, idx - 1))}
+                      >
+                        <Icon name="chevron-left" size={14} />
+                        Previous
+                      </button>
+                      {moduleQuizIndex < totalQuiz - 1 ? (
+                        <button
+                          type="button"
+                          className="btn-primary"
+                          disabled={!moduleQuizAnswered}
+                          onClick={() =>
+                            setModuleQuizIndex((idx) => Math.min(totalQuiz - 1, idx + 1))
+                          }
+                        >
+                          Next question
+                          <Icon name="arrow-right" size={14} />
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-primary"
+                          onClick={submitQuiz}
+                          disabled={!allModuleQuizAnswered}
+                        >
+                          Submit module quiz
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+                {quizSubmitted && (
+                  <>
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-slate-700 shadow-soft">
                       Score:{' '}
                       <span className="font-bold tabular-nums text-ucla-900">
                         {Math.round(scorePercent)}%
                       </span>{' '}
-                      ({correctCount} / {totalQuiz})
+                      ({correctCount} / {totalQuiz}). Review the explanations, then finish
+                      the module post-check when ready.
                     </div>
-                  ) : (
-                    <span className="text-xs text-slate-500">
-                      {Object.keys(quizAnswers).length} of {totalQuiz} answered
-                    </span>
-                  )}
-                  <button
-                    className="btn-primary"
-                    onClick={submitQuiz}
-                    disabled={
-                      quizSubmitted ||
-                      Object.keys(quizAnswers).length !== totalQuiz
-                    }
-                  >
-                    Submit module quiz
-                  </button>
-                </div>
+                    {module.quiz.map((q, idx) => (
+                      <QuizQuestion
+                        key={q.id}
+                        question={q}
+                        index={idx}
+                        total={module.quiz.length}
+                        selectedOptionId={quizAnswers[q.id]}
+                        showFeedback
+                        locked
+                        formative
+                        cheatSheetModuleId={module.id}
+                        onSelect={(id) =>
+                          setQuizAnswers((prev) => ({ ...prev, [q.id]: id }))
+                        }
+                      />
+                    ))}
+                  </>
+                )}
               </>
             )}
           </section>
