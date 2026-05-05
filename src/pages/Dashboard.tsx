@@ -4,21 +4,21 @@ import { Icon } from '../components/ui/Icon';
 import { ModuleCard } from '../components/ModuleCard';
 import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { modulePhaseCount } from '../data/learningFlow';
+import { flashcards } from '../data/flashcards';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 import { hasCourseAssessment, hasPreviewCourseAssessment } from '../utils/progress';
+import { dueFlashcardCount } from '../utils/flashcardSchedule';
 
 const quickAccess = [
   { id: 'foundations', label: 'X-Ray Basics', to: '/modules/xray-foundations', icon: 'graduation' as const },
   { id: 'systematic', label: 'Systematic Approach', to: '/modules/xray-foundations#systematic', icon: 'clipboard' as const },
   { id: 'fractures', label: 'Common Fractures', to: '/modules', icon: 'bone' as const },
   { id: 'cases', label: 'Sports Medicine Cases', to: '/cases', icon: 'shield' as const },
-  { id: 'peds', label: 'Pediatric Pearls', to: '/modules/pediatric-adolescent', icon: 'pediatric' as const },
   { id: 'videos', label: 'AMSSM Videos', to: '/videos', icon: 'youtube' as const },
   { id: 'flashcards', label: 'Flashcards', to: '/flashcards', icon: 'sparkles' as const },
-  { id: 'cheatsheets', label: 'Cheat Sheets', to: '/cheatsheets', icon: 'clipboard' as const },
   { id: 'atlas', label: 'Image Atlas', to: '/atlas', icon: 'image' as const },
   { id: 'quiz', label: 'Quiz Mode', to: '/quiz/pre', icon: 'lightning' as const },
   { id: 'confidence', label: 'Confidence Ratings', to: '/progress', icon: 'star' as const },
@@ -36,6 +36,22 @@ export function DashboardPage() {
   const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
   const coreModules = moduleSummaries.filter((module) => module.status === 'full');
   const coreModuleIds = new Set(coreModules.map((module) => module.id));
+  const cardsDue = dueFlashcardCount(flashcards.map((flashcard) => flashcard.id));
+
+  function progressFor(moduleId: string): number {
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
+    if (!p) return 0;
+    if (p.completed) return 100;
+    if (p.completedTabs?.length) {
+      return Math.min(100, (p.completedTabs.length / modulePhaseCount) * 100);
+    }
+    return p.visited ? 10 : 0;
+  }
+
+  function confidenceFor(moduleId: string): number | null {
+    const p = learnerModules.find((m) => m.moduleId === moduleId);
+    return p?.postCheckConfidence ?? p?.preCheckConfidence ?? null;
+  }
 
   const filteredModules = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -47,9 +63,7 @@ export function DashboardPage() {
             .includes(q),
         )
       : moduleSummaries;
-    return [...matches].sort(
-      (a, b) => Number(a.status === 'placeholder') - Number(b.status === 'placeholder'),
-    );
+    return matches;
   }, [query]);
 
   const completedCount = learnerModules.filter(
@@ -119,21 +133,6 @@ export function DashboardPage() {
           icon: 'book-open' as const,
         };
 
-  function progressFor(moduleId: string): number {
-    const p = learnerModules.find((m) => m.moduleId === moduleId);
-    if (!p) return 0;
-    if (p.completed) return 100;
-    if (p.completedTabs?.length) {
-      return Math.min(100, (p.completedTabs.length / modulePhaseCount) * 100);
-    }
-    return p.visited ? 10 : 0;
-  }
-
-  function confidenceFor(moduleId: string): number | null {
-    const p = learnerModules.find((m) => m.moduleId === moduleId);
-    return p?.postCheckConfidence ?? p?.preCheckConfidence ?? null;
-  }
-
   return (
     <div className="container-page py-8 sm:py-12">
       <section className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
@@ -152,10 +151,6 @@ export function DashboardPage() {
               <Link to={heroPrimary.to} className="btn-gold">
                 {heroPrimary.label}
                 <Icon name="arrow-right" size={14} />
-              </Link>
-              <Link to="/cheatsheets" className="btn-secondary">
-                Cheat sheets
-                <Icon name="printer" size={14} />
               </Link>
             </div>
           </div>
@@ -190,9 +185,9 @@ export function DashboardPage() {
               </div>
               <div>
                 <div className="font-semibold text-ucla-900 tabular-nums">
-                  {learnerQuizzes.length}
+                  {cardsDue}
                 </div>
-                Quiz attempts
+                Cards due
               </div>
             </div>
             {user && (
@@ -249,15 +244,11 @@ export function DashboardPage() {
             </div>
           ) : (
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Use cheat sheets for clinic thresholds, atlas reps for normal anatomy, and flashcards
-              for quick retrieval practice between modules.
+              Use atlas reps for normal anatomy, flashcards for quick retrieval practice, and the
+              cheat-sheet panel below for clinic thresholds.
             </p>
           )}
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link to="/cheatsheets" className="btn-secondary">
-              Cheat sheets
-              <Icon name="printer" size={14} />
-            </Link>
             <Link to="/atlas" className="btn-secondary">
               Image atlas
               <Icon name="image" size={14} />
@@ -305,7 +296,7 @@ export function DashboardPage() {
             <h2>Continue modules</h2>
             <p className="mt-1 text-sm text-slate-500">
               {canOpenModules
-                ? 'Start with the core modules, then use expanded modules for extra practice as they are built.'
+                ? 'Start with the core modules, then use expanded regions for extra practice once the essentials feel solid.'
                 : 'Complete the course baseline first so your knowledge and confidence shift can be measured.'}
             </p>
           </div>

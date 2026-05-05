@@ -8,7 +8,7 @@ export function AnatomyLandmarkCard({ landmarks }: Props) {
   if (!landmarks.length) {
     return (
       <div className="card p-5 text-sm text-slate-500">
-        Normal anatomy landmarks are in build for this module.
+        Normal anatomy landmarks are covered through the systematic read and atlas images for this module.
       </div>
     );
   }

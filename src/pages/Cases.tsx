@@ -89,7 +89,7 @@ export function CasesPage() {
       <div className="mt-6">
         {activeCase ? (
           <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.6fr)]">
-            <aside className="card h-fit p-4">
+            <aside className="card order-2 h-fit p-4 lg:order-1">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <div className="section-title">Case queue</div>
@@ -138,7 +138,7 @@ export function CasesPage() {
                 })}
               </div>
             </aside>
-            <div className="min-w-0">
+            <div className="order-1 min-w-0 lg:order-2">
               <CasePracticeCard key={activeCase.id} scenario={activeCase} />
               <div className="mt-3 flex flex-wrap justify-end gap-2">
                 <button

@@ -6,6 +6,7 @@ import type { SystematicChecklistItem, XRayImageEntry } from '../types';
 
 type SystematicStep = SystematicChecklistItem['step'];
 type StudyMode = 'challenge' | 'checklist';
+type ImageCall = 'normal' | 'pathology';
 
 interface StepChallengeOption {
   id: string;
@@ -230,12 +231,14 @@ export function SystematicReadChecklist({
   );
   const [mode, setMode] = useState<StudyMode>(() => (defaultExpandedAll ? 'checklist' : 'challenge'));
   const [activeStep, setActiveStep] = useState<SystematicStep | null>(() => items[0]?.step ?? null);
+  const [imageCall, setImageCall] = useState<ImageCall | null>(null);
 
   useEffect(() => {
     setChecked(readCheckedState(storageKey));
     setChallengeAnswers(readChallengeAnswers(storageKey));
     setMode(defaultExpandedAll ? 'checklist' : 'challenge');
     setActiveStep(items[0]?.step ?? null);
+    setImageCall(null);
   }, [defaultExpandedAll, items, storageKey]);
 
   const totalPrompts = useMemo(
@@ -342,6 +345,11 @@ export function SystematicReadChecklist({
   const activeChallenge = guidance.challenge;
   const activeAnswer = challengeAnswers[activeItem.step];
   const activeAnswerIsCorrect = activeAnswer === activeChallenge.correctOptionId;
+  const imageCallIsCorrect =
+    practiceImage && imageCall
+      ? (practiceImage.isNormal && imageCall === 'normal') ||
+        (!practiceImage.isNormal && imageCall === 'pathology')
+      : false;
 
   return (
     <div className="card overflow-hidden">
@@ -450,6 +458,69 @@ export function SystematicReadChecklist({
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   {guidance.learnerPrompt}
                 </p>
+
+                {practiceImage && (
+                  <div className="mt-4 rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
+                        <Icon name="image" size={16} className="text-ucla-700" />
+                        Image call
+                      </div>
+                      {imageCall && (
+                        <span
+                          className={[
+                            'pill',
+                            imageCallIsCorrect
+                              ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                              : 'border-amber-200 bg-amber-50 text-amber-800',
+                          ].join(' ')}
+                        >
+                          <Icon name={imageCallIsCorrect ? 'check-circle' : 'alert'} size={14} />
+                          {imageCallIsCorrect ? 'Calibrated' : 'Re-check image'}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                      Before the checklist step, make the global call on the practice image.
+                    </p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {([
+                        { id: 'normal', label: 'Normal anatomy' },
+                        { id: 'pathology', label: 'Pathology' },
+                      ] as const).map((option) => {
+                        const selected = imageCall === option.id;
+                        const correct =
+                          (practiceImage.isNormal && option.id === 'normal') ||
+                          (!practiceImage.isNormal && option.id === 'pathology');
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setImageCall(option.id)}
+                            className={[
+                              'rounded-xl border px-3 py-2 text-left text-sm font-semibold transition-colors',
+                              imageCall && correct
+                                ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                                : selected
+                                  ? 'border-ucla-300 bg-white text-ucla-950'
+                                  : 'border-slate-200 bg-white text-slate-700 hover:border-ucla-200 hover:bg-ucla-50',
+                            ].join(' ')}
+                            aria-pressed={selected}
+                          >
+                            {option.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {imageCall && (
+                      <p className="mt-3 text-xs leading-relaxed text-slate-600">
+                        <span className="font-semibold text-ucla-900">Image answer: </span>
+                        {practiceImage.isNormal ? 'Normal anatomy' : 'Pathology'} ·{' '}
+                        {practiceImage.view}. {practiceImage.caption ?? practiceImage.alt}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-4 rounded-2xl border border-ucla-100 bg-white p-4 shadow-soft">
                   <div className="flex flex-wrap items-center justify-between gap-2">

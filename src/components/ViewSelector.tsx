@@ -15,7 +15,7 @@ export function ViewSelector({ views }: Props) {
   if (!views.length) {
     return (
       <div className="card p-5 text-sm text-slate-500">
-        Recommended views are in build for this module.
+        Recommended views are covered through the systematic read for this module.
       </div>
     );
   }
@@ -137,6 +137,8 @@ export function ViewSelector({ views }: Props) {
 }
 
 function pickTeachingView(views: ImagingView[]): ImagingView | undefined {
+  const explicitTeachingView = views.find((view) => view.teachingView);
+  if (explicitTeachingView) return explicitTeachingView;
   const priorityPattern =
     /weight|stress|axillary|scapular|mortise|sunrise|merchant|scaphoid|oblique|lateral|odontoid|open-mouth/i;
   return (

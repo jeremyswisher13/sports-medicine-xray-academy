@@ -20,6 +20,14 @@ interface PracticeChoice {
   label: string;
 }
 
+interface PracticeStats {
+  answered: number;
+  correct: number;
+  streak: number;
+}
+
+const emptyPracticeStats: PracticeStats = { answered: 0, correct: 0, streak: 0 };
+
 function isPracticeImage(entry: XRayImageEntry): entry is PracticeImageEntry {
   return practiceViews.some((view) => view === entry.view);
 }
@@ -121,6 +129,11 @@ export function AtlasPage() {
   const [practiceIndex, setPracticeIndex] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [showPracticeAnswer, setShowPracticeAnswer] = useState(false);
+  const [practiceStats, setPracticeStats] = useState<Record<PracticeMode, PracticeStats>>({
+    'normal-pathology': emptyPracticeStats,
+    view: emptyPracticeStats,
+    'key-clue': emptyPracticeStats,
+  });
 
   const imageCounts = useMemo(
     () => ({
@@ -185,6 +198,7 @@ export function AtlasPage() {
   const practiceModuleTitle = practiceImage?.moduleId
     ? moduleTitleById.get(practiceImage.moduleId)
     : undefined;
+  const activePracticeStats = practiceStats[practiceMode];
 
   useEffect(() => {
     setSelectedChoice(null);
@@ -238,11 +252,41 @@ export function AtlasPage() {
   }
 
   const handlePracticeChoice = (choiceId: string) => {
+    if (showPracticeAnswer) return;
     setSelectedChoice(choiceId);
     setShowPracticeAnswer(true);
+    const correct = correctChoiceId ? choiceId === correctChoiceId : true;
+    setPracticeStats((prev) => {
+      const current = prev[practiceMode];
+      return {
+        ...prev,
+        [practiceMode]: {
+          answered: current.answered + 1,
+          correct: current.correct + (correct ? 1 : 0),
+          streak: correct ? current.streak + 1 : 0,
+        },
+      };
+    });
     if (correctChoiceId) {
-      saveAtlasPractice(choiceId, choiceId === correctChoiceId);
+      saveAtlasPractice(choiceId, correct);
     }
+  };
+
+  const handleRevealKeyClue = () => {
+    if (showPracticeAnswer) return;
+    setShowPracticeAnswer(true);
+    setPracticeStats((prev) => {
+      const current = prev[practiceMode];
+      return {
+        ...prev,
+        [practiceMode]: {
+          answered: current.answered + 1,
+          correct: current.correct + 1,
+          streak: current.streak + 1,
+        },
+      };
+    });
+    saveAtlasPractice('revealed-key-clue', true);
   };
 
   return (
@@ -384,6 +428,10 @@ export function AtlasPage() {
                     {practiceImages.length} image{practiceImages.length === 1 ? '' : 's'}
                     {practiceModuleTitle ? ` · ${practiceModuleTitle}` : ''}
                   </div>
+                  <div className="mt-0.5 text-xs text-slate-500">
+                    {activePracticeStats.correct}/{activePracticeStats.answered} correct · streak{' '}
+                    {activePracticeStats.streak}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -462,13 +510,11 @@ export function AtlasPage() {
                 ) : (
                   <button
                     type="button"
-                    onClick={() => {
-                      setShowPracticeAnswer(true);
-                      saveAtlasPractice('revealed-key-clue', true);
-                    }}
-                    className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800"
+                    onClick={handleRevealKeyClue}
+                    disabled={showPracticeAnswer}
+                    className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800 disabled:cursor-default disabled:bg-ucla-200"
                   >
-                    Reveal clue
+                    {showPracticeAnswer ? 'Clue revealed' : 'Reveal clue'}
                     <Icon name="chevron-right" size={13} />
                   </button>
                 )}

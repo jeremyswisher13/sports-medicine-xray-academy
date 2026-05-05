@@ -6,32 +6,14 @@ import { flashcards } from '../data/flashcards';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { logAuditEvent } from '../services/firestore';
+import {
+  createEmptyFlashcardState,
+  loadFlashcardState,
+  nextDueAt,
+  saveFlashcardState,
+  type PersistedFlashcardState,
+} from '../utils/flashcardSchedule';
 import type { Flashcard as FlashcardData } from '../types';
-
-const STORAGE_KEY = 'sxra:flashcards-state';
-
-interface PersistedState {
-  reviewedIds: string[];
-  needsReviewIds: string[];
-}
-
-function loadState(): PersistedState {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw) as PersistedState;
-  } catch {
-    // ignore
-  }
-  return { reviewedIds: [], needsReviewIds: [] };
-}
-
-function saveState(s: PersistedState) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
-  } catch {
-    // ignore
-  }
-}
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -55,13 +37,13 @@ export function FlashcardsPage() {
   const [moduleFilter, setModuleFilter] = useState<string>(() =>
     validModuleFilter(moduleParam),
   );
-  const [mode, setMode] = useState<'all' | 'review-only'>('all');
+  const [mode, setMode] = useState<'all' | 'due-only'>('all');
   const [shuffleSeed, setShuffleSeed] = useState(0);
-  const [persisted, setPersisted] = useState<PersistedState>(loadState);
+  const [persisted, setPersisted] = useState<PersistedFlashcardState>(loadFlashcardState);
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    saveState(persisted);
+    saveFlashcardState(persisted);
   }, [persisted]);
 
   useEffect(() => {
@@ -82,11 +64,12 @@ export function FlashcardsPage() {
     if (moduleFilter !== 'all') {
       pool = pool.filter((f) => f.moduleId === moduleFilter);
     }
-    if (mode === 'review-only') {
-      pool = pool.filter((f) => persisted.needsReviewIds.includes(f.id));
+    if (mode === 'due-only') {
+      const now = Date.now();
+      pool = pool.filter((f) => (persisted.dueById[f.id] ?? 0) <= now);
     }
     return shuffleSeed === 0 ? pool : shuffle(pool);
-  }, [moduleFilter, mode, persisted.needsReviewIds, shuffleSeed]);
+  }, [moduleFilter, mode, persisted.dueById, shuffleSeed]);
 
   // Reset index when deck composition changes.
   useEffect(() => {
@@ -118,7 +101,14 @@ export function FlashcardsPage() {
       if (outcome === 'review') {
         needsReviewIds = Array.from(new Set([...needsReviewIds, card.id]));
       }
-      return { reviewedIds, needsReviewIds };
+      return {
+        reviewedIds,
+        needsReviewIds,
+        dueById: {
+          ...prev.dueById,
+          [card.id]: nextDueAt(outcome),
+        },
+      };
     });
     setIndex((i) => (i + 1) % Math.max(deck.length, 1));
   }
@@ -135,12 +125,12 @@ export function FlashcardsPage() {
   }
 
   function resetProgress() {
-    setPersisted({ reviewedIds: [], needsReviewIds: [] });
+    setPersisted(createEmptyFlashcardState());
     setIndex(0);
   }
 
   const totalReviewed = persisted.reviewedIds.length;
-  const totalNeedReview = persisted.needsReviewIds.length;
+  const dueCount = flashcards.filter((flashcard) => (persisted.dueById[flashcard.id] ?? 0) <= Date.now()).length;
   const totalCards = flashcards.length;
 
   return (
@@ -163,7 +153,7 @@ export function FlashcardsPage() {
               Your review pile
             </div>
             <div className="text-sm font-semibold text-ucla-900 tabular-nums">
-              {totalNeedReview} cards · {totalReviewed}/{totalCards} reviewed
+              {dueCount} due · {totalReviewed}/{totalCards} reviewed
             </div>
           </div>
         </div>
@@ -182,7 +172,7 @@ export function FlashcardsPage() {
                 </h2>
               </div>
               <span className="pill border-ucla-100 bg-ucla-50 text-ucla-800">
-                {mode === 'review-only' ? 'Review pile' : `${deck.length} cards`}
+                {mode === 'due-only' ? 'Due today' : `${deck.length} cards`}
               </span>
             </div>
             <Flashcard
@@ -200,8 +190,8 @@ export function FlashcardsPage() {
             </div>
             <h3 className="mt-3 text-ucla-900">Nothing in this deck.</h3>
             <p className="mt-1 text-sm text-slate-600">
-              {mode === 'review-only'
-                ? 'No cards are flagged for review. Try studying all cards.'
+              {mode === 'due-only'
+                ? 'No cards are due right now. Try studying all cards.'
                 : 'Pick a different module.'}
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -244,11 +234,11 @@ export function FlashcardsPage() {
           <select
             className="input"
             value={mode}
-            onChange={(e) => setMode(e.target.value as 'all' | 'review-only')}
+            onChange={(e) => setMode(e.target.value as 'all' | 'due-only')}
             aria-label="Study mode"
           >
             <option value="all">All cards</option>
-            <option value="review-only">Only "Need review"</option>
+            <option value="due-only">Due today</option>
           </select>
           <button
             type="button"

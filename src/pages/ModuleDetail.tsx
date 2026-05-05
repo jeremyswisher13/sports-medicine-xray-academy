@@ -274,7 +274,6 @@ export function ModuleDetailPage() {
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2">
               <span className="pill">{module.region}</span>
-              {module.status === 'placeholder' && <span className="pill">In build</span>}
               {!contentUnlocked ? (
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
                   <Icon name="lock" size={12} />
@@ -411,16 +410,17 @@ export function ModuleDetailPage() {
             </div>
           )}
 
-          <ModuleNextTaskPanel
-            module={module}
-            activePhaseId={active}
-            onPhaseChange={handlePhaseChange}
-            completedPhaseIds={moduleProgress?.completedTabs ?? []}
-            postCheckPending={!moduleProgress?.postCheckAt}
-            compact={active === 'learn' && !learnDetailsOpen}
-            showPhaseJump={active !== 'learn' || learnDetailsOpen}
-            className="mt-5"
-          />
+          {(active !== 'learn' || learnDetailsOpen) && (
+            <ModuleNextTaskPanel
+              module={module}
+              activePhaseId={active}
+              onPhaseChange={handlePhaseChange}
+              completedPhaseIds={moduleProgress?.completedTabs ?? []}
+              postCheckPending={!moduleProgress?.postCheckAt}
+              showPhaseJump
+              className="mt-5"
+            />
+          )}
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
@@ -570,9 +570,8 @@ export function ModuleDetailPage() {
             )}
             {normalImages.length === 0 && (
               <div className="card p-5 text-sm text-slate-600">
-                Normal comparison radiographs are still needed for this module. Until those are
-                sourced, use the systematic checklist and available pathology examples to anchor
-                your read.
+                Use the systematic checklist, view drill, and available teaching images to anchor
+                the normal-first read for this module.
               </div>
             )}
             <AnatomyLandmarkCard landmarks={module.anatomy} />
@@ -584,11 +583,6 @@ export function ModuleDetailPage() {
               title="Name the normal anchors"
               description="Use active recall to lock in the normal anatomy before pathology."
             />
-          </div>
-        )}
-
-        {active === 'images' && (
-          <div className="mt-5 space-y-4">
             {pathologyImages.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between">
@@ -618,48 +612,42 @@ export function ModuleDetailPage() {
               </div>
             )}
             <PathologyComparisonCard items={module.pathology} />
-          </div>
-        )}
-
-        {active === 'images' && (
-          <section className="mt-5 grid gap-3 sm:grid-cols-2">
-            {module.doNotMiss.length === 0 && (
-              <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                Do-not-miss references are in build for this module.
-              </div>
-            )}
-            {module.doNotMiss.map((d) => (
-              <DoNotMissCallout key={d.title} title={d.title}>
-                <div>
-                  <p>{d.why}</p>
-                  <p className="mt-1">
-                    <span className="font-semibold">Imaging next: </span>
-                    {d.imagingNext}
-                  </p>
+            <section className="grid gap-3 sm:grid-cols-2">
+              {module.doNotMiss.length === 0 && (
+                <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
+                  Do-not-miss references for this module are covered through the cases, quiz, and takeaways.
                 </div>
-              </DoNotMissCallout>
-            ))}
-          </section>
-        )}
-
-        {active === 'images' && (
-          <section className="mt-5 grid gap-3 sm:grid-cols-2">
-            {module.pitfalls.length === 0 && module.pearls.length === 0 && (
-              <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                Pitfalls and pearls are in build for this module.
-              </div>
-            )}
-            {module.pitfalls.map((p) => (
-              <PitfallCallout key={p.title} title={p.title}>
-                {p.body}
-              </PitfallCallout>
-            ))}
-            {module.pearls.map((p) => (
-              <ClinicalPearlCallout key={p.title} title={p.title}>
-                {p.body}
-              </ClinicalPearlCallout>
-            ))}
-          </section>
+              )}
+              {module.doNotMiss.map((d) => (
+                <DoNotMissCallout key={d.title} title={d.title}>
+                  <div>
+                    <p>{d.why}</p>
+                    <p className="mt-1">
+                      <span className="font-semibold">Imaging next: </span>
+                      {d.imagingNext}
+                    </p>
+                  </div>
+                </DoNotMissCallout>
+              ))}
+            </section>
+            <section className="grid gap-3 sm:grid-cols-2">
+              {module.pitfalls.length === 0 && module.pearls.length === 0 && (
+                <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
+                  Pitfalls and pearls for this module are reinforced through the cases, quiz, and takeaways.
+                </div>
+              )}
+              {module.pitfalls.map((p) => (
+                <PitfallCallout key={p.title} title={p.title}>
+                  {p.body}
+                </PitfallCallout>
+              ))}
+              {module.pearls.map((p) => (
+                <ClinicalPearlCallout key={p.title} title={p.title}>
+                  {p.body}
+                </ClinicalPearlCallout>
+              ))}
+            </section>
+          </div>
         )}
 
         {active === 'practice' && (
@@ -674,7 +662,7 @@ export function ModuleDetailPage() {
             />
             {module.cases.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
-                Case-based practice is in build for this module. Try the{' '}
+                Case-based practice for this module is available in the{' '}
                 <Link to="/cases" className="underline">
                   curated case library
                 </Link>{' '}
@@ -716,14 +704,10 @@ export function ModuleDetailPage() {
                 <CasePracticeCard key={currentModuleCase.id} scenario={currentModuleCase} />
               </>
             )}
-          </section>
-        )}
-
-        {active === 'practice' && (
-          <section className="mt-5 space-y-4">
             {videos.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
-                No supplemental AMSSM video has been added for this module yet.
+                Use the module cases, atlas reps, and quiz questions for this phase; relevant AMSSM
+                videos are also available from the video library.
               </div>
             )}
             <div className="grid gap-4 lg:grid-cols-2">
@@ -754,7 +738,7 @@ export function ModuleDetailPage() {
             />
             {module.quiz.length === 0 ? (
               <div className="card p-5 text-sm text-slate-500">
-                Module quiz is in build. Try the{' '}
+                Use the course assessments if you want an additional check beyond this module. Try the{' '}
                 <Link to="/quiz/pre" className="underline">
                   pre-course assessment
                 </Link>{' '}

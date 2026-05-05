@@ -31,7 +31,7 @@ export const moduleSummaries: ModuleSummary[] = [
     description:
       'Elbow radiograph interpretation including fat pad signs, radial head fractures, and pediatric elbow.',
     estimatedMinutes: 30,
-    status: 'placeholder',
+    status: 'full',
     emphasis: ['Fat pad signs', 'Radial head fracture', 'Pediatric medial epicondyle avulsion'],
   },
   {
@@ -42,7 +42,7 @@ export const moduleSummaries: ModuleSummary[] = [
     description:
       'Distal radius, scaphoid, carpal alignment, and hand-specific injury patterns.',
     estimatedMinutes: 35,
-    status: 'placeholder',
+    status: 'full',
     emphasis: ['Scaphoid fracture', 'Scapholunate widening', 'Mallet/jersey/gamekeeper'],
   },
   {
@@ -53,7 +53,7 @@ export const moduleSummaries: ModuleSummary[] = [
     description:
       'AP pelvis, frog-leg lateral, Dunn views, and femoroacetabular impingement basics.',
     estimatedMinutes: 35,
-    status: 'placeholder',
+    status: 'full',
     emphasis: ['Femoral neck stress', 'FAI morphology', 'SCFE red flags'],
   },
   {
@@ -86,7 +86,7 @@ export const moduleSummaries: ModuleSummary[] = [
     description:
       'Cervical and lumbar spine basics for sports medicine: alignment, spondylolysis, compression fractures.',
     estimatedMinutes: 25,
-    status: 'placeholder',
+    status: 'full',
     emphasis: ['Spondylolysis', 'Cervical instability', 'Compression fracture'],
   },
   {
@@ -97,7 +97,7 @@ export const moduleSummaries: ModuleSummary[] = [
     description:
       'Apophyses, growth plates, Salter-Harris, traction apophysitis, and adolescent red flags.',
     estimatedMinutes: 30,
-    status: 'placeholder',
+    status: 'full',
     emphasis: ['Salter-Harris', 'Apophysitis vs avulsion', 'SCFE'],
   },
   {

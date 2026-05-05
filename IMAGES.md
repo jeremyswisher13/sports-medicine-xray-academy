@@ -17,8 +17,7 @@ This app ships with original illustrative teaching cards plus open-license radio
    - **Open-i (NIH)** — many open-access medical images.
    - **PubMed Open Access subset** — many CC-BY figures.
    - **Original drawings** — fine, label as `isDiagram: true`.
-   - Patient images should only be used if they are institution-approved for education, fully de-identified, stripped of metadata, and cleared for this exact distribution context.
-   - **Never** use copyrighted radiology textbook scans, AMSSM slide screenshots, casual patient exports, or images with patient identifiers.
+   - **Never** use real patient images, copyrighted radiology textbook scans, AMSSM slide screenshots, casual patient exports, or images with patient identifiers.
 
 2. **Save the file.**
    - Diagrams: `public/diagrams/<short-name>.svg`
@@ -77,7 +76,7 @@ Every slot that doesn't yet have a registered entry renders a clean labeled plac
 
 ## Normal image sourcing priorities
 
-Learners need repeated normal comparisons before pathology feels obvious. The current atlas has a useful normal baseline, but the next acquisition pass should prioritize these open-license or institution-cleared fully de-identified images:
+Learners need repeated normal comparisons before pathology feels obvious. The current atlas has a useful normal baseline, but the next acquisition pass should prioritize these open-license images:
 
 - **Shoulder:** normal axillary view, AP internal/external rotation pair, normal AC/clavicle comparison view.
 - **Wrist/hand:** normal lateral wrist, scaphoid/navicular view, pediatric hand/wrist with open physes.
@@ -87,7 +86,7 @@ Learners need repeated normal comparisons before pathology feels obvious. The cu
 - **Pediatric/adolescent:** normal pediatric elbow ossification centers, normal ankle physes, normal hip/pelvis by age range.
 - **Do-not-miss comparisons:** normal carpal alignment PA/lateral, normal pediatric hip AP/frog-leg, normal ankle mortise comparison.
 
-For patient-derived images, use them only after educational-use approval, full de-identification, metadata stripping, and review for this web distribution context. Prefer open-license repositories when an equivalent normal image is available.
+Prefer open-license repositories when an equivalent normal image is available. Do not add patient-derived images to this app.
 
 ## Deep Research candidate list
 

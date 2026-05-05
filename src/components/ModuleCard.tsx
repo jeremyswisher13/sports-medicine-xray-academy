@@ -28,7 +28,6 @@ export function ModuleCard({
   saved = false,
   onToggleSaved,
 }: Props) {
-  const isPlaceholder = module.status === 'placeholder';
   return (
     <article
       className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-ucla-100/80 bg-gradient-to-b from-white to-ucla-50/70 shadow-soft transition-shadow hover:shadow-card"
@@ -39,9 +38,7 @@ export function ModuleCard({
         <span className={['pill border', regionTone[module.region]].join(' ')}>
           {module.region}
         </span>
-        {isPlaceholder ? (
-          <span className="pill">In build</span>
-        ) : completed ? (
+        {completed ? (
           <span className="pill-primary">
             <Icon name="check" size={12} /> Completed
           </span>

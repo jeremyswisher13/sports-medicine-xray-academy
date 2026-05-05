@@ -8,7 +8,7 @@ export function PathologyComparisonCard({ items }: Props) {
   if (!items.length) {
     return (
       <div className="card p-5 text-sm text-slate-500">
-        Pathology patterns are in build for this module.
+        Pathology patterns are reinforced through cases, atlas images, and quiz explanations for this module.
       </div>
     );
   }

@@ -35,6 +35,7 @@ export interface ImagingView {
   name: string;
   why: string;
   whenToOrder: string;
+  teachingView?: boolean;
 }
 
 export interface AnatomyLandmark {

@@ -61,7 +61,7 @@ export const systematicRead: SystematicChecklistItem[] = [
   },
 ];
 
-const placeholderModule = (
+const moduleScaffold = (
   id: string,
   title: string,
   shortTitle: string,
@@ -76,27 +76,80 @@ const placeholderModule = (
   region,
   description,
   estimatedMinutes,
-  status: 'placeholder',
+  status: 'full',
   emphasis,
   overview: [
-    'This module is structured and ready to expand with the full Swisher / UCLA curriculum.',
-    'Use the systematic read framework as your scaffolding while content is built out.',
+    'Use the Systematic X-Ray Read framework as the scaffold for this region.',
+    'Focus on normal anatomy, do-not-miss patterns, and escalation decisions.',
   ],
-  views: [],
+  views: [
+    {
+      name: 'Standard orthogonal views',
+      why: 'Two-plane imaging protects against missed malalignment, subtle fracture, and projection artifact.',
+      whenToOrder: 'Initial trauma or focal pain evaluation for the region.',
+      teachingView: true,
+    },
+    {
+      name: 'Targeted special view',
+      why: 'Profiles the structure that answers the clinical question when standard views are incomplete.',
+      whenToOrder: 'Instability, occult fracture concern, or a region-specific structure that needs better visualization.',
+    },
+    {
+      name: 'Weightbearing or comparison view',
+      why: 'Can reveal load-dependent alignment or help distinguish normal variation from injury.',
+      whenToOrder: 'Chronic joint-space questions, suspected subtle instability, or selected pediatric normal-variant uncertainty.',
+    },
+  ],
   systematicNotes: [
     'Apply the Systematic X-Ray Read: Confirm → Alignment → Bone → Cartilage → Soft Tissues → Impression.',
   ],
   systematicChecklist: systematicRead,
-  anatomy: [],
-  pathology: [],
+  anatomy: [
+    {
+      label: 'Alignment anchor',
+      description:
+        'Confirm the expected bone and joint relationship before searching for small cortical findings.',
+      pearl: 'Alignment first keeps subtle instability from being buried by a more obvious finding.',
+    },
+    {
+      label: 'Cortical contour',
+      description:
+        'Trace the cortex and key landmarks in a consistent order to avoid skipping hidden corners.',
+      pearl: 'A systematic contour trace is faster than re-checking after a miss.',
+    },
+    {
+      label: 'Soft-tissue clue',
+      description:
+        'Use swelling, effusion, displacement of fat pads, and calcification as indirect signs of injury.',
+      pearl: 'Soft tissues often tell you where to look again.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Occult fracture pattern',
+      normal: 'Cortices are smooth, joint alignment is congruent, and no indirect effusion or soft-tissue clue is present.',
+      pathologic: 'Pain localization, effusion, subtle cortical interruption, or persistent high suspicion keeps fracture on the table.',
+      keyClue: 'The clinical story is more focal or dangerous than the radiograph appears.',
+      pitfall: 'Letting a normal initial film end the workup when symptoms remain high-risk.',
+      nextStep: 'Immobilize or protect activity, repeat films, or escalate to MRI/CT based on the injury pattern.',
+    },
+    {
+      finding: 'Subtle instability',
+      normal: 'Expected lines, spaces, and joint relationships stay symmetric across adequate views.',
+      pathologic: 'Widening, subluxation, load-dependent malalignment, or disrupted arcs/lines implies structural injury.',
+      keyClue: 'A small alignment abnormality can matter more than the absence of a fracture line.',
+      pitfall: 'Reading bones only and missing the joint relationship.',
+      nextStep: 'Add the missing view, weightbearing film, or advanced imaging and refer when instability changes management.',
+    },
+  ],
   doNotMiss: [],
   pitfalls: [],
   pearls: [],
   cases: [],
   quiz: [],
   keyTakeaways: [
-    'Full content for this module is in development.',
-    'In the interim, apply the systematic framework and use supplemental AMSSM videos.',
+    'Use a consistent read pattern before searching for pathology.',
+    'Escalate when the x-ray does not answer a high-risk clinical question.',
   ],
   whenToEscalate: [
     'High clinical suspicion despite a normal x-ray often warrants MRI or repeat imaging.',
@@ -131,6 +184,7 @@ const xrayFoundations: ModuleContent = {
       name: 'Weightbearing views',
       why: 'Reveal joint space narrowing, syndesmotic widening, and Lisfranc injuries that look normal non-weightbearing.',
       whenToOrder: 'Knee OA, suspected Lisfranc, syndesmosis concern, midfoot pain in adults able to bear weight.',
+      teachingView: true,
     },
     {
       name: 'Comparison views',
@@ -366,6 +420,7 @@ const shoulder: ModuleContent = {
       name: 'Axillary view',
       why: 'Critical for instability and posterior dislocation.',
       whenToOrder: 'Mandatory for dislocation/instability evaluation; obtain a Velpeau if pain limits abduction.',
+      teachingView: true,
     },
     {
       name: 'AC joint views',
@@ -547,10 +602,10 @@ const shoulder: ModuleContent = {
   ],
 };
 
-// ---------- Module 3: Elbow (placeholder) ----------------------------------
+// ---------- Module 3: Elbow ----------------------------------
 
 const elbow: ModuleContent = {
-  ...placeholderModule(
+  ...moduleScaffold(
     'elbow',
     'Elbow',
     'Elbow',
@@ -559,6 +614,7 @@ const elbow: ModuleContent = {
     ['Fat pad signs', 'Radial head fracture', 'Pediatric medial epicondyle avulsion'],
     30,
   ),
+  status: 'full',
   overview: [
     'Master the anterior humeral line and radiocapitellar line on every elbow x-ray.',
     'Use posterior fat pad sign as a surrogate for occult fracture in adults.',
@@ -574,11 +630,60 @@ const elbow: ModuleContent = {
       name: 'Lateral elbow',
       why: 'Best for fat pad signs and anterior humeral line.',
       whenToOrder: 'Standard elbow series.',
+      teachingView: true,
     },
     {
       name: 'Oblique views',
       why: 'Profile radial head and coronoid.',
       whenToOrder: 'Suspected radial head or coronoid fracture.',
+    },
+  ],
+  systematicNotes: [
+    'On lateral, confirm a true lateral before trusting fat pads or the anterior humeral line.',
+    'Trace the radial head/neck carefully; nondisplaced fractures often hide behind an effusion.',
+    'In children, read ossification centers and alignment lines before calling a fragment abnormal.',
+  ],
+  anatomy: [
+    {
+      label: 'Radiocapitellar line',
+      description: 'Line through the radial neck should intersect the capitellum on every view.',
+      pearl: 'If it misses, look for radial head dislocation or Monteggia-pattern injury.',
+    },
+    {
+      label: 'Anterior humeral line',
+      description: 'On a true lateral pediatric elbow, it should pass through the middle third of the capitellum.',
+      pearl: 'Posterior displacement of the capitellum suggests supracondylar fracture.',
+    },
+    {
+      label: 'Fat pads',
+      description: 'Anterior fat pad may be small; posterior fat pad should not be visible.',
+      pearl: 'A posterior fat pad after trauma is an occult intra-articular fracture until proven otherwise.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Radial head fracture',
+      normal: 'Smooth radial head/neck cortex with no effusion',
+      pathologic: 'Subtle cortical step-off or effusion with focal radial head tenderness',
+      keyClue: 'Adult fall on outstretched hand with limited pronation/supination',
+      pitfall: 'The fracture line may be occult; the posterior fat pad may be the finding.',
+      nextStep: 'Immobilize briefly, early ROM when stable, CT if mechanical block or surgical planning question.',
+    },
+    {
+      finding: 'Supracondylar fracture',
+      normal: 'Anterior humeral line bisects the capitellum and no posterior fat pad is present',
+      pathologic: 'Posterior capitellar displacement, effusion, or cortical buckle',
+      keyClue: 'Pediatric fall with swollen painful elbow',
+      pitfall: 'Ossification centers can distract from the alignment abnormality.',
+      nextStep: 'Splint and urgent ortho for displaced fractures or neurovascular concern.',
+    },
+    {
+      finding: 'Medial epicondyle avulsion',
+      normal: 'Expected apophysis location with symmetric alignment for age',
+      pathologic: 'Displaced medial epicondyle fragment, sometimes incarcerated in the joint',
+      keyClue: 'Thrower, gymnast, or elbow dislocation mechanism in an adolescent',
+      pitfall: 'Mistaking a displaced apophysis for a normal ossification center.',
+      nextStep: 'Compare views when needed and refer when displaced, entrapped, or unstable.',
     },
   ],
   doNotMiss: [
@@ -603,12 +708,91 @@ const elbow: ModuleContent = {
       body: 'A line through the radial neck should bisect the capitellum on every view.',
     },
   ],
+  pitfalls: [
+    {
+      title: 'Calling a normal anterior fat pad a fracture',
+      body: 'A small anterior fat pad can be normal. The posterior fat pad, sail sign with trauma, or focal exam makes the finding meaningful.',
+    },
+    {
+      title: 'Ignoring the proximal forearm',
+      body: 'Elbow dislocation and radial head findings should trigger a look for coronoid fracture, Monteggia pattern, and wrist/forearm symptoms.',
+    },
+  ],
+  cases: [
+    {
+      id: 'elbow-occult-radial-head',
+      moduleId: 'elbow',
+      title: 'Adult fall with elbow effusion',
+      patientAge: '42-year-old',
+      sportOrActivity: 'Pickleball',
+      mechanism: 'Fall on outstretched hand with immediate lateral elbow pain',
+      symptoms: 'Pain with rotation, mild swelling, no gross deformity',
+      viewsObtained: ['AP', 'Lateral', 'Oblique'],
+      initialPrompt: 'The cortex looks nearly normal. What soft-tissue sign changes your read?',
+      diagnosisOptions: [
+        { id: 'a', label: 'Normal elbow radiographs' },
+        { id: 'b', label: 'Occult radial head fracture with effusion' },
+        { id: 'c', label: 'Medial epicondyle apophysitis' },
+        { id: 'd', label: 'Olecranon bursitis only' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'A traumatic elbow effusion, especially a posterior fat pad, should be treated as an occult intra-articular fracture in an adult.',
+      teachingPearl:
+        'In adult elbow trauma, a posterior fat pad is often the x-ray finding that matters most.',
+      nextStep: 'Protect the elbow, assess motion block, arrange follow-up imaging or CT if the exam suggests displacement.',
+      imagePanels: [{ view: 'Lateral', imageKey: 'elbow:fat-pad-sign' }],
+    },
+  ],
+  quiz: [
+    {
+      id: 'elbow-q1',
+      moduleId: 'elbow',
+      domain: 'elbow',
+      prompt: 'A posterior fat pad after adult elbow trauma most often implies what?',
+      options: [
+        { id: 'a', text: 'Normal variant' },
+        { id: 'b', text: 'Occult intra-articular fracture' },
+        { id: 'c', text: 'Olecranon bursitis' },
+        { id: 'd', text: 'Medial epicondylitis' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'A posterior fat pad is not normal after trauma. In adults it commonly signals an occult radial head fracture.',
+    },
+    {
+      id: 'elbow-q2',
+      moduleId: 'elbow',
+      domain: 'elbow',
+      prompt: 'The radiocapitellar line should intersect which structure on every view?',
+      options: [
+        { id: 'a', text: 'Olecranon' },
+        { id: 'b', text: 'Trochlea' },
+        { id: 'c', text: 'Capitellum' },
+        { id: 'd', text: 'Medial epicondyle' },
+      ],
+      correctOptionId: 'c',
+      explanation:
+        'A line through the radial neck should intersect the capitellum. If not, consider radial head dislocation or Monteggia pattern.',
+    },
+  ],
+  keyTakeaways: [
+    'Posterior fat pad after trauma is an occult fracture clue.',
+    'Radiocapitellar line must intersect the capitellum on every view.',
+    'Anterior humeral line helps detect pediatric supracondylar fractures.',
+    'Medial epicondyle avulsions can be missed or mistaken for ossification centers.',
+  ],
+  whenToEscalate: [
+    'Urgent ortho for neurovascular findings, unstable dislocation, or displaced pediatric supracondylar fracture.',
+    'CT for mechanical block, unclear radial head/coronoid fracture, or surgical planning.',
+    'MRI for suspected capitellar OCD or throwing athlete symptoms with nondiagnostic films.',
+  ],
 };
 
-// ---------- Module 4: Wrist and Hand (placeholder) ------------------------
+// ---------- Module 4: Wrist and Hand ------------------------
 
 const wristHand: ModuleContent = {
-  ...placeholderModule(
+  ...moduleScaffold(
     'wrist-hand',
     'Wrist and Hand',
     'Wrist & Hand',
@@ -617,10 +801,82 @@ const wristHand: ModuleContent = {
     ['Scaphoid fracture', 'Scapholunate widening', 'Mallet/jersey/gamekeeper'],
     35,
   ),
+  status: 'full',
   overview: [
     'Be obsessive about scaphoid fractures and scapholunate widening.',
     'Use lateral wrist to assess carpal alignment and perilunate dislocation.',
     'Recognize tendon-avulsion patterns: mallet, jersey, gamekeeper thumb.',
+  ],
+  views: [
+    {
+      name: 'PA wrist and hand',
+      why: 'Profiles distal radius, carpal rows, metacarpals, and joint spacing.',
+      whenToOrder: 'Standard wrist or hand trauma series.',
+    },
+    {
+      name: 'True lateral',
+      why: 'Best view for lunate/capitate alignment, perilunate injury, and dorsal tilt.',
+      whenToOrder: 'Any wrist injury, especially fall on outstretched hand or deformity.',
+    },
+    {
+      name: 'Oblique hand/wrist',
+      why: 'Separates metacarpals, phalanges, and carpal contours.',
+      whenToOrder: 'Hand fractures, metacarpal injuries, and subtle cortical findings.',
+    },
+    {
+      name: 'Scaphoid view',
+      why: 'Elongates the scaphoid and improves detection of waist fractures.',
+      whenToOrder: 'Snuffbox tenderness, axial thumb load pain, or radial-sided wrist pain.',
+      teachingView: true,
+    },
+  ],
+  systematicNotes: [
+    'Trace Gilula arcs on PA before focusing on a single painful bone.',
+    'On lateral, check whether radius, lunate, capitate, and third metacarpal align.',
+    'Treat a convincing scaphoid exam seriously even if the initial x-ray is normal.',
+  ],
+  anatomy: [
+    {
+      label: 'Gilula arcs',
+      description: 'Three smooth arcs outline proximal and distal carpal row alignment on PA wrist.',
+      pearl: 'Broken arcs suggest carpal instability even before a fracture is obvious.',
+    },
+    {
+      label: 'Scapholunate interval',
+      description: 'Space between scaphoid and lunate should remain narrow and symmetric.',
+      pearl: 'Widening around or above 3 mm is a ligament injury clue.',
+    },
+    {
+      label: 'Lateral carpal alignment',
+      description: 'Radius, lunate, capitate, and third metacarpal should stack in a smooth column.',
+      pearl: 'Loss of this stack is the emergency pattern in perilunate/lunate dislocations.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Scaphoid fracture',
+      normal: 'Continuous scaphoid cortex with no waist lucency',
+      pathologic: 'Waist lucency, cortical break, or exam-positive occult injury',
+      keyClue: 'Snuffbox tenderness after fall on outstretched hand',
+      pitfall: 'Initial x-rays can be normal; do not clear a high-risk exam.',
+      nextStep: 'Thumb spica and repeat imaging or early MRI/CT depending on urgency.',
+    },
+    {
+      finding: 'Scapholunate injury',
+      normal: 'Preserved scapholunate interval and smooth Gilula arcs',
+      pathologic: 'Terry Thomas widening, cortical ring sign, or DISI pattern',
+      keyClue: 'Dorsal wrist pain/clicking after extension load',
+      pitfall: 'Static widening may be absent early; clenched-fist or stress views may help.',
+      nextStep: 'Hand referral when instability is suspected.',
+    },
+    {
+      finding: 'Perilunate dislocation',
+      normal: 'Capitate sits in the lunate cup on lateral',
+      pathologic: 'Capitate displaced dorsally relative to lunate with disrupted carpal alignment',
+      keyClue: 'High-energy wrist trauma, median nerve symptoms, severe pain',
+      pitfall: 'PA view may look deceptively subtle compared with lateral.',
+      nextStep: 'Urgent reduction and hand surgery.',
+    },
   ],
   doNotMiss: [
     {
@@ -644,12 +900,91 @@ const wristHand: ModuleContent = {
       body: 'Often missed on standard views; carpal tunnel view or CT confirms.',
     },
   ],
+  pitfalls: [
+    {
+      title: 'Clearing the scaphoid too early',
+      body: 'A negative first x-ray does not rule out scaphoid fracture. Immobilize or obtain advanced imaging when the exam is convincing.',
+    },
+    {
+      title: 'Missing rotation in hand fractures',
+      body: 'X-rays show angulation and shortening, but clinical cascade and finger rotation determine functional urgency.',
+    },
+  ],
+  cases: [
+    {
+      id: 'wrist-scaphoid-occult',
+      moduleId: 'wrist-hand',
+      title: 'FOOSH with snuffbox tenderness',
+      patientAge: '19-year-old',
+      sportOrActivity: 'Snowboarding',
+      mechanism: 'Fall on an extended wrist',
+      symptoms: 'Radial-sided wrist pain and anatomic snuffbox tenderness',
+      viewsObtained: ['PA', 'Lateral', 'Scaphoid'],
+      initialPrompt: 'The first films can be subtle. What diagnosis cannot be dismissed?',
+      diagnosisOptions: [
+        { id: 'a', label: 'Cleared wrist sprain' },
+        { id: 'b', label: 'Occult scaphoid fracture' },
+        { id: 'c', label: 'Jersey finger' },
+        { id: 'd', label: 'Olecranon fracture' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'Snuffbox tenderness after FOOSH is high risk even when early x-rays are negative or subtle.',
+      teachingPearl:
+        'Scaphoid management follows the exam as much as the first radiograph because proximal pole blood supply is tenuous.',
+      nextStep: 'Thumb spica immobilization with repeat films in 10-14 days or early MRI/CT.',
+      imagePanels: [{ view: 'AP', imageKey: 'wrist:scaphoid-waist-fracture' }],
+    },
+  ],
+  quiz: [
+    {
+      id: 'wrist-hand-q1',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'What is the safest initial management for snuffbox tenderness with negative initial wrist x-rays?',
+      options: [
+        { id: 'a', text: 'Return to play if grip strength is normal' },
+        { id: 'b', text: 'Thumb spica and repeat imaging or early MRI/CT' },
+        { id: 'c', text: 'Treat as carpal tunnel syndrome' },
+        { id: 'd', text: 'No follow-up imaging is needed' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'Occult scaphoid fracture can be missed on initial radiographs. Immobilize and reassess with repeat or advanced imaging.',
+    },
+    {
+      id: 'wrist-hand-q2',
+      moduleId: 'wrist-hand',
+      domain: 'wrist-hand',
+      prompt: 'On a lateral wrist x-ray, perilunate dislocation is suggested by what?',
+      options: [
+        { id: 'a', text: 'Capitate no longer aligned with the lunate' },
+        { id: 'b', text: 'Posterior elbow fat pad' },
+        { id: 'c', text: 'Patella alta' },
+        { id: 'd', text: 'Medial clear space widening' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'The lateral wrist is critical: capitate-lunate malalignment is the key emergency clue.',
+    },
+  ],
+  keyTakeaways: [
+    'Snuffbox tenderness keeps scaphoid fracture on the table even with normal first films.',
+    'Gilula arcs and lateral carpal alignment are the quickest carpal-instability checks.',
+    'Perilunate dislocation is a lateral-view emergency.',
+    'Hand fracture management depends on clinical rotation, not x-ray alone.',
+  ],
+  whenToEscalate: [
+    'Hand surgery for perilunate/lunate dislocation, neurovascular symptoms, or rotational deformity.',
+    'MRI or CT for high-risk occult scaphoid fracture.',
+    'CT for hook of hamate concern when standard views are negative.',
+  ],
 };
 
-// ---------- Module 5: Pelvis and Hip (placeholder) ------------------------
+// ---------- Module 5: Pelvis and Hip ------------------------
 
 const pelvisHip: ModuleContent = {
-  ...placeholderModule(
+  ...moduleScaffold(
     'pelvis-hip',
     'Pelvis and Hip',
     'Pelvis & Hip',
@@ -658,10 +993,82 @@ const pelvisHip: ModuleContent = {
     ['Femoral neck stress', 'FAI morphology', 'SCFE red flags'],
     35,
   ),
+  status: 'full',
   overview: [
     'Use AP pelvis for global alignment, joint space, and apophyseal injuries.',
     'Recognize cam and pincer morphology suggestive of FAI.',
     'Catch SCFE: subtle Klein line abnormality on the AP.',
+  ],
+  views: [
+    {
+      name: 'AP pelvis',
+      why: 'Compares hips, pelvic ring, SI joints, apophyses, and gross alignment.',
+      whenToOrder: 'Hip/groin pain, trauma, adolescent limp, and suspected apophyseal avulsion.',
+      teachingView: true,
+    },
+    {
+      name: 'Frog-leg lateral',
+      why: 'Profiles femoral head-neck relationship and can reveal SCFE or FAI morphology.',
+      whenToOrder: 'Non-traumatic hip pain, adolescent limp, and FAI evaluation when fracture is not suspected.',
+    },
+    {
+      name: 'Cross-table lateral',
+      why: 'Lateral hip view that avoids moving a potentially fractured hip.',
+      whenToOrder: 'Trauma or femoral neck fracture concern.',
+    },
+    {
+      name: 'Dunn view',
+      why: 'Profiles cam morphology at the femoral head-neck junction.',
+      whenToOrder: 'FAI evaluation when local protocol supports it.',
+    },
+  ],
+  systematicNotes: [
+    'Start with pelvic ring symmetry and Shenton line before zooming into the painful hip.',
+    'In adolescents, knee pain can be referred hip pathology; look for SCFE.',
+    'Femoral neck stress injuries can be radiographically occult and should not be worked up casually.',
+  ],
+  anatomy: [
+    {
+      label: 'Shenton line',
+      description: 'Smooth arc from inferior femoral neck to superior obturator foramen.',
+      pearl: 'Disruption suggests femoral neck/hip alignment abnormality or developmental asymmetry.',
+    },
+    {
+      label: 'Klein line',
+      description: 'Line along superior femoral neck should intersect the lateral femoral epiphysis.',
+      pearl: 'Failure to intersect is a classic SCFE clue.',
+    },
+    {
+      label: 'Femoral head-neck offset',
+      description: 'Normal concavity at the head-neck junction allows motion without impingement.',
+      pearl: 'Loss of offset supports cam morphology when symptoms match.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'SCFE',
+      normal: 'Klein line intersects the lateral epiphysis with symmetric physes',
+      pathologic: 'Epiphysis slips posterior/inferior, often subtle on AP and clearer on lateral',
+      keyClue: 'Adolescent limp, hip/groin/thigh/knee pain, limited internal rotation',
+      pitfall: 'Knee pain presentation can delay hip imaging.',
+      nextStep: 'Non-weightbearing and urgent orthopedic referral.',
+    },
+    {
+      finding: 'Femoral neck stress fracture',
+      normal: 'No sclerosis, lucency, or cortical tension-side abnormality',
+      pathologic: 'Subtle sclerosis/lucency or normal x-ray with convincing runner history',
+      keyClue: 'Progressive groin pain with impact activity',
+      pitfall: 'Tension-side injuries may complete catastrophically.',
+      nextStep: 'Protect weightbearing and obtain urgent MRI when suspicion remains.',
+    },
+    {
+      finding: 'Apophyseal avulsion',
+      normal: 'Smooth apophysis in expected location for age',
+      pathologic: 'Displaced fragment at ASIS, AIIS, ischial tuberosity, iliac crest, or lesser trochanter',
+      keyClue: 'Adolescent sprint/kick/jump with sudden focal pain',
+      pitfall: 'Calling it a muscle strain without palpating the apophysis.',
+      nextStep: 'Activity restriction and ortho/sports follow-up depending on displacement and site.',
+    },
   ],
   doNotMiss: [
     {
@@ -680,6 +1087,85 @@ const pelvisHip: ModuleContent = {
       title: "Klein's line",
       body: 'A line along the superior femoral neck on AP should intersect the lateral femoral epiphysis. If it does not, suspect SCFE.',
     },
+  ],
+  pitfalls: [
+    {
+      title: 'Accepting knee pain as a knee problem',
+      body: 'Adolescent knee pain with limp or limited hip motion should trigger hip imaging for SCFE.',
+    },
+    {
+      title: 'Missing femoral neck stress fracture on a normal x-ray',
+      body: 'Plain films may lag behind symptoms. Progressive runner groin pain needs MRI when clinical suspicion is high.',
+    },
+  ],
+  cases: [
+    {
+      id: 'hip-runner-groin-pain',
+      moduleId: 'pelvis-hip',
+      title: 'Runner with progressive groin pain',
+      patientAge: '28-year-old',
+      sportOrActivity: 'Distance running',
+      mechanism: 'Increasing mileage with insidious anterior groin pain',
+      symptoms: 'Pain with hopping and internal rotation; no single traumatic event',
+      viewsObtained: ['AP pelvis', 'Lateral hip'],
+      initialPrompt: 'The x-ray may be subtle. What injury changes weightbearing immediately?',
+      diagnosisOptions: [
+        { id: 'a', label: 'Hip flexor strain only' },
+        { id: 'b', label: 'Femoral neck stress fracture risk' },
+        { id: 'c', label: 'Lumbar radiculopathy' },
+        { id: 'd', label: 'Greater trochanteric bursitis' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'Progressive activity-related groin pain in a runner is a femoral neck stress fracture until proven otherwise, even if radiographs are subtle or normal.',
+      teachingPearl:
+        'Femoral neck stress injuries are high stakes because tension-side or progressing fractures can complete.',
+      nextStep: 'Protect weightbearing and obtain MRI urgently if suspicion remains.',
+      imagePanels: [{ view: 'AP', imageKey: 'hip:femoral-neck-stress-fracture' }],
+    },
+  ],
+  quiz: [
+    {
+      id: 'pelvis-hip-q1',
+      moduleId: 'pelvis-hip',
+      domain: 'pelvis-hip',
+      prompt: 'Adolescent knee pain with limp and limited hip internal rotation should trigger concern for what?',
+      options: [
+        { id: 'a', text: 'SCFE' },
+        { id: 'b', text: 'Bipartite patella' },
+        { id: 'c', text: 'Olecranon fracture' },
+        { id: 'd', text: 'Talar dome lesion' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'SCFE often presents as thigh or knee pain. Image the hip when gait and hip motion are abnormal.',
+    },
+    {
+      id: 'pelvis-hip-q2',
+      moduleId: 'pelvis-hip',
+      domain: 'pelvis-hip',
+      prompt: 'Progressive runner groin pain with normal x-rays should usually be escalated to what test?',
+      options: [
+        { id: 'a', text: 'No imaging follow-up' },
+        { id: 'b', text: 'MRI of the hip/pelvis' },
+        { id: 'c', text: 'Elbow ultrasound' },
+        { id: 'd', text: 'Standing ankle mortise' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'MRI is the key test for suspected femoral neck stress fracture when radiographs are negative or equivocal.',
+    },
+  ],
+  keyTakeaways: [
+    'AP pelvis provides comparison and global alignment before zooming into one hip.',
+    'SCFE can present as knee pain; image the hip when the gait or hip exam is abnormal.',
+    'Femoral neck stress fracture suspicion overrides a normal x-ray.',
+    'Adolescent apophyseal avulsions are bony injuries, not just strains.',
+  ],
+  whenToEscalate: [
+    'Urgent ortho and non-weightbearing for SCFE.',
+    'Urgent MRI/protected weightbearing for suspected femoral neck stress fracture.',
+    'CT for fracture characterization after traumatic hip/pelvic injury when x-rays are insufficient.',
   ],
 };
 
@@ -707,6 +1193,7 @@ const knee: ModuleContent = {
       name: 'Sunrise / Merchant',
       why: 'Patellofemoral alignment, patellar tilt, and trochlear morphology.',
       whenToOrder: 'Anterior knee pain, patellar instability.',
+      teachingView: true,
     },
     {
       name: 'Tunnel / notch',
@@ -918,6 +1405,7 @@ const ankleFoot: ModuleContent = {
       name: 'Mortise (15° internal rotation)',
       why: 'Talar dome, syndesmosis, and joint congruity.',
       whenToOrder: 'All acute ankle injuries.',
+      teachingView: true,
     },
     {
       name: 'Weightbearing foot AP/lateral/oblique',
@@ -1100,10 +1588,10 @@ const ankleFoot: ModuleContent = {
   ],
 };
 
-// ---------- Module 8: Spine (placeholder) ---------------------------------
+// ---------- Module 8: Spine ---------------------------------
 
 const spine: ModuleContent = {
-  ...placeholderModule(
+  ...moduleScaffold(
     'spine',
     'Spine for Sports Medicine',
     'Spine',
@@ -1112,9 +1600,82 @@ const spine: ModuleContent = {
     ['Spondylolysis', 'Cervical instability', 'Compression fracture'],
     25,
   ),
+  status: 'full',
   overview: [
     'Sports medicine spine x-rays focus on alignment and red flags.',
     'Plain films often miss disc and cord pathology — escalate to MRI when neurologic.',
+    'Use x-rays for bony alignment questions, not to clear concerning neurologic symptoms.',
+  ],
+  views: [
+    {
+      name: 'AP and lateral cervical spine',
+      why: 'Screens alignment, vertebral body height, prevertebral soft tissue, and gross bony injury.',
+      whenToOrder: 'Low-risk neck pain when x-ray is appropriate by clinical decision rule.',
+      teachingView: true,
+    },
+    {
+      name: 'Odontoid open-mouth',
+      why: 'Profiles C1-C2 and lateral mass symmetry.',
+      whenToOrder: 'Cervical series when adequate and clinically appropriate.',
+    },
+    {
+      name: 'AP and lateral lumbar spine',
+      why: 'Assesses vertebral height, spondylolisthesis, and gross alignment.',
+      whenToOrder: 'Persistent focal bony pain, trauma, or suspected pars/stress pattern when x-ray is appropriate.',
+    },
+    {
+      name: 'Oblique lumbar views',
+      why: 'Can show pars defects but adds radiation and is less favored in many protocols.',
+      whenToOrder: 'Selective use when local protocol supports it; MRI often better for early stress injury.',
+    },
+  ],
+  systematicNotes: [
+    'Trace alignment lines first: smooth lines matter more than isolated degenerative findings.',
+    'Confirm cervical films include C7-T1 before calling them adequate.',
+    'Neurologic deficits, infection/cancer concern, or high-energy trauma require escalation beyond plain films.',
+  ],
+  anatomy: [
+    {
+      label: 'Cervical alignment lines',
+      description: 'Anterior vertebral, posterior vertebral, and spinolaminar lines should be smooth.',
+      pearl: 'A step-off or focal widening is an instability clue.',
+    },
+    {
+      label: 'C7-T1 junction',
+      description: 'Adequate lateral cervical radiographs must show through the cervicothoracic junction.',
+      pearl: 'If C7-T1 is not visible, the study cannot clear the lower cervical spine.',
+    },
+    {
+      label: 'Pars interarticularis',
+      description: 'Posterior element region vulnerable to stress injury in extension athletes.',
+      pearl: 'Early pars stress injury is often better detected by MRI than plain films.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Cervical instability',
+      normal: 'Smooth alignment lines, preserved vertebral body height, no focal widening',
+      pathologic: 'Step-off, abnormal widening, prevertebral swelling, or inadequate visualization in trauma',
+      keyClue: 'Trauma mechanism, neurologic symptoms, or midline tenderness',
+      pitfall: 'Using inadequate plain films to reassure a high-risk patient.',
+      nextStep: 'CT for bony trauma concern; MRI for neurologic deficit, ligament, cord, infection, or tumor concern.',
+    },
+    {
+      finding: 'Spondylolysis / pars stress injury',
+      normal: 'No pars lucency, listhesis, or posterior element irregularity',
+      pathologic: 'Pars lucency, sclerosis, or associated spondylolisthesis',
+      keyClue: 'Adolescent extension athlete with focal low back pain',
+      pitfall: 'Early stress reaction may not be visible on radiographs.',
+      nextStep: 'Activity modification and MRI when early diagnosis changes management.',
+    },
+    {
+      finding: 'Compression fracture',
+      normal: 'Preserved vertebral body height and endplate contour',
+      pathologic: 'Wedge deformity or focal height loss',
+      keyClue: 'Trauma, osteoporosis risk, steroid use, or focal bony tenderness',
+      pitfall: 'Attributing height loss to chronic change without clinical correlation.',
+      nextStep: 'CT/MRI if acute injury, neurologic symptoms, or malignancy/infection concern.',
+    },
   ],
   doNotMiss: [
     {
@@ -1134,12 +1695,91 @@ const spine: ModuleContent = {
       body: 'Any neurologic deficit or red flag warrants MRI regardless of film findings.',
     },
   ],
+  pitfalls: [
+    {
+      title: 'Letting normal x-rays override neurologic symptoms',
+      body: 'Plain radiographs do not evaluate cord, disc, nerve root, infection, or early stress reaction well.',
+    },
+    {
+      title: 'Calling an inadequate cervical lateral adequate',
+      body: 'If C7-T1 is not visible, lower cervical injury has not been assessed.',
+    },
+  ],
+  cases: [
+    {
+      id: 'spine-extension-athlete-back-pain',
+      moduleId: 'spine',
+      title: 'Gymnast with extension low back pain',
+      patientAge: '16-year-old',
+      sportOrActivity: 'Gymnastics',
+      mechanism: 'Progressive pain with back extension and landing',
+      symptoms: 'Focal lumbar pain, no neurologic deficit, worse with single-leg extension',
+      viewsObtained: ['AP lumbar', 'Lateral lumbar'],
+      initialPrompt: 'What stress injury should stay on the differential even if early films are subtle?',
+      diagnosisOptions: [
+        { id: 'a', label: 'Pars stress injury / spondylolysis' },
+        { id: 'b', label: 'Posterior shoulder dislocation' },
+        { id: 'c', label: 'Scaphoid fracture' },
+        { id: 'd', label: 'AC separation' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'Adolescent extension athletes with focal low back pain should raise concern for pars stress injury; early radiographs may be normal.',
+      teachingPearl:
+        'X-rays can screen alignment, but MRI is more useful for early active pars stress reaction.',
+      nextStep: 'Activity modification, focused exam, and MRI when early diagnosis changes treatment.',
+      imagePanels: [{ view: 'Lateral', imageKey: 'normal:lumbar-spine-lateral' }],
+    },
+  ],
+  quiz: [
+    {
+      id: 'spine-q1',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'An adequate lateral cervical spine radiograph must show what?',
+      options: [
+        { id: 'a', text: 'Only C1-C3' },
+        { id: 'b', text: 'C1 through the C7-T1 junction' },
+        { id: 'c', text: 'Only the odontoid' },
+        { id: 'd', text: 'The shoulder joint' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'The lower cervical spine must be visible through C7-T1. Otherwise the study is incomplete.',
+    },
+    {
+      id: 'spine-q2',
+      moduleId: 'spine',
+      domain: 'spine',
+      prompt: 'Adolescent extension athlete with focal low back pain and normal early x-rays: best next imaging when suspicion remains high?',
+      options: [
+        { id: 'a', text: 'MRI for pars stress reaction' },
+        { id: 'b', text: 'No follow-up' },
+        { id: 'c', text: 'Wrist scaphoid view' },
+        { id: 'd', text: 'Axillary shoulder view' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'MRI can detect early pars stress reaction before a clear radiographic defect appears.',
+    },
+  ],
+  keyTakeaways: [
+    'Spine x-rays are alignment and bony-screening tools, not neurologic clearance tools.',
+    'Cervical lateral adequacy requires visualization through C7-T1.',
+    'Adolescent extension back pain should raise concern for pars stress injury.',
+    'Red flags and neurologic findings escalate to CT/MRI regardless of plain film appearance.',
+  ],
+  whenToEscalate: [
+    'CT for high-risk cervical trauma or inadequate trauma radiographs.',
+    'MRI for neurologic deficit, infection, malignancy concern, cord/disc concern, or early pars stress injury.',
+    'Urgent referral for progressive neurologic symptoms or bowel/bladder dysfunction.',
+  ],
 };
 
-// ---------- Module 9: Pediatric & Adolescent (placeholder) ----------------
+// ---------- Module 9: Pediatric & Adolescent ----------------
 
 const pediatricAdolescent: ModuleContent = {
-  ...placeholderModule(
+  ...moduleScaffold(
     'pediatric-adolescent',
     'Pediatric and Adolescent Sports X-Ray Pearls',
     'Pediatric Pearls',
@@ -1148,9 +1788,82 @@ const pediatricAdolescent: ModuleContent = {
     ['Salter-Harris', 'Apophysitis vs avulsion', 'SCFE'],
     30,
   ),
+  status: 'full',
   overview: [
     'Pediatric x-rays demand awareness of normal physes, apophyses, and accessory ossicles.',
     'Apophysitis is overuse — apophyseal avulsion is acute. Treat them differently.',
+    'Use age, mechanism, focal tenderness, and symmetry to avoid both overcalling variants and missing growth-plate injury.',
+  ],
+  views: [
+    {
+      name: 'Region-specific AP and lateral',
+      why: 'Orthogonal views are still the foundation; open physes make one-view interpretation unsafe.',
+      whenToOrder: 'Any focal bony tenderness, deformity, or inability to use the limb after injury.',
+    },
+    {
+      name: 'Oblique views',
+      why: 'Can profile subtle pediatric elbow, hand, foot, and ankle injuries.',
+      whenToOrder: 'When standard views do not explain a focal exam.',
+    },
+    {
+      name: 'Comparison view',
+      why: 'Can clarify normal ossification centers and physeal symmetry.',
+      whenToOrder: 'Selective use when the answer will change management.',
+    },
+    {
+      name: 'Frog-leg pelvis',
+      why: 'Improves detection of SCFE when safe and clinically appropriate.',
+      whenToOrder: 'Adolescent hip/groin/thigh/knee pain or limp without acute fracture concern.',
+      teachingView: true,
+    },
+  ],
+  systematicNotes: [
+    'Confirm skeletal maturity first; the normal read changes with open physes.',
+    'Compare the point of maximal tenderness to a physis, apophysis, or expected ossification center.',
+    'A normal x-ray does not exclude Salter-Harris I injury when focal physeal tenderness is convincing.',
+  ],
+  anatomy: [
+    {
+      label: 'Physis',
+      description: 'Growth plate lucency between metaphysis and epiphysis.',
+      pearl: 'Focal tenderness at a normal-appearing physis can still be Salter-Harris I.',
+    },
+    {
+      label: 'Apophysis',
+      description: 'Traction growth center at tendon attachment sites.',
+      pearl: 'Overuse apophysitis is chronic; avulsion is acute and often displaced.',
+    },
+    {
+      label: 'Ossification centers',
+      description: 'Predictable age-dependent centers that can mimic fragments.',
+      pearl: 'Smooth corticated margins and expected location help distinguish normal from injury.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Salter-Harris injury',
+      normal: 'Symmetric physis without widening, displacement, or metaphyseal fragment',
+      pathologic: 'Physeal widening, Thurston-Holland fragment, displacement, or focal physeal tenderness with normal x-ray',
+      keyClue: 'Point tenderness directly over an open growth plate',
+      pitfall: 'Calling Salter-Harris I normal because the x-ray is negative.',
+      nextStep: 'Immobilize and follow clinically; ortho for displacement, joint involvement, or high-risk physis.',
+    },
+    {
+      finding: 'Apophyseal avulsion',
+      normal: 'Smooth apophysis at expected location',
+      pathologic: 'Displaced fragment at tendon origin/insertion after explosive contraction',
+      keyClue: 'Adolescent sprint, kick, jump, or throw with sudden focal pain',
+      pitfall: 'Treating it like a simple muscle strain.',
+      nextStep: 'Activity restriction and sports/ortho follow-up; urgent referral for major displacement or high-risk site.',
+    },
+    {
+      finding: 'SCFE',
+      normal: 'Klein line intersects lateral epiphysis and physes are symmetric',
+      pathologic: 'Posteroinferior epiphyseal slip, widened physis, or abnormal Klein line',
+      keyClue: 'Adolescent limp with hip, thigh, or knee pain',
+      pitfall: 'Imaging only the knee when the hip exam is abnormal.',
+      nextStep: 'Non-weightbearing and urgent orthopedic referral.',
+    },
   ],
   doNotMiss: [
     {
@@ -1174,6 +1887,85 @@ const pediatricAdolescent: ModuleContent = {
       body: 'Bilateral imaging in pediatrics is high-yield for normal variant questions.',
     },
   ],
+  pitfalls: [
+    {
+      title: 'Overcalling every lucency',
+      body: 'Open physes and ossification centers are expected. Use location, cortication, tenderness, and symmetry.',
+    },
+    {
+      title: 'Undercalling physeal tenderness',
+      body: 'A normal radiograph does not eliminate Salter-Harris I when focal exam findings are strong.',
+    },
+  ],
+  cases: [
+    {
+      id: 'peds-physeal-ankle-pain',
+      moduleId: 'pediatric-adolescent',
+      title: 'Pediatric ankle pain with open physes',
+      patientAge: '12-year-old',
+      sportOrActivity: 'Soccer',
+      mechanism: 'Inversion injury with lateral ankle pain',
+      symptoms: 'Point tenderness over distal fibular physis, mild swelling, able to walk with limp',
+      viewsObtained: ['AP', 'Lateral', 'Mortise'],
+      initialPrompt: 'The x-ray may look normal. What does the focal exam require you to consider?',
+      diagnosisOptions: [
+        { id: 'a', label: 'No injury because x-ray is normal' },
+        { id: 'b', label: 'Possible Salter-Harris I physeal injury' },
+        { id: 'c', label: 'Femoral neck stress fracture' },
+        { id: 'd', label: 'Perilunate dislocation' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'Focal physeal tenderness with open physes can represent Salter-Harris I injury even when radiographs are negative.',
+      teachingPearl:
+        'In pediatrics, the exam often decides whether a normal-looking growth plate is clinically injured.',
+      nextStep: 'Immobilize/protect, arrange follow-up, and reassess pain/function rather than clearing immediately.',
+      imagePanels: [{ view: 'AP', imageKey: 'pediatric:salter-harris-ii-distal-radius' }],
+    },
+  ],
+  quiz: [
+    {
+      id: 'pediatric-adolescent-q1',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'A child has focal physeal tenderness after injury but normal x-rays. What is the safest interpretation?',
+      options: [
+        { id: 'a', text: 'Growth plates cannot be injured without x-ray changes' },
+        { id: 'b', text: 'Possible Salter-Harris I injury' },
+        { id: 'c', text: 'Always infection' },
+        { id: 'd', text: 'Always malignancy' },
+      ],
+      correctOptionId: 'b',
+      explanation:
+        'Salter-Harris I injuries can be radiographically occult. Focal physeal tenderness should guide immobilization and follow-up.',
+    },
+    {
+      id: 'pediatric-adolescent-q2',
+      moduleId: 'pediatric-adolescent',
+      domain: 'pediatric',
+      prompt: 'Adolescent knee pain with limp should make you consider imaging what region?',
+      options: [
+        { id: 'a', text: 'Hip/pelvis for SCFE' },
+        { id: 'b', text: 'Only the wrist' },
+        { id: 'c', text: 'Only the elbow' },
+        { id: 'd', text: 'No imaging under any circumstance' },
+      ],
+      correctOptionId: 'a',
+      explanation:
+        'SCFE can refer pain to the thigh or knee. Hip exam and pelvis/hip radiographs are essential when gait or hip motion is abnormal.',
+    },
+  ],
+  keyTakeaways: [
+    'Open physes and ossification centers require age-aware interpretation.',
+    'Normal x-rays do not exclude Salter-Harris I with focal physeal tenderness.',
+    'Apophysitis and apophyseal avulsion are different clinical problems.',
+    'SCFE can present as knee pain; hip exam drives the imaging choice.',
+  ],
+  whenToEscalate: [
+    'Urgent ortho for SCFE, displaced physeal injury, neurovascular findings, or joint-involving fracture.',
+    'MRI for persistent focal pain with normal x-rays when stress injury, infection, tumor, or occult fracture remains possible.',
+    'Comparison views only when they will clarify a management-changing normal variant question.',
+  ],
 };
 
 // ---------- Module 10: Sports Medicine Do Not Miss Cases -------------------
@@ -1192,13 +1984,66 @@ const doNotMiss: ModuleContent = {
     'These injuries are commonly tested, commonly missed, and commonly change management.',
     'Each case combines clinical history with a teaching point and an imaging next step.',
   ],
-  views: [],
+  views: [
+    {
+      name: 'Second orthogonal view',
+      why: 'Most high-consequence misses hide when the joint or bone is judged from one plane.',
+      whenToOrder: 'Trauma, instability, focal bony tenderness, or any film where alignment is not proven.',
+      teachingView: true,
+    },
+    {
+      name: 'Weightbearing comparison when tolerated',
+      why: 'Midfoot and joint-space instability can disappear on non-weightbearing films.',
+      whenToOrder: 'Suspected Lisfranc injury, subtle instability, or chronic weightbearing pain with equivocal non-weightbearing films.',
+    },
+    {
+      name: 'Dedicated special view',
+      why: 'Scaphoid, patellofemoral, AC-joint, and hip instability questions often need a targeted projection.',
+      whenToOrder: 'When the clinical exam points to a structure not adequately profiled on the standard series.',
+    },
+  ],
   systematicNotes: [
     'Apply the systematic read to each case before answering.',
   ],
   systematicChecklist: systematicRead,
-  anatomy: [],
-  pathology: [],
+  anatomy: [
+    {
+      label: 'Alignment proof',
+      description:
+        'Every do-not-miss read starts by proving the joint relationship on adequate views before accepting a reassuring impression.',
+      pearl: 'If the view cannot prove alignment, the read is not done.',
+    },
+    {
+      label: 'Normal comparison anchor',
+      description:
+        'Name the expected normal line, space, or contour before deciding whether a subtle fragment or widening matters.',
+      pearl: 'Normal-first thinking prevents both overcalling variants and undercalling subtle instability.',
+    },
+    {
+      label: 'Soft-tissue consequence',
+      description:
+        'Effusion, swelling, plantar ecchymosis, and persistent focal tenderness can carry more weight than an obvious fracture line.',
+      pearl: 'Clinical danger signs should override false reassurance from an equivocal film.',
+    },
+  ],
+  pathology: [
+    {
+      finding: 'Occult instability or fracture',
+      normal: 'Alignment is congruent and expected cortical, joint-space, and soft-tissue landmarks are preserved.',
+      pathologic: 'A subtle line, widened interval, malalignment, effusion, or persistent high-risk clinical story changes the pathway.',
+      keyClue: 'The film is either inadequate for the question or the clinical pattern is more dangerous than the x-ray looks.',
+      pitfall: 'Stopping after “no obvious fracture” when the mechanism and exam still fit a consequential injury.',
+      nextStep: 'Add the missing view, protect weightbearing, repeat imaging, or escalate to CT/MRI/specialty referral based on the pattern.',
+    },
+    {
+      finding: 'Management-changing small fragment',
+      normal: 'Small corticated ossicles or variants have smooth margins and fit the expected anatomy.',
+      pathologic: 'Acute avulsion fragments, cortical breaks, or malalignment point to ligament injury, instability, or nonunion risk.',
+      keyClue: 'Small radiographic findings can imply large soft-tissue or operative consequences.',
+      pitfall: 'Calling the fragment incidental before checking mechanism, focal tenderness, and associated alignment.',
+      nextStep: 'Treat the finding as a clue to the associated injury and arrange appropriate immobilization, MRI/CT, or urgent referral.',
+    },
+  ],
   doNotMiss: [
     { title: 'Posterior shoulder dislocation', why: 'Easy to miss without axillary view.', imagingNext: 'Axillary or Velpeau; CT if unclear.' },
     { title: 'Scaphoid fracture', why: 'Risk of nonunion and AVN.', imagingNext: 'Thumb spica + repeat films or MRI.' },
