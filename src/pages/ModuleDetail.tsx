@@ -21,6 +21,7 @@ import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
 import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
 import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
 import { ModuleStartHerePanel } from '../components/ModuleStartHerePanel';
+import { ModuleResourceMenu } from '../components/ModuleResourceMenu';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -237,36 +238,11 @@ export function ModuleDetailPage() {
           <span className="text-slate-300">/</span>
           <span className="text-slate-700">{module.title}</span>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            className={[
-              'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-soft',
-              moduleSaved
-                ? 'border-ucla-200 bg-ucla-50 text-ucla-900 hover:bg-ucla-100'
-                : 'border-slate-200 bg-white/90 text-slate-700 hover:bg-ucla-50',
-            ].join(' ')}
-            onClick={() => void toggleModuleBookmark(module)}
-            aria-pressed={moduleSaved}
-          >
-            <Icon name="star" size={12} />
-            {moduleSaved ? 'Saved for review' : 'Save for review'}
-          </button>
-          <Link
-            to={`/modules/${module.id}/cheatsheet`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-ucla-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100 no-underline"
-          >
-            <Icon name="printer" size={12} />
-            Cheat sheet
-          </Link>
-          <Link
-            to={`/flashcards?module=${module.id}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-3 py-1.5 text-xs font-semibold text-ucla-900 shadow-soft hover:bg-gold-100 no-underline"
-          >
-            <Icon name="sparkles" size={12} />
-            Flashcards
-          </Link>
-        </div>
+        <ModuleResourceMenu
+          module={module}
+          saved={moduleSaved}
+          onToggleSaved={() => void toggleModuleBookmark(module)}
+        />
       </div>
 
       <header className="mt-3 rounded-2xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white p-5 shadow-soft sm:p-6">
@@ -309,19 +285,12 @@ export function ModuleDetailPage() {
             </p>
           </div>
 
-          {contentUnlocked && !isComplete && (
+          {contentUnlocked && !isComplete && moduleProgress?.postCheckAt && (
             <div className="flex flex-wrap gap-2 sm:justify-end">
-              {moduleProgress?.postCheckAt ? (
-                <button className="btn-primary" onClick={markComplete} disabled={!user}>
-                  Mark complete
-                  <Icon name="check" size={14} />
-                </button>
-              ) : (
-                <button className="btn-secondary" onClick={() => handlePhaseChange('takeaways')}>
-                  Post-check
-                  <Icon name="arrow-right" size={14} />
-                </button>
-              )}
+              <button className="btn-primary" onClick={markComplete} disabled={!user}>
+                Mark complete
+                <Icon name="check" size={14} />
+              </button>
             </div>
           )}
         </div>
@@ -432,7 +401,7 @@ export function ModuleDetailPage() {
               onStartGuidedRead={openGuidedRead}
             />
 
-            {learnDetailsOpen ? (
+            {learnDetailsOpen && (
               <div className="space-y-4 animate-fade-in">
                 <InlineFlashcardStrip
                   moduleId={module.id}
@@ -503,18 +472,6 @@ export function ModuleDetailPage() {
                 <AnatomyLandmarkCard landmarks={module.anatomy} />
                 <CheatSheetPromo module={module} compact />
               </div>
-            ) : (
-              <button
-                type="button"
-                className="flex w-full items-center justify-between gap-3 rounded-xl border border-ucla-100 bg-ucla-50/70 px-4 py-3 text-left text-sm font-semibold text-ucla-900 shadow-soft hover:bg-ucla-100"
-                onClick={openGuidedRead}
-              >
-                <span className="flex items-center gap-2">
-                  <Icon name="book-open" size={15} />
-                  Open the guided checklist and recall cards
-                </span>
-                <Icon name="arrow-right" size={14} />
-              </button>
             )}
           </div>
         )}

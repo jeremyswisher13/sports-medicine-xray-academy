@@ -70,6 +70,20 @@ function buildPracticePool(
   return filteredPractice.length > 0 ? filteredPractice : allPractice;
 }
 
+function filteredPoolCanPowerMode(mode: PracticeMode, filtered: XRayImageEntry[]) {
+  const filteredPractice = filtered.filter(isPracticeImage);
+  if (mode === 'normal-pathology') {
+    return (
+      filteredPractice.some((entry) => entry.isNormal) &&
+      filteredPractice.some((entry) => !entry.isNormal)
+    );
+  }
+  if (mode === 'key-clue') {
+    return filteredPractice.some(hasKeyClue);
+  }
+  return filteredPractice.length > 0;
+}
+
 function buildViewChoices(entry: PracticeImageEntry, pool: PracticeImageEntry[]): PracticeChoice[] {
   const poolViews = practiceViews.filter((view) => pool.some((image) => image.view === view));
   const orderedViews = [
@@ -184,6 +198,10 @@ export function AtlasPage() {
     () => buildPracticePool(practiceMode, filtered, allImages),
     [allImages, filtered, practiceMode],
   );
+  const practiceUsesFilteredPool = useMemo(
+    () => filteredPoolCanPowerMode(practiceMode, filtered),
+    [filtered, practiceMode],
+  );
 
   const safePracticeIndex = practiceImages.length > 0
     ? practiceIndex % practiceImages.length
@@ -198,6 +216,14 @@ export function AtlasPage() {
   const practiceModuleTitle = practiceImage?.moduleId
     ? moduleTitleById.get(practiceImage.moduleId)
     : undefined;
+  const selectedModuleTitle =
+    moduleFilter === 'all' ? undefined : moduleTitleById.get(moduleFilter);
+  const practiceScopeLabel = practiceUsesFilteredPool
+    ? selectedModuleTitle ?? 'Current filters'
+    : 'All modules';
+  const practicePoolNote = practiceUsesFilteredPool
+    ? 'Using the atlas filters above.'
+    : 'Your filters do not have enough practice variety yet, so this drill uses the full atlas.';
   const activePracticeStats = practiceStats[practiceMode];
 
   useEffect(() => {
@@ -426,12 +452,20 @@ export function AtlasPage() {
                   </div>
                   <div className="mt-0.5 text-sm font-semibold text-ucla-950">
                     {practiceImages.length} image{practiceImages.length === 1 ? '' : 's'}
-                    {practiceModuleTitle ? ` · ${practiceModuleTitle}` : ''}
+                    {practiceImages.length > 0 ? ` · ${practiceScopeLabel}` : ''}
                   </div>
                   <div className="mt-0.5 text-xs text-slate-500">
                     {activePracticeStats.correct}/{activePracticeStats.answered} correct · streak{' '}
                     {activePracticeStats.streak}
                   </div>
+                  {practiceImages.length > 0 && (
+                    <div className="mt-1 text-xs leading-relaxed text-slate-500">
+                      {practicePoolNote}
+                      {!practiceUsesFilteredPool && practiceModuleTitle
+                        ? ` Current image: ${practiceModuleTitle}.`
+                        : ''}
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
                   <button

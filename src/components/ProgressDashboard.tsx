@@ -15,12 +15,11 @@ function avg(nums: number[]): number {
 
 export function ProgressDashboard({ snapshot }: Props) {
   const summary = useMemo(() => {
-    const coreModules = moduleSummaries.filter((module) => module.status === 'full');
-    const coreModuleIds = new Set(coreModules.map((module) => module.id));
+    const courseModuleIds = new Set(moduleSummaries.map((module) => module.id));
     const completedModules = snapshot.modules.filter(
-      (m) => coreModuleIds.has(m.moduleId) && m.completed,
+      (m) => courseModuleIds.has(m.moduleId) && m.completed,
     ).length;
-    const totalModules = coreModules.length;
+    const totalModules = moduleSummaries.length;
     const preQuiz = snapshot.quizzes.find((q) => q.scope === 'pre');
     const postQuiz = snapshot.quizzes.find((q) => q.scope === 'post');
     const preConfidence = snapshot.confidence
@@ -85,7 +84,7 @@ export function ProgressDashboard({ snapshot }: Props) {
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat
           iconName="check-circle"
-          label="Core modules completed"
+          label="Modules completed"
           value={`${summary.completedModules} / ${summary.totalModules}`}
         />
         <Stat
@@ -123,7 +122,7 @@ export function ProgressDashboard({ snapshot }: Props) {
         <div className="card p-5 lg:col-span-2">
           <h3 className="text-base text-ucla-900">Module progress</h3>
           <p className="mt-1 text-sm text-slate-500">
-            Core modules drive course completion; expanded modules stay visible for extra practice.
+            Each module starts with a baseline check, moves through guided practice, and closes with an outcome check.
           </p>
           <ul className="mt-3 space-y-2">
             {moduleSummaries.map((m) => {
@@ -146,16 +145,6 @@ export function ProgressDashboard({ snapshot }: Props) {
                     {m.title}
                   </span>
                   <span className="pill">{m.region}</span>
-                  <span
-                    className={[
-                      'pill',
-                      m.status === 'full'
-                        ? 'border-ucla-100 bg-ucla-50 text-ucla-800'
-                        : '',
-                    ].join(' ')}
-                  >
-                    {m.status === 'full' ? 'Core' : 'Expanded'}
-                  </span>
                   {p?.completed ? (
                     <span className="pill-primary">Complete</span>
                   ) : p?.visited ? (

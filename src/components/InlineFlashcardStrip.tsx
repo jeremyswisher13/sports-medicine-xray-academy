@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { flashcards } from '../data/flashcards';
+import { useAuth } from '../context/AuthContext';
+import { logAuditEvent } from '../services/firestore';
+import {
+  loadFlashcardState,
+  nextDueAt,
+  saveFlashcardState,
+} from '../utils/flashcardSchedule';
+import type { Flashcard as FlashcardData } from '../types';
 import { Icon } from './ui/Icon';
 
 interface InlineFlashcardStripProps {
@@ -30,8 +38,12 @@ export function InlineFlashcardStrip({
   description,
   className = '',
 }: InlineFlashcardStripProps) {
+  const { user, learnerPreview } = useAuth();
   const [revealedCardIds, setRevealedCardIds] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
+  );
+  const [reviewedCardIds, setReviewedCardIds] = useState<ReadonlySet<string>>(
+    () => new Set(loadFlashcardState().reviewedIds),
   );
 
   const cards = useMemo(() => {
@@ -46,7 +58,8 @@ export function InlineFlashcardStrip({
 
   useEffect(() => {
     setRevealedCardIds(new Set<string>());
-  }, [moduleId, maxCards]);
+    setReviewedCardIds(new Set(loadFlashcardState().reviewedIds));
+  }, [moduleId, maxCards, startIndex]);
 
   function toggleCard(cardId: string) {
     setRevealedCardIds((current) => {
@@ -58,6 +71,35 @@ export function InlineFlashcardStrip({
       }
       return next;
     });
+  }
+
+  function recordCardReview(card: FlashcardData, outcome: 'got-it' | 'review') {
+    const persisted = loadFlashcardState();
+    const reviewedIds = Array.from(new Set([...persisted.reviewedIds, card.id]));
+    let needsReviewIds = persisted.needsReviewIds.filter((id) => id !== card.id);
+    if (outcome === 'review') {
+      needsReviewIds = Array.from(new Set([...needsReviewIds, card.id]));
+    }
+
+    saveFlashcardState({
+      reviewedIds,
+      needsReviewIds,
+      dueById: {
+        ...persisted.dueById,
+        [card.id]: nextDueAt(outcome),
+      },
+    });
+    setReviewedCardIds(new Set(reviewedIds));
+
+    if (user && !learnerPreview) {
+      void logAuditEvent({
+        userId: user.uid,
+        type: 'flashcard_reviewed',
+        moduleId: card.moduleId,
+        refId: card.id,
+        details: { outcome, source: 'module-inline' },
+      });
+    }
   }
 
   if (cards.length === 0) {
@@ -90,11 +132,8 @@ export function InlineFlashcardStrip({
           const revealed = revealedCardIds.has(card.id);
 
           return (
-            <button
+            <article
               key={card.id}
-              type="button"
-              onClick={() => toggleCard(card.id)}
-              aria-expanded={revealed}
               className={[
                 'group flex min-h-44 flex-col justify-between rounded-xl border p-4 text-left shadow-soft transition-colors',
                 revealed
@@ -102,42 +141,74 @@ export function InlineFlashcardStrip({
                   : 'border-ucla-100 bg-ucla-50/80 text-ucla-900 hover:bg-white',
               ].join(' ')}
             >
-              <div>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ucla-700">
-                    <Icon name={revealed ? 'check-circle' : 'sparkles'} size={14} />
-                    Card {index + 1}
-                  </span>
-                  <span className="rounded-full border border-ucla-100 bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
-                    {revealed ? 'Answer' : 'Prompt'}
-                  </span>
+              <button
+                type="button"
+                onClick={() => toggleCard(card.id)}
+                aria-expanded={revealed}
+                className="flex flex-1 flex-col justify-between text-left"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-ucla-700">
+                      <Icon name={revealed ? 'check-circle' : 'sparkles'} size={14} />
+                      Card {index + 1}
+                    </span>
+                    <span className="rounded-full border border-ucla-100 bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-slate-500">
+                      {reviewedCardIds.has(card.id)
+                        ? 'Counted'
+                        : revealed
+                          ? 'Answer'
+                          : 'Prompt'}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-sm font-semibold leading-relaxed text-ucla-950 text-balance">
+                    {card.front}
+                  </p>
+
+                  {revealed && (
+                    <div className="mt-3 rounded-lg border border-ucla-100 bg-ucla-50/60 p-3">
+                      <p className="text-sm leading-relaxed text-slate-700">{card.back}</p>
+                      {card.pearl && (
+                        <p className="mt-2 border-t border-ucla-100 pt-2 text-xs font-medium leading-relaxed text-ucla-800">
+                          {card.pearl}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                <p className="mt-3 text-sm font-semibold leading-relaxed text-ucla-950 text-balance">
-                  {card.front}
-                </p>
+                <div className="mt-4 flex items-center justify-between text-xs font-semibold text-ucla-700">
+                  <span>{revealed ? 'Tap to hide' : 'Tap to reveal'}</span>
+                  <Icon
+                    name={revealed ? 'chevron-left' : 'chevron-right'}
+                    size={15}
+                    className="transition-transform group-hover:translate-x-0.5"
+                  />
+                </div>
+              </button>
 
-                {revealed && (
-                  <div className="mt-3 rounded-lg border border-ucla-100 bg-ucla-50/60 p-3">
-                    <p className="text-sm leading-relaxed text-slate-700">{card.back}</p>
-                    {card.pearl && (
-                      <p className="mt-2 border-t border-ucla-100 pt-2 text-xs font-medium leading-relaxed text-ucla-800">
-                        {card.pearl}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-4 flex items-center justify-between text-xs font-semibold text-ucla-700">
-                <span>{revealed ? 'Tap to hide' : 'Tap to reveal'}</span>
-                <Icon
-                  name={revealed ? 'chevron-left' : 'chevron-right'}
-                  size={15}
-                  className="transition-transform group-hover:translate-x-0.5"
-                />
-              </div>
-            </button>
+              {revealed && (
+                <div className="mt-3 grid grid-cols-2 gap-2 border-t border-ucla-100 pt-3">
+                  <button
+                    type="button"
+                    onClick={() => recordCardReview(card, 'got-it')}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-800 transition-colors hover:bg-emerald-100"
+                  >
+                    <Icon name="check" size={13} />
+                    Got it
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => recordCardReview(card, 'review')}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-3 py-1.5 text-xs font-semibold text-gold-900 transition-colors hover:bg-gold-100"
+                  >
+                    <Icon name="star" size={13} />
+                    Review
+                  </button>
+                </div>
+              )}
+            </article>
           );
         })}
       </div>

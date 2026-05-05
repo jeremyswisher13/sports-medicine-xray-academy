@@ -197,42 +197,54 @@ export function ModuleNextTaskPanel({
       </div>
 
       {showPhaseJump && (
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
-          {modulePhases.map((candidate, index) => {
-            const isActive = candidate.id === phase.id;
-            const isComplete = completedPhaseIdSet.has(candidate.id);
-            return (
-              <button
-                key={candidate.id}
-                type="button"
-                onClick={() => onPhaseChange(candidate.id)}
-                aria-current={isActive ? 'step' : undefined}
-                className={[
-                  'flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition-colors',
-                  isActive
-                    ? 'border-ucla-500 bg-ucla-500 text-white shadow-soft'
-                    : isComplete
-                      ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
-                      : 'border-slate-200 bg-white text-slate-600 hover:border-ucla-200 hover:bg-ucla-50 hover:text-ucla-900',
-                ].join(' ')}
-              >
-                <span
+        <details className="mt-4 rounded-2xl border border-ucla-100 bg-ucla-50/60 p-3">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-ucla-900 [&::-webkit-details-marker]:hidden">
+            <span className="inline-flex items-center gap-2">
+              <Icon name="clipboard" size={15} />
+              Jump to another phase
+            </span>
+            <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500">
+              Current: {phase.label}
+              <Icon name="chevron-right" size={14} />
+            </span>
+          </summary>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {modulePhases.map((candidate, index) => {
+              const isActive = candidate.id === phase.id;
+              const isComplete = completedPhaseIdSet.has(candidate.id);
+              return (
+                <button
+                  key={candidate.id}
+                  type="button"
+                  onClick={() => onPhaseChange(candidate.id)}
+                  aria-current={isActive ? 'step' : undefined}
                   className={[
-                    'flex h-5 w-5 items-center justify-center rounded-full text-[10px]',
+                    'flex items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-semibold transition-colors',
                     isActive
-                      ? 'bg-white/20 text-white'
+                      ? 'border-ucla-500 bg-ucla-500 text-white shadow-soft'
                       : isComplete
-                        ? 'bg-emerald-100 text-emerald-700'
-                        : 'bg-slate-100 text-slate-500',
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-ucla-200 hover:bg-white hover:text-ucla-900',
                   ].join(' ')}
                 >
-                  {isComplete ? <Icon name="check" size={12} /> : index + 1}
-                </span>
-                {candidate.label}
-              </button>
-            );
-          })}
-        </div>
+                  <span
+                    className={[
+                      'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px]',
+                      isActive
+                        ? 'bg-white/20 text-white'
+                        : isComplete
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-slate-100 text-slate-500',
+                    ].join(' ')}
+                  >
+                    {isComplete ? <Icon name="check" size={12} /> : index + 1}
+                  </span>
+                  {candidate.label}
+                </button>
+              );
+            })}
+          </div>
+        </details>
       )}
     </section>
   );

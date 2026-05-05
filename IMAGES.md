@@ -88,6 +88,12 @@ Learners need repeated normal comparisons before pathology feels obvious. The cu
 
 Prefer open-license repositories when an equivalent normal image is available. Do not add patient-derived images to this app.
 
+## Deep Research prompt for the next normal-image pass
+
+Use this exact prompt when asking ChatGPT Deep Research to help source images:
+
+> Find open-license normal musculoskeletal radiographs for a sports medicine teaching atlas for family medicine residents and sports medicine fellows. Prioritize normal comparison images over pathology. For each candidate, provide the exact file page URL, direct image URL if available, license, required attribution, author/contributor, view/projection, body region/module, whether it is adult or pediatric, and a one-sentence teaching use. Only include images that are public domain, CC0, CC BY, or CC BY-SA, preferably from Wikimedia Commons or PubMed Central open-access sources. Do not include patient-derived private images, textbook screenshots, AMSSM slide screenshots, Radiopaedia cases unless the license and non-commercial restrictions are explicitly stated, or any image with visible identifiers. Highest priority views: shoulder AP internal/external and axillary, wrist PA/lateral/scaphoid and pediatric open physes, AP pelvis plus frog-leg/Dunn hip, knee AP/lateral/sunrise/tunnel including pediatric open physes, ankle AP/lateral/mortise and foot AP/oblique/lateral, pediatric elbow ossification centers, and normal do-not-miss comparisons for carpal arcs, ankle mortise, pediatric hip, and shoulder alignment.
+
 ## Deep Research candidate list
 
 These are candidate Wikimedia Commons file pages surfaced by the May 2026 Deep Research pass. They are **not registered in `src/data/images.ts` yet**; verify the file-page license and attribution immediately before adding them through the 5-step protocol above.

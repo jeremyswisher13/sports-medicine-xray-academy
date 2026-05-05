@@ -899,7 +899,7 @@ export function AdminPage() {
                 <tr className="border-b border-slate-100 text-left text-[11px] uppercase tracking-wide text-slate-500">
                   <th className="px-4 py-2">Module</th>
                   <th className="px-4 py-2">Region</th>
-                  <th className="px-4 py-2">Track</th>
+                  <th className="px-4 py-2">Time</th>
                   <th className="px-4 py-2">Views</th>
                   <th className="px-4 py-2">Pre</th>
                   <th className="px-4 py-2">Post</th>
@@ -925,9 +925,7 @@ export function AdminPage() {
                         {m.module.title}
                       </td>
                       <td className="px-4 py-2 text-slate-600">{m.module.region}</td>
-                      <td className="px-4 py-2 text-slate-600">
-                        {m.module.status === 'full' ? 'Core' : 'Expanded'}
-                      </td>
+                      <td className="px-4 py-2 text-slate-600">{m.module.estimatedMinutes} min</td>
                       <td className="px-4 py-2 tabular-nums">{m.views}</td>
                       <td className="px-4 py-2 tabular-nums">{m.preCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.postCheckCount}</td>

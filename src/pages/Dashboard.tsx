@@ -115,7 +115,7 @@ export function DashboardPage() {
       ? {
           eyebrow: 'Required next',
           title: 'Take the post-course assessment',
-          body: 'Close the loop with a course-wide score and confidence delta after the core modules.',
+          body: 'Close the loop with a course-wide score and confidence delta after the module path.',
           to: '/quiz/post',
           cta: 'Start post-course check',
           icon: 'flag' as const,
@@ -162,7 +162,7 @@ export function DashboardPage() {
               <span className="text-3xl font-bold tabular-nums text-ucla-900">
                 {completedCount}
               </span>
-              <span className="text-sm text-slate-500">of {totalCount} core modules</span>
+              <span className="text-sm text-slate-500">of {totalCount} modules</span>
             </div>
             <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
               <div
@@ -296,7 +296,7 @@ export function DashboardPage() {
             <h2>Continue modules</h2>
             <p className="mt-1 text-sm text-slate-500">
               {canOpenModules
-                ? 'Start with the core modules, then use expanded regions for extra practice once the essentials feel solid.'
+                ? 'Follow the guided path one module at a time, then return to saved areas for extra practice.'
                 : 'Complete the course baseline first so your knowledge and confidence shift can be measured.'}
             </p>
           </div>
