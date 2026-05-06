@@ -22,6 +22,7 @@ import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
 import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
 import { ModuleStartHerePanel } from '../components/ModuleStartHerePanel';
 import { ModuleResourceMenu } from '../components/ModuleResourceMenu';
+import { ModuleCompletionReward } from '../components/ModuleCompletionReward';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -910,6 +911,14 @@ export function ModuleDetailPage() {
               completedTabsOnFinish={modulePhases.map((t) => t.id)}
               onComplete={() => void refresh()}
             />
+
+            {moduleProgress?.postCheckAt && (
+              <ModuleCompletionReward
+                module={module}
+                progress={moduleProgress}
+                allModuleProgress={snapshot.modules}
+              />
+            )}
           </section>
         )}
           </div>
