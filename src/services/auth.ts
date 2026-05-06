@@ -23,12 +23,16 @@ const buildLocalProfile = (): UserProfile => ({
 export async function signInWithGoogle(): Promise<UserProfile> {
   if (!firebaseEnabled || !firebaseAuth) {
     const profile = buildLocalProfile();
-    localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(profile));
+    cacheLocalProfile(profile);
     return profile;
   }
   const result = await signInWithPopup(firebaseAuth, googleProvider);
-  const profile = await ensureUserDoc(result.user);
-  await logAuditEvent({ userId: profile.uid, type: 'login' });
+  const profile = await ensureUserDocOrFallback(result.user);
+  try {
+    await logAuditEvent({ userId: profile.uid, type: 'login' });
+  } catch {
+    // Audit logging should never block an otherwise successful sign-in.
+  }
   return profile;
 }
 
@@ -37,7 +41,7 @@ export async function signInAsGuest(): Promise<UserProfile> {
     ...buildLocalProfile(),
     uid: `guest-${Math.random().toString(36).slice(2, 10)}`,
   };
-  localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(profile));
+  cacheLocalProfile(profile);
   return profile;
 }
 
@@ -58,11 +62,10 @@ export function subscribeToAuth(
   cb: (profile: UserProfile | null) => void,
 ): () => void {
   if (!firebaseEnabled || !firebaseAuth) {
-    const raw = localStorage.getItem(LOCAL_USER_KEY);
-    cb(raw ? (JSON.parse(raw) as UserProfile) : null);
+    cb(readLocalProfile());
     const handler = (e: StorageEvent) => {
       if (e.key === LOCAL_USER_KEY) {
-        cb(e.newValue ? (JSON.parse(e.newValue) as UserProfile) : null);
+        cb(readLocalProfile());
       }
     };
     window.addEventListener('storage', handler);
@@ -70,26 +73,60 @@ export function subscribeToAuth(
   }
   return onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
     if (!firebaseUser) {
-      const raw = localStorage.getItem(LOCAL_USER_KEY);
-      cb(raw ? (JSON.parse(raw) as UserProfile) : null);
+      cb(readLocalProfile());
       return;
     }
-    const profile = await ensureUserDoc(firebaseUser);
+    const profile = await ensureUserDocOrFallback(firebaseUser);
     cb(profile);
   });
 }
 
+function readLocalProfile(): UserProfile | null {
+  try {
+    const raw = localStorage.getItem(LOCAL_USER_KEY);
+    return raw ? (JSON.parse(raw) as UserProfile) : null;
+  } catch {
+    return null;
+  }
+}
+
+function cacheLocalProfile(profile: UserProfile): void {
+  try {
+    localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(profile));
+  } catch {
+    // Local storage can be unavailable in private browsing.
+  }
+}
+
+function profileFromFirebaseUser(user: FirebaseUser): UserProfile {
+  const baseDisplayName = user.displayName ?? user.email?.split('@')[0] ?? 'Learner';
+  return {
+    uid: user.uid,
+    displayName: baseDisplayName,
+    email: user.email ?? '',
+    photoURL: user.photoURL ?? undefined,
+    role: defaultRoleFor(user.email),
+    createdAt: Date.now(),
+    lastLogin: Date.now(),
+  };
+}
+
+async function ensureUserDocOrFallback(user: FirebaseUser): Promise<UserProfile> {
+  try {
+    const profile = await ensureUserDoc(user);
+    cacheLocalProfile(profile);
+    return profile;
+  } catch (err) {
+    console.warn('[auth] profile sync failed, continuing with authenticated profile', err);
+    const profile = profileFromFirebaseUser(user);
+    cacheLocalProfile(profile);
+    return profile;
+  }
+}
+
 async function ensureUserDoc(user: FirebaseUser): Promise<UserProfile> {
   if (!firestore) {
-    return {
-      uid: user.uid,
-      displayName: user.displayName ?? 'Learner',
-      email: user.email ?? '',
-      photoURL: user.photoURL ?? undefined,
-      role: defaultRoleFor(user.email),
-      createdAt: Date.now(),
-      lastLogin: Date.now(),
-    };
+    return profileFromFirebaseUser(user);
   }
   const ref = doc(firestore, COLLECTIONS.users, user.uid);
   const snap = await getDoc(ref);
