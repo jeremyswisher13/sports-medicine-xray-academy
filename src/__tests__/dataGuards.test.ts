@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { getImage } from '../data/images';
+import { getImage, imageRegistry } from '../data/images';
+import { schematicContent } from '../components/XRayImage';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import { moduleContents } from '../data/modules';
 import { moduleSummaries } from '../data/moduleSummaries';
@@ -121,6 +122,18 @@ describe('curriculum data guards', () => {
     expect(flashcards.length).toBeGreaterThan(0);
     for (const card of flashcards) {
       expect(moduleIdSet.has(card.moduleId), card.id).toBe(true);
+    }
+  });
+
+  it('gives every diagram a curated teaching-card schematic (no generic fallback)', () => {
+    const diagramIds = Object.values(imageRegistry)
+      .filter((img) => img.isDiagram)
+      .map((img) => img.id);
+    expect(diagramIds.length).toBeGreaterThan(0);
+    for (const id of diagramIds) {
+      // Without an entry here, XRayImage's TeachingSchematic renders a generic
+      // fallback (view / moduleId / source) instead of real teaching content.
+      expect(schematicContent[id], `missing schematicContent for diagram '${id}'`).toBeDefined();
     }
   });
 });

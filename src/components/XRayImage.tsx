@@ -18,7 +18,7 @@ interface TeachingSchematicContent {
   points: string[];
 }
 
-const schematicContent: Record<string, TeachingSchematicContent> = {
+export const schematicContent: Record<string, TeachingSchematicContent> = {
   'foundations-systematic-read': {
     eyebrow: 'Systematic X-Ray Read',
     title: 'One repeatable read, every film',
