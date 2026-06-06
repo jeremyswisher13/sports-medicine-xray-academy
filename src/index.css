@@ -117,7 +117,9 @@
 .cheatsheet {
   width: 8.5in;
   max-width: 100%;
-  padding: 0.4in 0.5in;
+  /* Horizontal padding shrinks on small screens so the on-screen preview
+     isn't cramped; print restores full margins in the @media print block. */
+  padding: 0.4in min(0.5in, 4vw);
   box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06);
   border: 1px solid rgba(226, 232, 240, 1);
   border-radius: 8px;

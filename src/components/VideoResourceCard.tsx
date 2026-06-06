@@ -295,6 +295,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
             onChange={(e) => setReflection(e.target.value)}
             className="input mt-2 min-h-[6rem] resize-y"
             placeholder="Write a brief reflection… (optional)"
+            aria-label="Video reflection"
           />
           <div className="mt-2 flex justify-end">
             <button

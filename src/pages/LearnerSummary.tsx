@@ -134,7 +134,8 @@ export function LearnerSummaryPage() {
           <h2 className="font-sans text-[10pt] font-semibold uppercase tracking-[0.16em] text-ucla-800">
             Module outcomes
           </h2>
-          <table className="mt-2 w-full border-collapse text-[8.8pt]">
+          <div className="mt-2 overflow-x-auto print:overflow-visible">
+          <table className="w-full border-collapse text-[8.8pt]">
             <thead>
               <tr className="border-b border-slate-300 text-left text-slate-500">
                 <th className="py-1 pr-2 font-semibold">Module</th>
@@ -166,6 +167,7 @@ export function LearnerSummaryPage() {
               })}
             </tbody>
           </table>
+          </div>
         </section>
 
         {/* Activity */}

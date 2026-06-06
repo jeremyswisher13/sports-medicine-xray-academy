@@ -59,7 +59,7 @@ export function ModuleCompletionReward({
             />
             <RewardMetric
               label="Confidence"
-              value={`${postConfidence || '—'}/5`}
+              value={`${progress.postCheckConfidence ?? '—'}/5`}
               subvalue={
                 confidenceDelta !== null
                   ? `Δ ${formatSigned(confidenceDelta)}`

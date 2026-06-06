@@ -178,6 +178,7 @@ export function CasePracticeCard({ scenario }: Props) {
           onChange={(e) => setNotes(e.target.value)}
           className="input mt-3 min-h-[5rem] resize-y"
           placeholder="One-sentence sports medicine impression…"
+          aria-label="Your sports medicine impression"
         />
       </div>
 

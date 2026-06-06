@@ -22,7 +22,7 @@ export function YouTubeEmbed({ youtubeId, title }: Props) {
       <button
         type="button"
         onClick={() => setActive(true)}
-        className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm focus:outline-none"
+        className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
         aria-label={`Play ${title}`}
       >
         <img

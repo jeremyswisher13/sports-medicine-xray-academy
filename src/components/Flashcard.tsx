@@ -39,10 +39,10 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
           onClick={() => setFlipped((f) => !f)}
           aria-label={flipped ? 'Show prompt' : 'Reveal answer'}
           className={[
-            'relative w-full text-left transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none',
+            'relative w-full rounded-2xl text-left transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ucla-600 focus-visible:ring-offset-2',
+            'min-h-[260px] sm:min-h-[280px]',
             flipped ? '[transform:rotateY(180deg)]' : '',
           ].join(' ')}
-          style={{ minHeight: 280 }}
         >
           {/* Front */}
           <div className="absolute inset-0 [backface-visibility:hidden]">

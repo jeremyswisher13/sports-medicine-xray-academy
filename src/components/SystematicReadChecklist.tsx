@@ -647,7 +647,7 @@ export function SystematicReadChecklist({
                 </div>
               </div>
 
-              <div className="order-first space-y-3 xl:sticky xl:top-24 xl:order-last xl:w-72">
+              <div className="order-first w-full min-w-0 space-y-3 xl:sticky xl:top-24 xl:order-last xl:w-72">
                 {practiceImage && (
                   <div className="overflow-hidden rounded-2xl border border-ucla-100 bg-white shadow-soft">
                     <div className="relative aspect-[4/3] bg-slate-950">

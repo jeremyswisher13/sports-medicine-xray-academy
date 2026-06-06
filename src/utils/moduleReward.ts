@@ -132,13 +132,12 @@ export function nextRecommendedModule(
   const completedIds = new Set(
     progress.filter((item) => item.completed).map((item) => item.moduleId),
   );
-  const currentIndex = Math.max(
-    0,
-    moduleSummaries.findIndex((summary) => summary.id === currentModuleId),
-  );
+  const foundIndex = moduleSummaries.findIndex((summary) => summary.id === currentModuleId);
+  // Unknown module id: just recommend the first incomplete module from the top.
+  const currentIndex = foundIndex === -1 ? -1 : foundIndex;
   const ordered = [
     ...moduleSummaries.slice(currentIndex + 1),
-    ...moduleSummaries.slice(0, currentIndex),
+    ...moduleSummaries.slice(0, Math.max(0, currentIndex)),
   ];
   return ordered.find((summary) => !completedIds.has(summary.id));
 }

@@ -141,7 +141,7 @@ export function ProgressDashboard({ snapshot }: Props) {
                   key={m.id}
                   className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2"
                 >
-                  <span className="flex-1 truncate text-sm font-medium text-slate-800">
+                  <span className="min-w-0 flex-1 basis-full truncate text-sm font-medium text-slate-800 sm:basis-auto">
                     {m.title}
                   </span>
                   <span className="pill">{m.region}</span>
