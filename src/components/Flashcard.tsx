@@ -18,6 +18,49 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
     setFlipped(false);
   }, [card.id]);
 
+  // Keyboard shortcuts for rapid review. Uses letters + arrows (not Space/Enter)
+  // so it never conflicts with native button activation when a control is
+  // focused. Ignored while typing in a form field.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const el = document.activeElement as HTMLElement | null;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el?.isContentEditable) {
+        return;
+      }
+      switch (e.key) {
+        case 'f':
+        case 'F':
+          e.preventDefault();
+          setFlipped((prev) => !prev);
+          break;
+        case 'ArrowRight':
+        case 'g':
+        case 'G':
+          e.preventDefault();
+          onResult('got-it');
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          onResult('review');
+          break;
+        case 's':
+        case 'S':
+          if (onSkip) {
+            e.preventDefault();
+            onSkip();
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onResult, onSkip]);
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-xs text-slate-500">
@@ -105,6 +148,13 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
           Got it
         </button>
       </div>
+
+      <p className="hidden text-right text-[11px] text-slate-400 sm:block">
+        Shortcuts: <kbd className="font-semibold text-slate-500">F</kbd> flip ·{' '}
+        <kbd className="font-semibold text-slate-500">G</kbd> got it ·{' '}
+        <kbd className="font-semibold text-slate-500">R</kbd> review ·{' '}
+        <kbd className="font-semibold text-slate-500">S</kbd> skip
+      </p>
     </div>
   );
 }
