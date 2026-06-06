@@ -738,6 +738,67 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     isNormal: true,
   },
 
+  // ── Round 3 normals: wrist lateral + pediatric open-physis comparisons ───
+  'normal:wrist-lateral': {
+    id: 'normal-wrist-lateral',
+    src: '/uploads/normal-wrist-lateral.jpg',
+    alt: 'Normal lateral wrist radiograph',
+    view: 'Lateral',
+    caption: 'Normal wrist — lateral',
+    source: 'Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:X-ray_of_normal_wrist_by_lateral_projection.jpg',
+    license: 'CC0 1.0',
+    attribution: 'Mikael Häggström, MD, via Wikimedia Commons',
+    moduleId: 'wrist-hand',
+    isNormal: true,
+  },
+  'normal:wrist-pediatric': {
+    id: 'normal-wrist-pediatric',
+    src: '/uploads/normal-wrist-pediatric-pa.jpg',
+    alt: 'Normal pediatric wrist radiograph (PA) showing open distal radial and ulnar physes',
+    view: 'AP',
+    caption: 'Normal pediatric wrist — open physes (PA)',
+    source: 'Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:X-ray_of_the_wrist_of_a_2_year_old_male_-_posteroanterior.jpg',
+    license: 'Public domain',
+    attribution:
+      'Department of Radiology, UC San Diego Health, via Wikimedia Commons',
+    moduleId: 'pediatric-adolescent',
+    isNormal: true,
+  },
+  'normal:knee-pediatric': {
+    id: 'normal-knee-pediatric',
+    src: '/uploads/normal-knee-pediatric-ap.jpg',
+    alt: 'Normal pediatric knee radiograph (AP) showing open distal femoral and proximal tibial physes',
+    view: 'AP',
+    caption: 'Normal pediatric knee — open physes (AP)',
+    source: 'Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:X-ray_of_the_knee_of_a_9_year_old_female_-_case_1_-_anteroposterior.jpg',
+    license: 'Public domain',
+    attribution:
+      'Department of Radiology, UC San Diego Health, via Wikimedia Commons',
+    moduleId: 'pediatric-adolescent',
+    isNormal: true,
+  },
+  'normal:ankle-pediatric': {
+    id: 'normal-ankle-pediatric',
+    src: '/uploads/normal-ankle-pediatric-ap.jpg',
+    alt: 'Normal pediatric ankle radiograph (AP) showing open distal tibial and fibular physes',
+    view: 'AP',
+    caption: 'Normal pediatric ankle — open physes (AP)',
+    source: 'Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:X-ray_of_the_ankle_of_a_9_year_old_female_-_case_1_-_anteroposterior.jpg',
+    license: 'Public domain',
+    attribution:
+      'Department of Radiology, UC San Diego Health, via Wikimedia Commons',
+    moduleId: 'pediatric-adolescent',
+    isNormal: true,
+  },
+
   // ── Pathology: ankle mortise widening (deltoid tear) ────────────────────
   'ankle:mortise-widening': {
     id: 'ankle-mortise-widening',

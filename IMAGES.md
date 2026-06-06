@@ -76,15 +76,19 @@ Every slot that doesn't yet have a registered entry renders a clean labeled plac
 
 ## Normal image sourcing priorities
 
-Learners need repeated normal comparisons before pathology feels obvious. The current atlas has a useful normal baseline, but the next acquisition pass should prioritize these open-license images:
+Learners need repeated normal comparisons before pathology feels obvious. The atlas now has 30 normal radiographs. Recently filled (open-license):
+
+- **Wrist/hand:** normal lateral wrist (CC0).
+- **Pediatric/adolescent:** normal pediatric wrist (open physes, PA), normal pediatric knee (open physes, AP), normal pediatric ankle (open physes, AP) — all UC San Diego Radiology, public domain.
+
+Still missing — sourcing passes have not yet found a clean, license-verified open-license normal on Wikimedia Commons for these (skip rather than guess; do not substitute patient images):
 
 - **Shoulder:** normal axillary view, AP internal/external rotation pair, normal AC/clavicle comparison view.
-- **Wrist/hand:** normal lateral wrist, scaphoid/navicular view, pediatric hand/wrist with open physes.
-- **Pelvis/hip:** normal adult AP pelvis, frog-leg lateral hip, Dunn or lateral hip view for FAI comparison.
-- **Knee:** normal tunnel/notch view, weight-bearing AP comparison, pediatric knee with open physes.
+- **Wrist/hand:** dedicated scaphoid/navicular view.
+- **Pelvis/hip:** normal **adult** AP pelvis, **adult** frog-leg lateral hip, Dunn or lateral hip view for FAI comparison.
+- **Knee:** normal tunnel/notch view, weight-bearing AP comparison.
 - **Spine:** normal lumbar AP, thoracic AP/lateral, cervical oblique views if used in the curriculum.
-- **Pediatric/adolescent:** normal pediatric elbow ossification centers, normal ankle physes, normal hip/pelvis by age range.
-- **Do-not-miss comparisons:** normal carpal alignment PA/lateral, normal pediatric hip AP/frog-leg, normal ankle mortise comparison.
+- **Pediatric/adolescent:** normal pediatric elbow ossification centers (CRITOE).
 
 Prefer open-license repositories when an equivalent normal image is available. Do not add patient-derived images to this app.
 
