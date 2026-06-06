@@ -472,6 +472,56 @@ const researchModulePrompts: Record<string, ResearchModulePrompts> = {
       ],
     },
   },
+  'do-not-miss': {
+    views: {
+      question: 'Several do-not-miss injuries hide on the default series. Which habit catches the most of them?',
+      correct: option('targeted-extra-views', 'Add the targeted view the suspected injury demands (axillary, mortise, weightbearing, scaphoid)'),
+      distractors: [
+        option('two-views-always', 'Two standard views are always sufficient'),
+        option('mri-first', 'Skip plain films and go straight to MRI'),
+        option('report-only', 'Trust the preliminary report and move on'),
+      ],
+      explanation:
+        'Posterior shoulder dislocation needs an axillary, Lisfranc needs weightbearing, scaphoid needs a scaphoid view, syndesmosis needs the mortise. The right extra view is often what converts a missed injury into a caught one.',
+      coaching: [
+        'Match the suspected injury to the view that proves or excludes it.',
+        'Weightbearing and axillary/mortise views unmask injuries the default series hides.',
+        'If the view that would show the injury was not obtained, the workup is not done.',
+      ],
+    },
+    normal: {
+      question: 'Do-not-miss reads lean on normal alignment references. Which set should be automatic?',
+      correct: option('alignment-lines', 'Gilula carpal arcs, ankle mortise clear spaces, and Klein line'),
+      distractors: [
+        option('bone-density', 'Overall bone density only'),
+        option('soft-tissue-only', 'Soft tissue shadows only'),
+        option('hardware', 'Presence of surgical hardware'),
+      ],
+      explanation:
+        'Knowing the normal reference is what makes the subtle abnormal jump out: disrupted Gilula arcs (perilunate), asymmetric mortise clear space (syndesmosis/deltoid), and a Klein line that misses the epiphysis (SCFE).',
+      coaching: [
+        'Anchor on the normal alignment line before judging the abnormal.',
+        'Compare to the contralateral side when a measurement is borderline.',
+        'A normal-looking bone with abnormal alignment is still a positive study.',
+      ],
+    },
+    miss: {
+      question: 'A high-suspicion patient has a normal-looking radiograph. What is the safest next move?',
+      correct: option('escalate-on-suspicion', 'Treat suspicion as the driver: protect, immobilize, or escalate imaging rather than reassure'),
+      distractors: [
+        option('discharge', 'Discharge because the film is read as normal'),
+        option('repeat-same', 'Repeat the identical view and stop if still normal'),
+        option('wait-weeks', 'Wait several weeks before any further action regardless of risk'),
+      ],
+      explanation:
+        'Scaphoid fracture, femoral neck stress fracture, Lisfranc, and talar dome lesions can all be radiographically occult. A normal x-ray with a concerning story warrants immobilization, weightbearing protection, delayed repeat films, or MRI/CT.',
+      coaching: [
+        'Document the suspicion, the safety plan, and what would change management.',
+        'Occult scaphoid and femoral neck stress fractures are immobilize-and-reimage situations.',
+        'When the cost of a miss is high, escalate rather than reassure.',
+      ],
+    },
+  },
 };
 
 export function ModuleActiveLearningCoach({
