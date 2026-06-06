@@ -87,6 +87,56 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     moduleId: 'do-not-miss',
   },
 
+  // ── Round 4: original concept teaching diagrams (no real x-ray) ───────────
+  'elbow:alignment-lines': {
+    id: 'elbow-alignment-lines',
+    src: '/diagrams/elbow-alignment-lines.svg',
+    alt: 'Diagram of the anterior humeral line and radiocapitellar line on a lateral elbow',
+    view: 'Diagram',
+    caption: 'Elbow alignment lines — anterior humeral & radiocapitellar',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'elbow',
+  },
+  'pediatric:critoe': {
+    id: 'pediatric-critoe',
+    src: '/diagrams/critoe-ossification.svg',
+    alt: 'Diagram of CRITOE pediatric elbow ossification order with approximate ages',
+    view: 'Diagram',
+    caption: 'CRITOE — elbow ossification order',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'pediatric-adolescent',
+  },
+  'ankle:fifth-metatarsal-zones': {
+    id: 'ankle-fifth-metatarsal-zones',
+    src: '/diagrams/fifth-metatarsal-zones.svg',
+    alt: 'Diagram of 5th metatarsal fracture zones: tuberosity avulsion, Jones, proximal diaphyseal stress',
+    view: 'Diagram',
+    caption: '5th metatarsal fracture zones',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'ankle-foot',
+  },
+  'pediatric:salter-harris': {
+    id: 'pediatric-salter-harris',
+    src: '/diagrams/salter-harris.svg',
+    alt: 'Diagram of the Salter-Harris physeal fracture classification types I through V',
+    view: 'Diagram',
+    caption: 'Salter-Harris classification (I–V)',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'pediatric-adolescent',
+  },
+
   // ── Real licensed teaching radiographs (Wikimedia Commons) ───────────────
   'shoulder:posterior-dislocation': {
     id: 'shoulder-posterior-dislocation',
@@ -841,4 +891,10 @@ export function getPathologyImagesForModule(moduleId: string): XRayImageEntry[] 
 
 export function getAllRealImages(): XRayImageEntry[] {
   return Object.values(imageRegistry).filter((img) => !img.isDiagram);
+}
+
+export function getDiagramsForModule(moduleId: string): XRayImageEntry[] {
+  return Object.values(imageRegistry).filter(
+    (img) => img.moduleId === moduleId && img.isDiagram,
+  );
 }

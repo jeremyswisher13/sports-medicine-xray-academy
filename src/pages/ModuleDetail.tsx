@@ -27,6 +27,7 @@ import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import {
+  getDiagramsForModule,
   getImage,
   getNormalImagesForModule,
   getPathologyImagesForModule,
@@ -134,6 +135,10 @@ export function ModuleDetailPage() {
   );
   const pathologyImages = useMemo(
     () => (module ? getPathologyImagesForModule(module.id) : []),
+    [module],
+  );
+  const conceptDiagrams = useMemo(
+    () => (module ? getDiagramsForModule(module.id) : []),
     [module],
   );
   const systematicPracticeImage = normalImages[0] ?? realImages.find((img) => !img.isDiagram);
@@ -489,6 +494,26 @@ export function ModuleDetailPage() {
               title="Call the image first"
               description="Normal-first reps: decide view and normal-versus-pathology before the caption appears."
             />
+            {conceptDiagrams.length > 0 && (
+              <section>
+                <div className="flex items-baseline justify-between gap-3">
+                  <div>
+                    <div className="section-title">Concept diagrams</div>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Original labeled schematics for the high-yield read habits in this module.
+                    </p>
+                  </div>
+                  <span className="text-xs text-slate-500">
+                    {conceptDiagrams.length} diagram{conceptDiagrams.length === 1 ? '' : 's'}
+                  </span>
+                </div>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {conceptDiagrams.map((img) => (
+                    <XRayImage key={img.id} entry={img} />
+                  ))}
+                </div>
+              </section>
+            )}
             {normalImages.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between gap-3">

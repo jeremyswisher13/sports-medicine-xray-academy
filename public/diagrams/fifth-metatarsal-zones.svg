@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Fifth metatarsal fracture zones diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">5th Metatarsal Fracture Zones</text>
+  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Location determines management — name the zone before you splint</text>
+
+  <g transform="translate(150,110)" font-family="Inter, sans-serif">
+    <!-- 5th metatarsal: tuberosity (proximal, left) to head (distal, right) -->
+    <path d="M30 140 Q10 120 30 95 L70 100 L120 120 L320 150 L360 158 L362 188 L320 196 L120 178 L60 165 Q30 165 30 140 Z"
+          stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- cuboid hint -->
+    <path d="M0 80 L30 80 L30 180 L0 180 Z" stroke="#94A3B8" stroke-width="2" fill="#FFFFFF" opacity="0.5"/>
+
+    <!-- Zone 1: tuberosity (avulsion) -->
+    <line x1="62" y1="80" x2="62" y2="210" stroke="#2A5D85" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <text x="60" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#1A4A6F">Zone 1</text>
+    <text x="60" y="256" text-anchor="middle" font-size="10.5" fill="#1A4A6F">Tuberosity</text>
+    <text x="60" y="270" text-anchor="middle" font-size="10.5" fill="#1A4A6F">avulsion</text>
+
+    <!-- Zone 2: metaphyseal-diaphyseal junction (Jones) -->
+    <line x1="120" y1="92" x2="120" y2="206" stroke="#9F1239" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <text x="120" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#9F1239">Zone 2</text>
+    <text x="120" y="256" text-anchor="middle" font-size="10.5" fill="#9F1239">Jones</text>
+    <text x="120" y="270" text-anchor="middle" font-size="10.5" fill="#9F1239">(M–D junction)</text>
+
+    <!-- Zone 3: proximal diaphysis (stress) -->
+    <line x1="210" y1="120" x2="210" y2="190" stroke="#7A6400" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <text x="210" y="240" text-anchor="middle" font-size="12" font-weight="700" fill="#7A6400">Zone 3</text>
+    <text x="210" y="256" text-anchor="middle" font-size="10.5" fill="#7A6400">Proximal</text>
+    <text x="210" y="270" text-anchor="middle" font-size="10.5" fill="#7A6400">diaphyseal stress</text>
+  </g>
+
+  <g transform="translate(110,400)" font-family="Inter, sans-serif" font-size="12">
+    <rect x="0" y="0" width="180" height="74" rx="10" fill="#FFFFFF" stroke="#A8C2D7"/>
+    <text x="14" y="24" font-weight="700" fill="#1A4A6F">Zone 1 — avulsion</text>
+    <text x="14" y="44" fill="#475569">Usually WBAT, hard-sole</text>
+    <text x="14" y="60" fill="#475569">shoe; good healing.</text>
+
+    <rect x="200" y="0" width="180" height="74" rx="10" fill="#FFFFFF" stroke="#FECACA"/>
+    <text x="214" y="24" font-weight="700" fill="#9F1239">Zone 2 — Jones</text>
+    <text x="214" y="44" fill="#475569">NWB; high nonunion;</text>
+    <text x="214" y="60" fill="#475569">surgery often in athletes.</text>
+
+    <rect x="400" y="0" width="190" height="74" rx="10" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="414" y="24" font-weight="700" fill="#7A6400">Zone 3 — stress</text>
+    <text x="414" y="44" fill="#475569">Insidious; watershed zone;</text>
+    <text x="414" y="60" fill="#475569">prone to delayed union.</text>
+  </g>
+
+  <text x="400" y="572" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+</svg>

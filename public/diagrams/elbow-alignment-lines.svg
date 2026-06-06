@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Elbow alignment lines diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Elbow Alignment Lines (Lateral)</text>
+  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Two lines that catch most occult elbow injuries on the lateral view</text>
+
+  <g transform="translate(120,110)" font-family="Inter, sans-serif">
+    <!-- Humerus shaft -->
+    <path d="M150 0 L185 0 L205 250 L170 250 Z" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Capitellum (rounded distal humerus) -->
+    <circle cx="190" cy="270" r="40" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Radial head + neck -->
+    <path d="M250 300 L268 300 L280 430 L262 430 Z" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <ellipse cx="259" cy="298" rx="22" ry="12" stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- Ulna/olecranon -->
+    <path d="M120 300 L150 285 L210 470 L175 480 Z" stroke="#0F172A" stroke-width="3" fill="#FFFFFF" opacity="0.9"/>
+
+    <!-- Anterior humeral line: down anterior humeral cortex, should cross middle third of capitellum -->
+    <line x1="185" y1="-5" x2="205" y2="300" stroke="#FFD100" stroke-width="3"/>
+    <circle cx="196" cy="270" r="5" fill="#FFD100"/>
+    <text x="215" y="40" font-size="12" font-weight="700" fill="#7A6400">Anterior humeral line</text>
+    <text x="215" y="56" font-size="11" fill="#7A6400">bisects middle 1/3 of capitellum</text>
+
+    <!-- Radiocapitellar line: through radial neck axis, should bisect capitellum on every view -->
+    <line x1="271" y1="430" x2="150" y2="250" stroke="#2A5D85" stroke-width="3" stroke-dasharray="6 4"/>
+    <circle cx="190" cy="270" r="5" fill="#2A5D85"/>
+    <text x="295" y="400" font-size="12" font-weight="700" fill="#1A4A6F">Radiocapitellar line</text>
+    <text x="295" y="416" font-size="11" fill="#1A4A6F">bisects capitellum on every view</text>
+  </g>
+
+  <g font-family="Inter, sans-serif">
+    <rect x="70" y="500" width="660" height="78" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="400" y="528" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="12" letter-spacing="2">CLINICAL PEARL</text>
+    <text x="400" y="552" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Line off the capitellum = occult fracture or dislocation — in kids, think supracondylar; check the fat pads.</text>
+    <text x="400" y="571" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>

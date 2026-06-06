@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Salter-Harris classification diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="44" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Salter-Harris Classification</text>
+  <text x="400" y="72" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Mnemonic SALTR: Slip · Above · Lower · Through · Rammed (crush)</text>
+
+  <!-- Five mini long-bone ends. Each: metaphysis (top), physis (gold line), epiphysis (bottom). Fracture in rose. -->
+  <g font-family="Inter, sans-serif">
+    <!-- Type I -->
+    <g transform="translate(70,110)">
+      <rect x="20" y="0" width="80" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="20" y="92" width="80" height="55" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="14" y="70" width="92" height="22" fill="#FFF1C2" stroke="#FFD100" stroke-width="2"/>
+      <line x1="14" y1="81" x2="106" y2="81" stroke="#9F1239" stroke-width="3"/>
+      <text x="60" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#003B5C">I</text>
+      <text x="60" y="198" text-anchor="middle" font-size="10.5" fill="#475569">Through physis</text>
+    </g>
+    <!-- Type II -->
+    <g transform="translate(220,110)">
+      <rect x="20" y="0" width="80" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="20" y="92" width="80" height="55" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="14" y="70" width="92" height="22" fill="#FFF1C2" stroke="#FFD100" stroke-width="2"/>
+      <path d="M14 81 L70 81 L70 30" fill="none" stroke="#9F1239" stroke-width="3"/>
+      <text x="60" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#003B5C">II</text>
+      <text x="60" y="198" text-anchor="middle" font-size="10.5" fill="#475569">+ metaphysis</text>
+    </g>
+    <!-- Type III -->
+    <g transform="translate(370,110)">
+      <rect x="20" y="0" width="80" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="20" y="92" width="80" height="55" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="14" y="70" width="92" height="22" fill="#FFF1C2" stroke="#FFD100" stroke-width="2"/>
+      <path d="M106 81 L60 81 L60 140" fill="none" stroke="#9F1239" stroke-width="3"/>
+      <text x="60" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#003B5C">III</text>
+      <text x="60" y="198" text-anchor="middle" font-size="10.5" fill="#475569">+ epiphysis</text>
+    </g>
+    <!-- Type IV -->
+    <g transform="translate(520,110)">
+      <rect x="20" y="0" width="80" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="20" y="92" width="80" height="55" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="14" y="70" width="92" height="22" fill="#FFF1C2" stroke="#FFD100" stroke-width="2"/>
+      <path d="M60 30 L60 140" fill="none" stroke="#9F1239" stroke-width="3"/>
+      <text x="60" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#003B5C">IV</text>
+      <text x="60" y="198" text-anchor="middle" font-size="10.5" fill="#475569">Through all</text>
+    </g>
+    <!-- Type V -->
+    <g transform="translate(670,110)">
+      <rect x="10" y="0" width="80" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="10" y="86" width="80" height="55" rx="6" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+      <rect x="4" y="66" width="92" height="20" fill="#FECACA" stroke="#9F1239" stroke-width="2"/>
+      <path d="M50 8 L42 60 M50 8 L58 60" stroke="#9F1239" stroke-width="3"/>
+      <text x="50" y="178" text-anchor="middle" font-size="15" font-weight="700" fill="#003B5C">V</text>
+      <text x="50" y="196" text-anchor="middle" font-size="10.5" fill="#475569">Crush</text>
+    </g>
+  </g>
+
+  <g transform="translate(140,330)" font-family="Inter, sans-serif" font-size="12">
+    <rect x="0" y="0" width="240" height="16" fill="#FFFFFF"/>
+    <rect x="-2" y="-2" width="16" height="16" fill="#FFF1C2" stroke="#FFD100"/>
+    <text x="22" y="11" fill="#475569">Physis (growth plate)</text>
+    <rect x="280" y="-2" width="16" height="16" fill="#FFFFFF" stroke="#0F172A"/>
+    <text x="304" y="11" fill="#475569">Metaphysis / epiphysis</text>
+    <line x1="280" y1="34" x2="296" y2="34" stroke="#9F1239" stroke-width="3"/>
+    <text x="304" y="39" fill="#475569">Fracture line</text>
+  </g>
+
+  <g font-family="Inter, sans-serif">
+    <rect x="70" y="450" width="660" height="92" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="400" y="478" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="12" letter-spacing="2">CLINICAL PEARL</text>
+    <text x="400" y="502" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Higher types and any joint-surface (III/IV) or crush (V) injury carry more growth-arrest risk.</text>
+    <text x="400" y="524" text-anchor="middle" font-size="12" fill="#475569">Type II is the most common. A normal-looking film with focal physeal tenderness can still be a Salter-Harris I.</text>
+    <text x="400" y="556" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>
