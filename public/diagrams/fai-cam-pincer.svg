@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="FAI cam versus pincer morphology diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Femoroacetabular Impingement — Cam vs Pincer</text>
+  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Two morphologies (often combined) that drive hip impingement in athletes</text>
+
+  <!-- Normal -->
+  <g transform="translate(70,110)" font-family="Inter, sans-serif">
+    <text x="130" y="0" text-anchor="middle" font-weight="700" fill="#003B5C">Normal</text>
+    <path d="M70 250 L70 120 Q70 60 130 55 Q195 60 195 120" fill="none" stroke="#94A3B8" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="130" cy="120" r="55" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <path d="M130 175 L110 250 L150 250 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <text x="130" y="290" text-anchor="middle" font-size="11" fill="#475569">spherical head,</text>
+    <text x="130" y="305" text-anchor="middle" font-size="11" fill="#475569">normal coverage</text>
+  </g>
+
+  <!-- Cam -->
+  <g transform="translate(300,110)" font-family="Inter, sans-serif">
+    <text x="130" y="0" text-anchor="middle" font-weight="700" fill="#9F1239">Cam</text>
+    <path d="M70 250 L70 120 Q70 60 130 55 Q195 60 195 120" fill="none" stroke="#94A3B8" stroke-width="10" stroke-linecap="round"/>
+    <!-- aspherical head-neck junction: bump on lateral head-neck -->
+    <path d="M130 65 a55 55 0 1 0 0 110 q40 -2 48 -34 q6 -30 -10 -52 q-14 -22 -38 -24 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <path d="M176 100 q26 6 22 38" fill="none" stroke="#9F1239" stroke-width="4"/>
+    <circle cx="186" cy="120" r="9" fill="none" stroke="#9F1239" stroke-width="2.5" stroke-dasharray="4 3"/>
+    <path d="M130 175 L110 250 L150 250 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <text x="130" y="290" text-anchor="middle" font-size="11" fill="#9F1239">aspherical head-neck</text>
+    <text x="130" y="305" text-anchor="middle" font-size="11" fill="#9F1239">"bump" (pistol grip)</text>
+  </g>
+
+  <!-- Pincer -->
+  <g transform="translate(530,110)" font-family="Inter, sans-serif">
+    <text x="130" y="0" text-anchor="middle" font-weight="700" fill="#1A4A6F">Pincer</text>
+    <!-- over-coverage: deeper acetabular rim wrapping further over head -->
+    <path d="M55 250 L55 120 Q55 45 130 40 Q215 45 215 120" fill="none" stroke="#1A4A6F" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="130" cy="120" r="55" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <path d="M130 175 L110 250 L150 250 Z" fill="#FFFFFF" stroke="#0F172A" stroke-width="3"/>
+    <text x="130" y="290" text-anchor="middle" font-size="11" fill="#1A4A6F">acetabular</text>
+    <text x="130" y="305" text-anchor="middle" font-size="11" fill="#1A4A6F">over-coverage</text>
+  </g>
+
+  <g font-family="Inter, sans-serif">
+    <rect x="70" y="450" width="660" height="100" rx="16" fill="#FFFFFF" stroke="#A8C2D7"/>
+    <text x="400" y="478" text-anchor="middle" font-weight="700" fill="#003B5C" font-size="12" letter-spacing="2">PEARL</text>
+    <text x="400" y="502" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Cam = aspherical head-neck junction; Pincer = acetabular over-coverage. Many hips are mixed.</text>
+    <text x="400" y="524" text-anchor="middle" font-size="12" fill="#475569">Young athlete with groin pain + positive FADIR → look for cam/pincer on AP pelvis and Dunn/lateral views.</text>
+    <text x="400" y="540" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>

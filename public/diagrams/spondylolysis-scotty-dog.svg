@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Scotty dog spondylolysis diagram">
+  <rect width="800" height="600" fill="#F7F8FA"/>
+  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">The "Scotty Dog" — Lumbar Oblique</text>
+  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">A collar on the Scotty dog's neck = pars interarticularis defect (spondylolysis)</text>
+
+  <g transform="translate(110,110)" font-family="Inter, sans-serif">
+    <text x="150" y="0" text-anchor="middle" font-weight="700" fill="#003B5C">Normal</text>
+    <!-- Scotty dog: nose=transverse process, eye=pedicle, ear=sup articular, neck=pars, body=lamina, front leg=inf articular -->
+    <path d="M40 120 Q30 100 55 95 L95 100 Q110 70 140 72 Q150 50 165 70 Q175 78 168 95 L210 100 Q255 100 260 140 L255 200 Q230 215 200 205 L160 200 L150 240 L132 238 L138 198 L95 195 Q55 195 45 160 Z"
+          stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <!-- eye (pedicle) -->
+    <circle cx="110" cy="135" r="14" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+    <text x="110" y="139" text-anchor="middle" font-size="9" fill="#475569">pedicle</text>
+    <!-- ear -->
+    <text x="150" y="60" text-anchor="middle" font-size="9" fill="#475569">sup. facet (ear)</text>
+    <!-- nose -->
+    <text x="35" y="150" text-anchor="end" font-size="9" fill="#475569">TP (nose)</text>
+    <!-- neck (pars) normal -->
+    <text x="125" y="180" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2A5D85">pars (neck)</text>
+  </g>
+
+  <g transform="translate(440,110)" font-family="Inter, sans-serif">
+    <text x="150" y="0" text-anchor="middle" font-weight="700" fill="#9F1239">Spondylolysis</text>
+    <path d="M40 120 Q30 100 55 95 L95 100 Q110 70 140 72 Q150 50 165 70 Q175 78 168 95 L210 100 Q255 100 260 140 L255 200 Q230 215 200 205 L160 200 L150 240 L132 238 L138 198 L95 195 Q55 195 45 160 Z"
+          stroke="#0F172A" stroke-width="3" fill="#FFFFFF"/>
+    <circle cx="110" cy="135" r="14" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5"/>
+    <!-- collar: a lucent break across the neck -->
+    <path d="M118 165 L138 185" stroke="#9F1239" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="128" cy="175" r="13" fill="none" stroke="#9F1239" stroke-width="2.5" stroke-dasharray="4 3"/>
+    <text x="170" y="172" font-size="11" font-weight="700" fill="#9F1239">"collar"</text>
+    <text x="170" y="188" font-size="10" fill="#9F1239">pars defect</text>
+  </g>
+
+  <g font-family="Inter, sans-serif">
+    <rect x="70" y="470" width="660" height="96" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="400" y="498" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="12" letter-spacing="2">CLINICAL PEARL</text>
+    <text x="400" y="522" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Extension-based back pain in an adolescent athlete = pars stress injury until proven otherwise.</text>
+    <text x="400" y="544" text-anchor="middle" font-size="12" fill="#475569">Plain films (incl. obliques) are often negative early — MRI detects active stress reaction without radiation.</text>
+    <text x="400" y="560" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+  </g>
+</svg>

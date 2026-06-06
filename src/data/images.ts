@@ -136,6 +136,30 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     isDiagram: true,
     moduleId: 'pediatric-adolescent',
   },
+  'spine:scotty-dog': {
+    id: 'spine-scotty-dog',
+    src: '/diagrams/spondylolysis-scotty-dog.svg',
+    alt: 'Diagram of the Scotty dog sign on lumbar oblique with a pars defect collar in spondylolysis',
+    view: 'Diagram',
+    caption: 'Scotty dog — pars defect (spondylolysis)',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'spine',
+  },
+  'pelvis-hip:fai-cam-pincer': {
+    id: 'pelvis-hip-fai-cam-pincer',
+    src: '/diagrams/fai-cam-pincer.svg',
+    alt: 'Diagram comparing normal hip, cam morphology, and pincer morphology in femoroacetabular impingement',
+    view: 'Diagram',
+    caption: 'FAI — cam vs pincer morphology',
+    source: 'Original UCLA Sports Medicine diagram',
+    license: 'Original — Sports Medicine X-Ray Academy',
+    attribution: 'Jeremy Swisher, MD',
+    isDiagram: true,
+    moduleId: 'pelvis-hip',
+  },
 
   // ── Real licensed teaching radiographs (Wikimedia Commons) ───────────────
   'shoulder:posterior-dislocation': {
