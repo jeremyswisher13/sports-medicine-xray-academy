@@ -22,7 +22,8 @@ export function ModuleStartHerePanel({
       : module.keyTakeaways.slice(0, 3);
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-ucla-100 bg-white/95 shadow-soft">
+    <section className="card-premium">
+      <div className="card-premium-bar" />
       <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="p-5 sm:p-6">
           <div className="section-title">Start here</div>

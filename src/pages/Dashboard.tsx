@@ -135,8 +135,9 @@ export function DashboardPage() {
 
   return (
     <div className="container-page py-8 sm:py-12">
-      <section className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
-        <div className="-mx-6 -mt-6 mb-6 h-1 bg-ucla-400 sm:-mx-8 sm:-mt-8" />
+      <section className="card-premium">
+        <div className="card-premium-bar" />
+        <div className="p-6 sm:p-8">
         <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-end">
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
@@ -197,6 +198,7 @@ export function DashboardPage() {
               </p>
             )}
           </div>
+        </div>
         </div>
       </section>
 

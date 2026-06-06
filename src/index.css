@@ -53,6 +53,18 @@
     @apply transition-shadow duration-200 hover:shadow-card;
   }
 
+  /* Premium "celebration / hero" surface. One consistent treatment for the
+     few high-emphasis panels (module hero, completion reward, quiz hero) so
+     they stop each reinventing a bespoke gradient. Pair with `.card-premium-bar`
+     as the first child for the gold top accent. */
+  .card-premium {
+    @apply relative overflow-hidden rounded-xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white shadow-card;
+  }
+
+  .card-premium-bar {
+    @apply h-1 w-full bg-gradient-to-r from-ucla-500 via-gold-500 to-ucla-400;
+  }
+
   .pill {
     @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600;
   }

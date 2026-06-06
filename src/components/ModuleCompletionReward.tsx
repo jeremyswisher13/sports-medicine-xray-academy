@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom';
-import { moduleSummaries } from '../data/moduleSummaries';
 import type { ModuleContent, ModuleProgress } from '../types';
-import { Icon, type IconName } from './ui/Icon';
+import { Icon } from './ui/Icon';
+import {
+  completionVerdict,
+  delta,
+  deltaTone,
+  formatSigned,
+  nextRecommendedModule,
+  reviewTargets,
+  type RewardTone,
+} from '../utils/moduleReward';
 
 interface Props {
   module: ModuleContent;
   progress: ModuleProgress;
   allModuleProgress: ModuleProgress[];
   className?: string;
-}
-
-interface ReviewTarget {
-  title: string;
-  body: string;
-  icon: IconName;
 }
 
 export function ModuleCompletionReward({
@@ -33,13 +35,8 @@ export function ModuleCompletionReward({
   const nextModule = nextRecommendedModule(module.id, allModuleProgress);
 
   return (
-    <section
-      className={[
-        'overflow-hidden rounded-2xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white shadow-card',
-        className,
-      ].join(' ')}
-    >
-      <div className="h-1 bg-gradient-to-r from-ucla-500 via-gold-500 to-ucla-400" />
+    <section className={['card-premium', className].filter(Boolean).join(' ')}>
+      <div className="card-premium-bar" />
       <div className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)] sm:p-6">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-800">
@@ -149,7 +146,7 @@ function RewardMetric({
   label: string;
   value: string;
   subvalue: string;
-  tone: 'positive' | 'neutral' | 'caution';
+  tone: RewardTone;
 }) {
   const toneClass =
     tone === 'positive'
@@ -167,125 +164,4 @@ function RewardMetric({
       <div className="mt-0.5 text-xs font-semibold opacity-80">{subvalue}</div>
     </div>
   );
-}
-
-function delta(before?: number, after?: number): number | null {
-  if (before === undefined || after === undefined) return null;
-  return after - before;
-}
-
-function formatSigned(value: number): string {
-  return `${value > 0 ? '+' : ''}${Math.round(value)}`;
-}
-
-function deltaTone(value: number | null): 'positive' | 'neutral' | 'caution' {
-  if (value === null) return 'neutral';
-  if (value < 0) return 'caution';
-  return 'positive';
-}
-
-function completionVerdict(score: number, confidence: number): {
-  title: string;
-  body: string;
-  badge: string;
-  subvalue: string;
-  tone: 'positive' | 'neutral' | 'caution';
-} {
-  if (score >= 85 && confidence >= 4) {
-    return {
-      title: 'Strong finish. This read pattern is sticking.',
-      body:
-        'Your score and confidence are aligned. Keep reinforcing the skill with normal-first image calls and cases.',
-      badge: 'Ready',
-      subvalue: 'Score and confidence aligned',
-      tone: 'positive',
-    };
-  }
-  if (score >= 70 || confidence >= 4) {
-    return {
-      title: 'Good progress. One focused pass will tighten this.',
-      body:
-        'You have useful traction. The next best move is targeted review rather than restarting the whole module.',
-      badge: 'Close',
-      subvalue: 'Target weak areas',
-      tone: 'neutral',
-    };
-  }
-  return {
-    title: 'Useful calibration. Rebuild the read once more.',
-    body:
-      'This is exactly why the post-check exists: it shows where the pattern needs another active pass before clinic use.',
-    badge: 'Review',
-    subvalue: 'Repeat guided reps',
-    tone: 'caution',
-  };
-}
-
-function reviewTargets(
-  module: ModuleContent,
-  progress: ModuleProgress,
-  scoreDelta: number | null,
-  confidenceDelta: number | null,
-): ReviewTarget[] {
-  const targets: ReviewTarget[] = [];
-  const postScore = progress.postCheckScore ?? 0;
-  const postConfidence = progress.postCheckConfidence ?? 0;
-
-  if (postScore < 80) {
-    targets.push({
-      title: 'Redo the read',
-      body: 'Repeat the guided systematic read before looking back at the explanations.',
-      icon: 'clipboard',
-    });
-  }
-  if (postConfidence < 4 || (confidenceDelta !== null && confidenceDelta <= 0)) {
-    targets.push({
-      title: 'Normal-first reps',
-      body: `Use the atlas to call ${module.shortTitle.toLowerCase()} images before captions reveal.`,
-      icon: 'image',
-    });
-  }
-  if (scoreDelta !== null && scoreDelta <= 0) {
-    targets.push({
-      title: 'Missed concepts',
-      body: 'Review quiz explanations and the one-page cheat sheet, then retake later.',
-      icon: 'sparkles',
-    });
-  }
-  if (targets.length === 0) {
-    targets.push(
-      {
-        title: 'Maintain fluency',
-        body: 'Do a short atlas block later this week so normal anatomy stays automatic.',
-        icon: 'image',
-      },
-      {
-        title: 'Clinic sheet',
-        body: 'Use the cheat sheet once in clinic to reinforce escalation thresholds.',
-        icon: 'printer',
-      },
-      {
-        title: 'Teach it back',
-        body: 'Explain one do-not-miss finding out loud without looking at notes.',
-        icon: 'book-open',
-      },
-    );
-  }
-
-  return targets.slice(0, 3);
-}
-
-function nextRecommendedModule(currentModuleId: string, progress: ModuleProgress[]) {
-  const completedIds = new Set(
-    progress.filter((item) => item.completed).map((item) => item.moduleId),
-  );
-  const currentIndex = Math.max(
-    0,
-    moduleSummaries.findIndex((summary) => summary.id === currentModuleId),
-  );
-  const ordered = [
-    ...moduleSummaries.slice(currentIndex + 1),
-    ...moduleSummaries.slice(0, currentIndex),
-  ];
-  return ordered.find((summary) => !completedIds.has(summary.id));
 }

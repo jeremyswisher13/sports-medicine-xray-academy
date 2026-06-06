@@ -107,7 +107,9 @@ export function QuizPage({ scope }: Props) {
           {scope === 'pre' ? 'Pre-course assessment' : 'Post-course assessment'}
         </span>
       </div>
-      <header className="mt-3 overflow-hidden rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft sm:p-6">
+      <header className="card-premium mt-3">
+        <div className="card-premium-bar" />
+        <div className="p-5 sm:p-6">
         <div className="section-title">{scope === 'pre' ? 'Baseline' : 'Outcome'}</div>
         <h1 className="mt-1 text-balance">
           {scope === 'pre' ? 'Pre-course assessment' : 'Post-course assessment'}
@@ -155,6 +157,7 @@ export function QuizPage({ scope }: Props) {
               <div className="mt-0.5 text-xs leading-relaxed">{item.body}</div>
             </div>
           ))}
+        </div>
         </div>
       </header>
 

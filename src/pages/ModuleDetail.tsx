@@ -83,6 +83,30 @@ export function ModuleDetailPage() {
     setModuleQuizIndex(0);
   }, [moduleId]);
 
+  // Self-heal: if a post-check was captured but the module was never marked
+  // complete (legacy/stuck record, or a partial save), finish it silently.
+  // The normal flow already completes via the post-check's completeModuleOnFinish.
+  useEffect(() => {
+    if (!user || !module || learnerPreview) return;
+    const saved = snapshot.modules.find((m) => m.moduleId === module.id);
+    if (!saved || !saved.postCheckAt || saved.completed) return;
+    const completedAt = Date.now();
+    void (async () => {
+      await saveModuleProgress({
+        ...saved,
+        visited: true,
+        completed: true,
+        completedAt,
+        completedTabs: saved.completedTabs?.length
+          ? saved.completedTabs
+          : modulePhases.map((t) => t.id),
+        lastViewedAt: completedAt,
+      });
+      await logAuditEvent({ userId: user.uid, type: 'module_completed', moduleId: module.id });
+      await refresh();
+    })();
+  }, [user, module, learnerPreview, snapshot.modules, refresh]);
+
   useEffect(() => {
     if (location.hash !== '#systematic') return;
     setActive('learn');
@@ -188,38 +212,6 @@ export function ModuleDetailPage() {
     setPracticeToolsOpen(false);
   }
 
-  async function markComplete() {
-    if (!user || !module) return;
-    const existing = moduleProgress;
-    const completedAt = Date.now();
-    const progressUpdate = {
-      userId: user.uid,
-      moduleId: module.id,
-      visited: true,
-      completedTabs: modulePhases.map((t) => t.id),
-      completed: true,
-      completedAt,
-      lastViewedAt: completedAt,
-      ...(existing?.preCheckAt !== undefined ? { preCheckAt: existing.preCheckAt } : {}),
-      ...(existing?.postCheckAt !== undefined ? { postCheckAt: existing.postCheckAt } : {}),
-      ...(existing?.preCheckScore !== undefined ? { preCheckScore: existing.preCheckScore } : {}),
-      ...(existing?.postCheckScore !== undefined ? { postCheckScore: existing.postCheckScore } : {}),
-      ...(existing?.preCheckConfidence !== undefined
-        ? { preCheckConfidence: existing.preCheckConfidence }
-        : {}),
-      ...(existing?.postCheckConfidence !== undefined
-        ? { postCheckConfidence: existing.postCheckConfidence }
-        : {}),
-    };
-    await saveModuleProgress(progressUpdate);
-    await logAuditEvent({
-      userId: user.uid,
-      type: 'module_completed',
-      moduleId: module.id,
-    });
-    await refresh();
-  }
-
   const heroImage = getModuleHeroImage(module.id, normalImages, realImages);
 
   function openGuidedRead() {
@@ -285,15 +277,6 @@ export function ModuleDetailPage() {
               {module.description}
             </p>
           </div>
-
-          {contentUnlocked && !isComplete && moduleProgress?.postCheckAt && (
-            <div className="flex flex-wrap gap-2 sm:justify-end">
-              <button className="btn-primary" onClick={markComplete} disabled={!user}>
-                Mark complete
-                <Icon name="check" size={14} />
-              </button>
-            </div>
-          )}
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
