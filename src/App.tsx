@@ -30,6 +30,9 @@ const CheatSheetPage = lazy(() =>
   import('./pages/CheatSheet').then((m) => ({ default: m.CheatSheetPage })),
 );
 const AtlasPage = lazy(() => import('./pages/Atlas').then((m) => ({ default: m.AtlasPage })));
+const LearnerSummaryPage = lazy(() =>
+  import('./pages/LearnerSummary').then((m) => ({ default: m.LearnerSummaryPage })),
+);
 const AdminPage = lazy(() => import('./pages/Admin').then((m) => ({ default: m.AdminPage })));
 
 function RouteFallback() {
@@ -219,6 +222,16 @@ export default function App() {
                     <CheatSheetPage />
                   </LazyPage>
                 </CourseBaselineGate>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/progress/summary"
+            element={
+              <ProtectedRoute>
+                <LazyPage>
+                  <LearnerSummaryPage />
+                </LazyPage>
               </ProtectedRoute>
             }
           />

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ProgressDashboard } from '../components/ProgressDashboard';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
@@ -8,13 +9,19 @@ export function ProgressPage() {
   const { snapshot, loading } = useProgress();
   return (
     <div className="container-page py-8 sm:py-12">
-      <div>
-        <div className="section-title">Your learning</div>
-        <h1 className="mt-1 text-balance">Progress dashboard</h1>
-        <p className="mt-1 max-w-prose text-slate-600 leading-relaxed">
-          A snapshot of your modules, quizzes, confidence ratings, cases, and AMSSM video
-          progress.
-        </p>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <div className="section-title">Your learning</div>
+          <h1 className="mt-1 text-balance">Progress dashboard</h1>
+          <p className="mt-1 max-w-prose text-slate-600 leading-relaxed">
+            A snapshot of your modules, quizzes, confidence ratings, cases, and AMSSM video
+            progress.
+          </p>
+        </div>
+        <Link to="/progress/summary" className="btn-secondary">
+          <Icon name="printer" size={14} />
+          Printable summary
+        </Link>
       </div>
       {loading && (
         <div className="mt-6 text-sm text-slate-500">Loading your progress…</div>
