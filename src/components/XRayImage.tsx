@@ -55,6 +55,78 @@ const schematicContent: Record<string, TeachingSchematicContent> = {
     summary: 'Interrupted arcs or abnormal lunate position can signal perilunate injury.',
     points: ['Three smooth arcs', 'Lunate alignment', 'Scapholunate gap', 'Lateral confirmation'],
   },
+  'elbow-alignment-lines': {
+    eyebrow: 'Elbow alignment',
+    title: 'Anterior humeral & radiocapitellar lines',
+    summary:
+      'On the lateral, the anterior humeral line should bisect the middle third of the capitellum, and the radiocapitellar line should bisect the capitellum on every view.',
+    points: [
+      'Anterior humeral line → mid capitellum',
+      'Radiocapitellar line → capitellum',
+      'A miss = occult fracture/dislocation',
+      'In kids, think supracondylar',
+    ],
+  },
+  'pediatric-critoe': {
+    eyebrow: 'Pediatric elbow',
+    title: 'CRITOE ossification order',
+    summary:
+      'Ossification centers appear in a predictable order; knowing it prevents calling a normal center a fracture (and vice versa).',
+    points: [
+      'Capitellum ~1y · Radial head ~3y',
+      'Internal epicondyle ~5y · Trochlea ~7y',
+      'Olecranon ~9y · External epicondyle ~11y',
+      'Trochlea before medial epicondyle = entrapped avulsion',
+    ],
+  },
+  'ankle-fifth-metatarsal-zones': {
+    eyebrow: 'Foot',
+    title: '5th metatarsal fracture zones',
+    summary:
+      'Location determines management — name the zone before you splint.',
+    points: [
+      'Zone 1 tuberosity avulsion → WBAT, good healing',
+      'Zone 2 Jones (M–D junction) → NWB, high nonunion',
+      'Zone 3 proximal diaphyseal stress → delayed union',
+      'Athletes often get surgical fixation for Jones',
+    ],
+  },
+  'pediatric-salter-harris': {
+    eyebrow: 'Growth plate injury',
+    title: 'Salter-Harris classification',
+    summary:
+      'SALTR: Slipped, Above, Lower, Through, Rammed. Higher types and joint-surface or crush injuries carry more growth-arrest risk.',
+    points: [
+      'I through physis · II + metaphysis (most common)',
+      'III + epiphysis · IV through all',
+      'V crush of the physis',
+      'Normal film + physeal tenderness can still be SH-I',
+    ],
+  },
+  'spine-scotty-dog': {
+    eyebrow: 'Lumbar spine',
+    title: 'Scotty dog — pars defect',
+    summary:
+      'On the lumbar oblique, a "collar" on the Scotty dog’s neck is a pars interarticularis defect (spondylolysis).',
+    points: [
+      'Neck of the dog = pars interarticularis',
+      'Collar = pars defect',
+      'Adolescent extension-based back pain',
+      'MRI for active stress reaction (no radiation)',
+    ],
+  },
+  'pelvis-hip-fai-cam-pincer': {
+    eyebrow: 'Hip impingement',
+    title: 'FAI — cam vs pincer',
+    summary:
+      'Cam is an aspherical femoral head-neck junction; pincer is acetabular over-coverage. Many hips are mixed.',
+    points: [
+      'Cam → head-neck "bump" (pistol grip)',
+      'Pincer → acetabular over-coverage',
+      'Young athlete, groin pain, + FADIR',
+      'AP pelvis + Dunn/lateral views',
+    ],
+  },
 };
 
 function TeachingSchematic({
