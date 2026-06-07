@@ -19,8 +19,7 @@ import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { ModuleActiveLearningCoach } from '../components/ModuleActiveLearningCoach';
 import { InlineFlashcardStrip } from '../components/InlineFlashcardStrip';
 import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
-import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
-import { ModuleStartHerePanel } from '../components/ModuleStartHerePanel';
+import { ModulePhaseNav } from '../components/ModulePhaseNav';
 import { ModuleResourceMenu } from '../components/ModuleResourceMenu';
 import { ModuleCompletionReward } from '../components/ModuleCompletionReward';
 import { Disclosure } from '../components/ui/Disclosure';
@@ -60,7 +59,6 @@ export function ModuleDetailPage() {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [preCheckCompletedNow, setPreCheckCompletedNow] = useState(false);
   const [practiceToolsOpen, setPracticeToolsOpen] = useState(false);
-  const [learnDetailsOpen, setLearnDetailsOpen] = useState(false);
   const [moduleCaseIndex, setModuleCaseIndex] = useState(0);
   const [moduleQuizIndex, setModuleQuizIndex] = useState(0);
 
@@ -80,7 +78,6 @@ export function ModuleDetailPage() {
     setQuizSubmitted(false);
     setPreCheckCompletedNow(false);
     setPracticeToolsOpen(false);
-    setLearnDetailsOpen(false);
     setModuleCaseIndex(0);
     setModuleQuizIndex(0);
   }, [moduleId]);
@@ -113,7 +110,6 @@ export function ModuleDetailPage() {
     if (location.hash !== '#systematic') return;
     setActive('learn');
     setPracticeToolsOpen(false);
-    setLearnDetailsOpen(true);
     window.setTimeout(() => {
       document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
     }, 0);
@@ -220,15 +216,8 @@ export function ModuleDetailPage() {
 
   const heroImage = getModuleHeroImage(module.id, normalImages, realImages);
 
-  function openGuidedRead() {
-    setLearnDetailsOpen(true);
-    window.setTimeout(() => {
-      document.getElementById('systematic-read')?.scrollIntoView({ block: 'start' });
-    }, 0);
-  }
-
   return (
-    <div className="container-page py-8 sm:py-10">
+    <div className="container-page py-6 sm:py-8">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <div className="flex items-center gap-2">
           <Link to="/modules" className="text-slate-500 hover:text-slate-800 no-underline">
@@ -244,69 +233,33 @@ export function ModuleDetailPage() {
         />
       </div>
 
-      <header className="mt-3 rounded-2xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white p-5 shadow-soft sm:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="flex flex-wrap gap-2">
-              <span className="pill">{module.region}</span>
-              {!contentUnlocked ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
-                  <Icon name="lock" size={12} />
-                  Baseline required
-                </span>
-              ) : isComplete ? (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                  <Icon name="check-circle" size={12} />
-                  Completed
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-white px-2.5 py-1 text-xs font-semibold text-ucla-900">
-                  <Icon name="book-open" size={12} />
-                  Guided lesson
-                </span>
-              )}
-              {learnerPreview && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
-                  <Icon name="eye" size={12} />
-                  Learner preview
-                </span>
-              )}
-              {isAdminBypass && !hasPreCheck && (
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-white px-2.5 py-1 text-xs font-semibold text-ucla-900">
-                  <Icon name="shield" size={12} />
-                  Admin bypass
-                </span>
-              )}
-            </div>
-            <h1 className="mt-3 text-balance">{module.title}</h1>
-            <p className="mt-2 max-w-3xl text-slate-600 leading-relaxed">
-              {module.description}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-          <span>{module.estimatedMinutes} min</span>
-          <span>•</span>
-          <span>{module.cases.length} cases</span>
-          <span>•</span>
-          <span>{module.quiz.length} quiz questions</span>
-          <span>•</span>
-          <span>{videos.length} AMSSM videos</span>
-          {moduleProgress?.preCheckAt && (
-            <>
-              <span>•</span>
-              <span className="font-semibold text-ucla-800">
-                Pre {Math.round(moduleProgress.preCheckScore ?? 0)}%
-              </span>
-              <span>•</span>
-              <span className="font-semibold text-ucla-800">
-                Confidence {moduleProgress.preCheckConfidence ?? '—'}/5
-              </span>
-            </>
-          )}
-        </div>
-      </header>
+      <div className="mt-2 flex flex-wrap items-center gap-2.5">
+        <h1 className="text-2xl text-balance text-ucla-950 sm:text-3xl">{module.title}</h1>
+        <span className="pill">{module.region}</span>
+        {!contentUnlocked ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
+            <Icon name="lock" size={12} />
+            Baseline required
+          </span>
+        ) : isComplete ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+            <Icon name="check-circle" size={12} />
+            Completed
+          </span>
+        ) : null}
+        {learnerPreview && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-xs font-semibold text-gold-900">
+            <Icon name="eye" size={12} />
+            Learner preview
+          </span>
+        )}
+        {isAdminBypass && !hasPreCheck && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-ucla-200 bg-white px-2.5 py-1 text-xs font-semibold text-ucla-900">
+            <Icon name="shield" size={12} />
+            Admin bypass
+          </span>
+        )}
+      </div>
 
       {!contentUnlocked ? (
         <section className="mt-6 grid gap-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
@@ -369,41 +322,56 @@ export function ModuleDetailPage() {
             </div>
           )}
 
-          {(active !== 'learn' || learnDetailsOpen) && (
-            <ModuleNextTaskPanel
-              module={module}
-              activePhaseId={active}
-              onPhaseChange={handlePhaseChange}
-              completedPhaseIds={moduleProgress?.completedTabs ?? []}
-              postCheckPending={!moduleProgress?.postCheckAt}
-              showPhaseJump
-              className="mt-5"
-            />
-          )}
+          <ModulePhaseNav
+            activePhaseId={active}
+            onPhaseChange={handlePhaseChange}
+            completedPhaseIds={moduleProgress?.completedTabs ?? []}
+            className="mt-4"
+          />
 
           <div className="mt-6 animate-fade-in">
         {active === 'learn' && (
-          <div className="space-y-4">
-            <ModuleStartHerePanel
-              module={module}
-              heroImage={heroImage}
-              onReviewImages={() => handlePhaseChange('images')}
-              onStartGuidedRead={openGuidedRead}
-            />
+          <div className="space-y-5">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+              <div>
+                <p className="leading-relaxed text-slate-600">{module.description}</p>
+                {module.emphasis.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
+                    {module.emphasis.map((e) => (
+                      <li key={e} className="pill-primary">
+                        {e}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
+                  <span>{module.estimatedMinutes} min</span>
+                  <span>·</span>
+                  <span>{module.cases.length} case{module.cases.length === 1 ? '' : 's'}</span>
+                  <span>·</span>
+                  <span>{module.quiz.length} quiz</span>
+                  {moduleProgress?.preCheckAt && (
+                    <>
+                      <span>·</span>
+                      <span className="font-semibold text-ucla-800">
+                        Pre {Math.round(moduleProgress.preCheckScore ?? 0)}% · confidence{' '}
+                        {moduleProgress.preCheckConfidence ?? '—'}/5
+                      </span>
+                    </>
+                  )}
+                </div>
+              </div>
+              {heroImage && (
+                <div className="overflow-hidden rounded-xl bg-slate-950">
+                  <XRayImage entry={heroImage} className="min-h-[200px]" />
+                </div>
+              )}
+            </div>
 
-            {learnDetailsOpen && (
-              <div className="space-y-4 animate-fade-in">
-                <InlineFlashcardStrip
-                  moduleId={module.id}
-                  maxCards={3}
-                  startIndex={0}
-                  title="Recall before you read"
-                  description="Answer these first so the framework is active before you inspect images."
-                />
-                <section
-                  id="systematic-read"
-                  className="grid scroll-mt-28 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
-                >
+            <section
+              id="systematic-read"
+              className="grid scroll-mt-24 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]"
+            >
                   <SystematicReadChecklist
                     items={module.systematicChecklist}
                     practiceImage={systematicPracticeImage}
@@ -434,36 +402,7 @@ export function ModuleDetailPage() {
                   </ul>
                 </aside>
 
-                <Disclosure
-                  boxed
-                  summary="What this module covers"
-                  description="The map and emphasis for this read — open if you want the lay of the land first."
-                >
-                  <ul className="space-y-2 prose-clinical">
-                    {module.overview.map((line) => (
-                      <li key={line} className="flex items-start gap-2.5">
-                        <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
-                        <span>{line}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {module.emphasis.length > 0 && (
-                    <div className="mt-4">
-                      <div className="label">Emphasis</div>
-                      <ul className="mt-1 flex flex-wrap gap-1.5">
-                        {module.emphasis.map((e) => (
-                          <li key={e} className="pill-primary">
-                            {e}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </Disclosure>
-
-                <CheatSheetPromo module={module} compact />
-              </div>
-            )}
+            <CheatSheetPromo module={module} compact />
           </div>
         )}
 
@@ -922,8 +861,43 @@ export function ModuleDetailPage() {
         )}
           </div>
 
-          {(active !== 'learn' || learnDetailsOpen) && (
-            <div className="mt-5">
+          <div className="mt-6 flex items-center justify-between gap-3 border-t border-slate-200/70 pt-4">
+            {(() => {
+              const phaseIndex = modulePhases.findIndex((p) => p.id === active);
+              const prev = modulePhases[phaseIndex - 1];
+              const next = modulePhases[phaseIndex + 1];
+              return (
+                <>
+                  {prev ? (
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => handlePhaseChange(prev.id)}
+                    >
+                      <Icon name="chevron-left" size={14} />
+                      {prev.label}
+                    </button>
+                  ) : (
+                    <span />
+                  )}
+                  {next ? (
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={() => handlePhaseChange(next.id)}
+                    >
+                      Next: {next.label}
+                      <Icon name="arrow-right" size={14} />
+                    </button>
+                  ) : (
+                    <span />
+                  )}
+                </>
+              );
+            })()}
+          </div>
+
+          <div className="mt-5">
               <button
                 type="button"
                 onClick={() => setPracticeToolsOpen((open) => !open)}
@@ -957,7 +931,6 @@ export function ModuleDetailPage() {
                 </div>
               )}
             </div>
-          )}
         </>
       )}
     </div>
