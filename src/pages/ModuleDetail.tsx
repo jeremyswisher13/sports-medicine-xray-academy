@@ -23,6 +23,7 @@ import { ModuleNextTaskPanel } from '../components/ModuleNextTaskPanel';
 import { ModuleStartHerePanel } from '../components/ModuleStartHerePanel';
 import { ModuleResourceMenu } from '../components/ModuleResourceMenu';
 import { ModuleCompletionReward } from '../components/ModuleCompletionReward';
+import { Disclosure } from '../components/ui/Disclosure';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
@@ -421,44 +422,45 @@ export function ModuleDetailPage() {
                   </article>
                 </section>
 
-                <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-                  <article className="card p-5 sm:p-6">
-                    <h3 className="text-ucla-900">Module map</h3>
-                    <ul className="mt-3 space-y-2 prose-clinical">
-                      {module.overview.map((line) => (
-                        <li key={line} className="flex items-start gap-2.5">
-                          <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
-                          <span>{line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    {module.emphasis.length > 0 && (
-                      <div className="mt-4">
-                        <div className="label">Emphasis</div>
-                        <ul className="mt-1 flex flex-wrap gap-1.5">
-                          {module.emphasis.map((e) => (
-                            <li key={e} className="pill-primary">
-                              {e}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </article>
-                  <aside className="card p-5">
-                    <div className="label">When to escalate</div>
-                    <ul className="mt-2 space-y-2">
-                      {module.whenToEscalate.map((line) => (
-                        <li key={line} className="flex items-start gap-2 text-sm text-slate-700">
-                          <Icon name="lightning" size={14} className="mt-0.5 text-ucla-700" />
-                          <span>{line}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </aside>
-                </section>
+                <aside className="card p-5">
+                  <div className="label">When to escalate</div>
+                  <ul className="mt-2 space-y-2">
+                    {module.whenToEscalate.map((line) => (
+                      <li key={line} className="flex items-start gap-2 text-sm text-slate-700">
+                        <Icon name="lightning" size={14} className="mt-0.5 text-ucla-700" />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </aside>
 
-                <AnatomyLandmarkCard landmarks={module.anatomy} />
+                <Disclosure
+                  boxed
+                  summary="What this module covers"
+                  description="The map and emphasis for this read — open if you want the lay of the land first."
+                >
+                  <ul className="space-y-2 prose-clinical">
+                    {module.overview.map((line) => (
+                      <li key={line} className="flex items-start gap-2.5">
+                        <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-ucla-700" />
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {module.emphasis.length > 0 && (
+                    <div className="mt-4">
+                      <div className="label">Emphasis</div>
+                      <ul className="mt-1 flex flex-wrap gap-1.5">
+                        {module.emphasis.map((e) => (
+                          <li key={e} className="pill-primary">
+                            {e}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </Disclosure>
+
                 <CheatSheetPromo module={module} compact />
               </div>
             )}
@@ -468,14 +470,6 @@ export function ModuleDetailPage() {
         {active === 'views' && (
           <section className="space-y-4">
             <ViewSelector views={module.views} />
-            <InlineFlashcardStrip
-              moduleId={module.id}
-              maxCards={3}
-              startIndex={2}
-              eyebrow="View recall"
-              title="Which view catches the miss?"
-              description="Use these before looking at the example images."
-            />
             {realImages.length > 0 && (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {realImages.slice(0, 3).map((img) => (
@@ -494,6 +488,7 @@ export function ModuleDetailPage() {
               title="Call the image first"
               description="Normal-first reps: decide view and normal-versus-pathology before the caption appears."
             />
+
             {conceptDiagrams.length > 0 && (
               <section>
                 <div className="flex items-baseline justify-between gap-3">
@@ -514,118 +509,136 @@ export function ModuleDetailPage() {
                 </div>
               </section>
             )}
-            {normalImages.length > 0 && (
-              <section>
-                <div className="flex items-baseline justify-between gap-3">
-                  <div>
-                    <div className="section-title">Normal anatomy reference</div>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Study the normal view first, then compare it to pathology and do-not-miss findings.
-                    </p>
-                  </div>
+
+            {/* Normal first — anchor the normal view + landmarks before pathology. */}
+            <section>
+              <div className="flex items-baseline justify-between gap-3">
+                <div>
+                  <div className="section-title">Normal anatomy reference</div>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Anchor the normal view and landmarks first, then move to pathology.
+                  </p>
+                </div>
+                {normalImages.length > 0 && (
                   <span className="text-xs text-slate-500">
                     {normalImages.length} view{normalImages.length === 1 ? '' : 's'}
                   </span>
-                </div>
+                )}
+              </div>
+              {normalImages.length > 0 ? (
                 <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {normalImages.map((img) => (
                     <XRayImage key={img.id} entry={img} />
                   ))}
                 </div>
-              </section>
-            )}
-            {normalImages.length === 0 && (
-              <div className="card p-5 text-sm text-slate-600">
-                Use the systematic checklist, view drill, and available teaching images to anchor
-                the normal-first read for this module.
-              </div>
-            )}
-            <AnatomyLandmarkCard landmarks={module.anatomy} />
-            <InlineFlashcardStrip
-              moduleId={module.id}
-              maxCards={3}
-              startIndex={4}
-              eyebrow="Landmark recall"
-              title="Name the normal anchors"
-              description="Use active recall to lock in the normal anatomy before pathology."
-            />
-            {pathologyImages.length > 0 && (
-              <section>
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <div className="section-title">Pathology atlas</div>
-                    <p className="mt-1 text-sm text-slate-500">
-                      Open-license teaching radiographs sourced from Wikimedia Commons.
-                    </p>
-                  </div>
-                  <Link
-                    to="/atlas"
-                    className="text-xs font-semibold text-ucla-700 hover:text-ucla-900 no-underline"
-                  >
-                    Full atlas →
-                  </Link>
+              ) : (
+                <div className="card mt-3 p-5 text-sm text-slate-600">
+                  Use the systematic checklist, view drill, and available teaching images to anchor
+                  the normal-first read for this module.
                 </div>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {pathologyImages.map((img) => (
-                    <XRayImage key={img.id} entry={img} />
+              )}
+              <div className="mt-3">
+                <AnatomyLandmarkCard landmarks={module.anatomy} />
+              </div>
+            </section>
+
+            {/* Pathology — high-yield findings first, depth on demand. */}
+            <section className="border-t border-slate-200/70 pt-5">
+              <div className="section-title">Pathology</div>
+              <p className="mt-1 text-sm text-slate-500">
+                Start with the highest-yield findings; expand any card for the normal-versus-pathologic detail.
+              </p>
+              <div className="mt-3">
+                <PathologyComparisonCard items={module.pathology.slice(0, 2)} />
+              </div>
+              {module.pathology.length > 2 && (
+                <div className="mt-3">
+                  <Disclosure
+                    summary={`Show ${module.pathology.length - 2} more finding${
+                      module.pathology.length - 2 === 1 ? '' : 's'
+                    }`}
+                  >
+                    <PathologyComparisonCard items={module.pathology.slice(2)} />
+                  </Disclosure>
+                </div>
+              )}
+
+              {pathologyImages.length > 0 && (
+                <div className="mt-3">
+                  <Disclosure
+                    summary="View teaching radiographs (atlas)"
+                    description="Open-license example images sourced from Wikimedia Commons."
+                  >
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {pathologyImages.map((img) => (
+                        <XRayImage key={img.id} entry={img} />
+                      ))}
+                    </div>
+                    <Link
+                      to="/atlas"
+                      className="mt-3 inline-block text-xs font-semibold text-ucla-700 hover:text-ucla-900 no-underline"
+                    >
+                      Full atlas →
+                    </Link>
+                  </Disclosure>
+                </div>
+              )}
+              {module.id === 'do-not-miss' && (
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <XRayImage entry={getImage('do-not-miss-gilula-arcs')} />
+                </div>
+              )}
+            </section>
+
+            {/* Do not miss — kept visible; this is the whole point of the app. */}
+            <section>
+              <div className="section-title">Do not miss</div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {module.doNotMiss.length === 0 && (
+                  <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
+                    Do-not-miss references for this module are covered through the cases, quiz, and takeaways.
+                  </div>
+                )}
+                {module.doNotMiss.map((d) => (
+                  <DoNotMissCallout key={d.title} title={d.title}>
+                    <div>
+                      <p>{d.why}</p>
+                      <p className="mt-1">
+                        <span className="font-semibold">Imaging next: </span>
+                        {d.imagingNext}
+                      </p>
+                    </div>
+                  </DoNotMissCallout>
+                ))}
+              </div>
+            </section>
+
+            {(module.pitfalls.length > 0 || module.pearls.length > 0) && (
+              <Disclosure
+                summary="Pitfalls & pearls"
+                description={`${module.pitfalls.length} pitfall${
+                  module.pitfalls.length === 1 ? '' : 's'
+                } · ${module.pearls.length} pearl${module.pearls.length === 1 ? '' : 's'}`}
+              >
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {module.pitfalls.map((p) => (
+                    <PitfallCallout key={p.title} title={p.title}>
+                      {p.body}
+                    </PitfallCallout>
+                  ))}
+                  {module.pearls.map((p) => (
+                    <ClinicalPearlCallout key={p.title} title={p.title}>
+                      {p.body}
+                    </ClinicalPearlCallout>
                   ))}
                 </div>
-              </section>
+              </Disclosure>
             )}
-            {module.id === 'do-not-miss' && (
-              <div className="grid gap-3 sm:grid-cols-2">
-                <XRayImage entry={getImage('do-not-miss-gilula-arcs')} />
-              </div>
-            )}
-            <PathologyComparisonCard items={module.pathology} />
-            <section className="grid gap-3 sm:grid-cols-2">
-              {module.doNotMiss.length === 0 && (
-                <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                  Do-not-miss references for this module are covered through the cases, quiz, and takeaways.
-                </div>
-              )}
-              {module.doNotMiss.map((d) => (
-                <DoNotMissCallout key={d.title} title={d.title}>
-                  <div>
-                    <p>{d.why}</p>
-                    <p className="mt-1">
-                      <span className="font-semibold">Imaging next: </span>
-                      {d.imagingNext}
-                    </p>
-                  </div>
-                </DoNotMissCallout>
-              ))}
-            </section>
-            <section className="grid gap-3 sm:grid-cols-2">
-              {module.pitfalls.length === 0 && module.pearls.length === 0 && (
-                <div className="card p-5 text-sm text-slate-500 sm:col-span-2">
-                  Pitfalls and pearls for this module are reinforced through the cases, quiz, and takeaways.
-                </div>
-              )}
-              {module.pitfalls.map((p) => (
-                <PitfallCallout key={p.title} title={p.title}>
-                  {p.body}
-                </PitfallCallout>
-              ))}
-              {module.pearls.map((p) => (
-                <ClinicalPearlCallout key={p.title} title={p.title}>
-                  {p.body}
-                </ClinicalPearlCallout>
-              ))}
-            </section>
           </div>
         )}
 
         {active === 'practice' && (
           <section className="space-y-4">
-            <InlineFlashcardStrip
-              moduleId={module.id}
-              maxCards={3}
-              startIndex={6}
-              eyebrow="Case warm-up"
-              title="Commit these before cases"
-              description="A quick readiness check before you diagnose and choose management."
-            />
             {module.cases.length === 0 && (
               <div className="card p-5 text-sm text-slate-500">
                 Case-based practice for this module is available in the{' '}
@@ -670,38 +683,46 @@ export function ModuleDetailPage() {
                 <CasePracticeCard key={currentModuleCase.id} scenario={currentModuleCase} />
               </>
             )}
-            {videos.length === 0 && (
-              <div className="card p-5 text-sm text-slate-500">
-                Use the module cases, atlas reps, and quiz questions for this phase; relevant AMSSM
-                videos are also available from the video library.
-              </div>
+            {videos.length > 0 && (
+              <Disclosure
+                summary="Related AMSSM videos"
+                description={`${videos.length} supplemental video${
+                  videos.length === 1 ? '' : 's'
+                } for this region.`}
+              >
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {videos.map((v) => {
+                    const initial = snapshot.videos.find((vp) => vp.videoId === v.id) ?? null;
+                    return (
+                      <VideoResourceCard
+                        key={v.id}
+                        video={v}
+                        initialProgress={initial}
+                        onProgressChange={() => void refresh()}
+                      />
+                    );
+                  })}
+                </div>
+              </Disclosure>
             )}
-            <div className="grid gap-4 lg:grid-cols-2">
-              {videos.map((v) => {
-                const initial = snapshot.videos.find((vp) => vp.videoId === v.id) ?? null;
-                return (
-                  <VideoResourceCard
-                    key={v.id}
-                    video={v}
-                    initialProgress={initial}
-                    onProgressChange={() => void refresh()}
-                  />
-                );
-              })}
-            </div>
           </section>
         )}
 
         {active === 'quiz' && (
           <section className="space-y-4">
-            <InlineFlashcardStrip
-              moduleId={module.id}
-              maxCards={3}
-              startIndex={8}
-              eyebrow="Quiz warm-up"
-              title="Rapid readiness cards"
-              description="If these feel shaky, review the phase content before submitting the quiz."
-            />
+            <Disclosure
+              summary="Warm up first (optional)"
+              description="A few rapid recall cards before you commit to the quiz."
+            >
+              <InlineFlashcardStrip
+                moduleId={module.id}
+                maxCards={3}
+                startIndex={8}
+                eyebrow="Quiz warm-up"
+                title="Rapid readiness cards"
+                description="If these feel shaky, review the phase content before submitting the quiz."
+              />
+            </Disclosure>
             {module.quiz.length === 0 ? (
               <div className="card p-5 text-sm text-slate-500">
                 Use the course assessments if you want an additional check beyond this module. Try the{' '}
@@ -815,7 +836,11 @@ export function ModuleDetailPage() {
 
         {active === 'takeaways' && (
           <section className="space-y-4">
-            <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
+            <div
+              className={
+                moduleProgress?.postCheckAt ? '' : 'grid gap-4 lg:grid-cols-[1.4fr_1fr]'
+              }
+            >
               <article className="card p-5 sm:p-6">
                 <h3 className="text-ucla-900">Key takeaways</h3>
                 <ul className="mt-3 space-y-2">
@@ -827,85 +852,51 @@ export function ModuleDetailPage() {
                   ))}
                 </ul>
               </article>
-              <aside className="space-y-4">
-                <div className="card p-5">
-                  <div className="label">Readiness verdict</div>
-                  {(() => {
-                    const verdict = moduleReadinessVerdict(moduleProgress);
-                    return (
-                      <div className="mt-2">
-                        <div className="flex items-center gap-2 font-semibold text-ucla-900">
-                          <Icon name={verdict.icon} size={16} className={verdict.iconClass} />
-                          {verdict.title}
-                        </div>
-                        <p className="mt-1 text-sm leading-relaxed text-slate-600">
-                          {verdict.body}
-                        </p>
-                      </div>
-                    );
-                  })()}
-                </div>
-                {moduleProgress?.preCheckScore !== undefined && (
+              {/* Before the post-check, show what's left + where to go next. Once
+                  the post-check is in, the completion reward below carries the
+                  verdict, deltas, and next steps — so this aside is hidden to
+                  avoid showing all of it twice. */}
+              {!moduleProgress?.postCheckAt && (
+                <aside className="space-y-4">
                   <div className="card p-5">
-                    <div className="label">Your delta</div>
-                    <dl className="mt-2 grid grid-cols-2 gap-y-2 text-sm">
-                      <dt className="text-slate-500">Pre score</dt>
-                      <dd className="font-semibold text-slate-800 tabular-nums">
-                        {Math.round(moduleProgress.preCheckScore)}%
-                      </dd>
-                      {moduleProgress.postCheckScore !== undefined && (
-                        <>
-                          <dt className="text-slate-500">Post score</dt>
-                          <dd className="font-semibold text-slate-800 tabular-nums">
-                            {Math.round(moduleProgress.postCheckScore)}%
-                          </dd>
-                        </>
-                      )}
-                      {moduleProgress.preCheckConfidence !== undefined && (
-                        <>
-                          <dt className="text-slate-500">Pre confidence</dt>
-                          <dd className="font-semibold text-slate-800 tabular-nums">
-                            {moduleProgress.preCheckConfidence}/5
-                          </dd>
-                        </>
-                      )}
-                      {moduleProgress.postCheckConfidence !== undefined && (
-                        <>
-                          <dt className="text-slate-500">Post confidence</dt>
-                          <dd className="font-semibold text-slate-800 tabular-nums">
-                            {moduleProgress.postCheckConfidence}/5
-                          </dd>
-                        </>
-                      )}
-                    </dl>
+                    <div className="label">Readiness verdict</div>
+                    {(() => {
+                      const verdict = moduleReadinessVerdict(moduleProgress);
+                      return (
+                        <div className="mt-2">
+                          <div className="flex items-center gap-2 font-semibold text-ucla-900">
+                            <Icon name={verdict.icon} size={16} className={verdict.iconClass} />
+                            {verdict.title}
+                          </div>
+                          <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                            {verdict.body}
+                          </p>
+                        </div>
+                      );
+                    })()}
                   </div>
-                )}
-                <div className="card p-5">
-                  <div className="label">Next steps</div>
-                  <ul className="mt-2 space-y-2">
-                    <li>
-                      <Link to={`/modules/${module.id}/cheatsheet`} className="text-sm font-semibold text-ucla-700">
-                        Open the one-page cheat sheet →
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/cases" className="text-sm font-semibold text-ucla-700">
-                        Practice with the case library →
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/videos" className="text-sm font-semibold text-ucla-700">
-                        Review supplemental AMSSM videos →
-                      </Link>
-                    </li>
-                    <li>
-                      <Link to="/quiz/post" className="text-sm font-semibold text-ucla-700">
-                        Take the post-course assessment →
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </aside>
+                  <div className="card p-5">
+                    <div className="label">Next steps</div>
+                    <ul className="mt-2 space-y-2">
+                      <li>
+                        <Link to={`/modules/${module.id}/cheatsheet`} className="text-sm font-semibold text-ucla-700">
+                          Open the one-page cheat sheet →
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/cases" className="text-sm font-semibold text-ucla-700">
+                          Practice with the case library →
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/quiz/post" className="text-sm font-semibold text-ucla-700">
+                          Take the post-course assessment →
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </aside>
+              )}
             </div>
 
             <ModuleCheck
@@ -932,27 +923,32 @@ export function ModuleDetailPage() {
           </div>
 
           {(active !== 'learn' || learnDetailsOpen) && (
-            <section className="mt-5 rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft sm:p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="section-title">Extra phase challenge</div>
-                  <h2 className="mt-1 text-xl text-ucla-900">Phase coach</h2>
-                  <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">
-                    Use this when you want one more commit-first check before moving on.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => setPracticeToolsOpen((open) => !open)}
-                  aria-expanded={practiceToolsOpen}
-                >
-                  {practiceToolsOpen ? 'Hide practice' : 'Open practice'}
-                  <Icon name={practiceToolsOpen ? 'chevron-left' : 'chevron-right'} size={14} />
-                </button>
-              </div>
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={() => setPracticeToolsOpen((open) => !open)}
+                aria-expanded={practiceToolsOpen}
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-left shadow-soft transition-colors hover:bg-slate-50"
+              >
+                <span className="min-w-0">
+                  <span className="block text-sm font-semibold text-ucla-800">
+                    Want one more challenge? Open the phase coach
+                  </span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    An optional commit-first check tailored to this phase.
+                  </span>
+                </span>
+                <Icon
+                  name="chevron-down"
+                  size={16}
+                  className={[
+                    'shrink-0 text-slate-400 transition-transform',
+                    practiceToolsOpen ? 'rotate-180' : '',
+                  ].join(' ')}
+                />
+              </button>
               {practiceToolsOpen && (
-                <div className="mt-4 space-y-4 border-t border-ucla-100 pt-4 animate-fade-in">
+                <div className="mt-4 space-y-4 animate-fade-in">
                   <ModuleActiveLearningCoach
                     module={module}
                     activePhaseId={active}
@@ -960,7 +956,7 @@ export function ModuleDetailPage() {
                   />
                 </div>
               )}
-            </section>
+            </div>
           )}
         </>
       )}
