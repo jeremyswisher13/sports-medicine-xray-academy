@@ -32,7 +32,7 @@ export function ModuleCompletionReward({
   const postConfidence = progress.postCheckConfidence ?? 0;
   const verdict = completionVerdict(postScore, postConfidence);
   const targets = reviewTargets(module, progress, scoreDelta, confidenceDelta);
-  const nextModule = nextRecommendedModule(module.id, allModuleProgress);
+  const nextModule = nextRecommendedModule(allModuleProgress);
 
   return (
     <section className={['card-premium', className].filter(Boolean).join(' ')}>

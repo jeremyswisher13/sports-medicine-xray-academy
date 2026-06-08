@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 import { hasCourseAssessment, hasPreviewCourseAssessment } from '../utils/progress';
+import { nextRecommendedModule } from '../utils/moduleReward';
 import { dueFlashcardCount } from '../utils/flashcardSchedule';
 
 const quickAccess = [
@@ -79,10 +80,7 @@ export function DashboardPage() {
     (learnerPreview && hasPreviewCourseAssessment('post'));
   const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
   const nextModule =
-    coreModules.find((module) => {
-      const progress = learnerModules.find((m) => m.moduleId === module.id);
-      return !progress?.completed;
-    }) ?? coreModules[0] ?? moduleSummaries[0];
+    nextRecommendedModule(learnerModules) ?? coreModules[0] ?? moduleSummaries[0];
   const nextModuleProgress = learnerModules.find((m) => m.moduleId === nextModule.id);
   const heroPrimary = canOpenModules
     ? {

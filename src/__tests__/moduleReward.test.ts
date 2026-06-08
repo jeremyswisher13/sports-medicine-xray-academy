@@ -81,30 +81,23 @@ describe('reviewTargets', () => {
 });
 
 describe('nextRecommendedModule', () => {
-  it('returns the next module after the current one when none are complete', () => {
-    const next = nextRecommendedModule('xray-foundations', []);
-    expect(next?.id).toBe(moduleSummaries[1].id);
+  it('returns the first core module when none are complete', () => {
+    expect(nextRecommendedModule([])?.id).toBe(moduleSummaries[0].id);
   });
 
-  it('skips completed modules', () => {
+  it('skips completed modules to the earliest incomplete one', () => {
     const completed: ModuleProgress[] = [
+      progressStub({ moduleId: moduleSummaries[0].id, completed: true }),
       progressStub({ moduleId: moduleSummaries[1].id, completed: true }),
     ];
-    const next = nextRecommendedModule(moduleSummaries[0].id, completed);
-    expect(next?.id).toBe(moduleSummaries[2].id);
-  });
-
-  it('wraps around past the current index', () => {
-    const lastId = moduleSummaries[moduleSummaries.length - 1].id;
-    const next = nextRecommendedModule(lastId, []);
-    expect(next?.id).toBe(moduleSummaries[0].id);
+    expect(nextRecommendedModule(completed)?.id).toBe(moduleSummaries[2].id);
   });
 
   it('returns undefined when every module is complete', () => {
     const allComplete = moduleSummaries.map((m) =>
       progressStub({ moduleId: m.id, completed: true }),
     );
-    expect(nextRecommendedModule(moduleSummaries[0].id, allComplete)).toBeUndefined();
+    expect(nextRecommendedModule(allComplete)).toBeUndefined();
   });
 });
 

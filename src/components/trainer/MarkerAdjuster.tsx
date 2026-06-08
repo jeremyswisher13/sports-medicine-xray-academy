@@ -57,11 +57,7 @@ export function MarkerAdjuster({ moduleId, data }: Props) {
         ? (item as TrainerTourStep).markers
         : [{ x: (item as TrainerCheckItem).marker.x, y: (item as TrainerCheckItem).marker.y }];
 
-  function moveMarker(markerIdx: number, clientX: number, clientY: number) {
-    const box = boxRef.current?.getBoundingClientRect();
-    if (!box || box.width === 0) return;
-    const x = round1(clamp(((clientX - box.left) / box.width) * 100));
-    const y = round1(clamp(((clientY - box.top) / box.height) * 100));
+  function setMarkerCoord(markerIdx: number, x: number, y: number) {
     if (sel.kind === 'tour') {
       const nt = tour.map((s, i) => {
         if (i !== sel.idx) return s;
@@ -75,6 +71,38 @@ export function MarkerAdjuster({ moduleId, data }: Props) {
       setCheck(nc);
       persist(tour, nc);
     }
+  }
+
+  function moveMarker(markerIdx: number, clientX: number, clientY: number) {
+    const box = boxRef.current?.getBoundingClientRect();
+    if (!box || box.width === 0) return;
+    setMarkerCoord(
+      markerIdx,
+      round1(clamp(((clientX - box.left) / box.width) * 100)),
+      round1(clamp(((clientY - box.top) / box.height) * 100)),
+    );
+  }
+
+  // Keyboard nudging so the tool is operable without a pointer (Arrow = 0.5%,
+  // Shift+Arrow = 2%).
+  function onMarkerKeyDown(markerIdx: number, e: React.KeyboardEvent) {
+    const cur = markers[markerIdx];
+    if (!cur) return;
+    const stepKeys: Record<string, [number, number]> = {
+      ArrowLeft: [-1, 0],
+      ArrowRight: [1, 0],
+      ArrowUp: [0, -1],
+      ArrowDown: [0, 1],
+    };
+    const dir = stepKeys[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    const step = e.shiftKey ? 2 : 0.5;
+    setMarkerCoord(
+      markerIdx,
+      round1(clamp(cur.x + dir[0] * step)),
+      round1(clamp(cur.y + dir[1] * step)),
+    );
   }
 
   function onPointerDownMarker(markerIdx: number) {
@@ -186,9 +214,10 @@ export function MarkerAdjuster({ moduleId, data }: Props) {
                 e.stopPropagation();
                 onPointerDownMarker(i);
               }}
-              className="absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing"
+              onKeyDown={(e) => onMarkerKeyDown(i, e)}
+              className="absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 active:cursor-grabbing"
               style={{ left: `${m.x}%`, top: `${m.y}%` }}
-              aria-label={`Marker ${i + 1}`}
+              aria-label={`Marker ${i + 1} at ${m.x}%, ${m.y}% — use arrow keys to nudge`}
             >
               <span className="block h-6 w-6 rounded-full border-2 border-gold-400 bg-gold-400/30 shadow-[0_0_0_2px_rgba(0,0,0,0.6)]" />
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400" />

@@ -122,22 +122,18 @@ export function reviewTargets(
 }
 
 /**
- * Next module to recommend after finishing one: the first not-yet-completed
- * module after the current index (wrapping around), or undefined when all done.
+ * The single source of truth for "what should the learner do next": the earliest
+ * not-yet-completed core module in curriculum order, or undefined when all are
+ * done. Used by both the Dashboard "continue" hero and the module completion
+ * reward so they never disagree.
  */
 export function nextRecommendedModule(
-  currentModuleId: string,
   progress: ModuleProgress[],
 ): ModuleSummary | undefined {
   const completedIds = new Set(
     progress.filter((item) => item.completed).map((item) => item.moduleId),
   );
-  const foundIndex = moduleSummaries.findIndex((summary) => summary.id === currentModuleId);
-  // Unknown module id: just recommend the first incomplete module from the top.
-  const currentIndex = foundIndex === -1 ? -1 : foundIndex;
-  const ordered = [
-    ...moduleSummaries.slice(currentIndex + 1),
-    ...moduleSummaries.slice(0, Math.max(0, currentIndex)),
-  ];
-  return ordered.find((summary) => !completedIds.has(summary.id));
+  return moduleSummaries.find(
+    (summary) => summary.status === 'full' && !completedIds.has(summary.id),
+  );
 }
