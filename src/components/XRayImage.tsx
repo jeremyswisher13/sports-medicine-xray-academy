@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from './ui/Icon';
 import { PlaceholderImagePanel } from './PlaceholderImagePanel';
 import type { XRayImageEntry } from '../types';
@@ -208,6 +208,23 @@ export function XRayImage({
 }: Props) {
   const [errored, setErrored] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Lightbox keyboard + focus management: focus the close button on open, close
+  // on Escape, and restore focus to whatever opened it.
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    closeBtnRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setViewerOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      previouslyFocused?.focus?.();
+    };
+  }, [viewerOpen]);
 
   if (!entry || errored) {
     return (
@@ -299,6 +316,9 @@ export function XRayImage({
         role="dialog"
         aria-modal="true"
         aria-label={entry.caption ?? entry.alt}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setViewerOpen(false);
+        }}
       >
         <div className="flex max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-xl border border-white/10 bg-slate-950 shadow-elevated">
           <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 text-white">
@@ -311,6 +331,7 @@ export function XRayImage({
               </div>
             </div>
             <button
+              ref={closeBtnRef}
               type="button"
               onClick={() => setViewerOpen(false)}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white hover:bg-white/15"

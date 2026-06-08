@@ -290,6 +290,7 @@ export type AuditEventType =
   | 'active_learning_completed'
   | 'systematic_read_step_answered'
   | 'atlas_practice_answered'
+  | 'trainer_check'
   | 'flashcard_reviewed';
 
 export interface AuditEvent {

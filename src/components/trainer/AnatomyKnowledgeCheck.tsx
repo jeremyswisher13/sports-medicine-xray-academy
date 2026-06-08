@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnnotatedXray } from './AnnotatedXray';
 import { Icon } from '../ui/Icon';
 import type { TrainerCheckItem } from '../../data/anatomyTrainer';
@@ -11,6 +11,7 @@ interface Props {
 // Marker on the film → "what is the marked structure?" multiple choice, scored.
 export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
   const [round, setRound] = useState(0);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   // Shuffle each question's options once per round so the answer isn't always A.
   const qs = useMemo(() => {
@@ -37,11 +38,6 @@ export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
     setDone(false);
   }, [items]);
 
-  useEffect(() => {
-    if (done) onComplete?.(score, qs.length);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done]);
-
   function restart() {
     setRound((r) => r + 1);
     setIdx(0);
@@ -61,7 +57,7 @@ export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
           ? 'Solid. Review the ones you missed, then move on.'
           : 'Keep going — run the Guided Tour again, then retake the check.';
     return (
-      <div className="mx-auto max-w-md py-6 text-center">
+      <div className="mx-auto max-w-md py-6 text-center" role="status" aria-live="polite">
         <div className="section-title">Knowledge check</div>
         <p className="mt-2 text-5xl font-bold text-ucla-700">
           {score}
@@ -91,14 +87,22 @@ export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
     if (idx < qs.length - 1) {
       setIdx(idx + 1);
       setPicked(null);
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+        requestAnimationFrame(() =>
+          rootRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+        );
+      }
     } else {
+      // Fire the result once, as an explicit transition (not a re-firing effect).
+      onComplete?.(score, qs.length);
       setDone(true);
     }
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
-      <AnnotatedXray imageKey={q.imageKey} markers={[q.marker]} pulse hideCaption />
+    <div ref={rootRef} className="grid scroll-mt-[120px] gap-5 lg:grid-cols-2 lg:items-start">
+      {/* Reveal the caption once answered so a wrong answer can be self-verified. */}
+      <AnnotatedXray imageKey={q.imageKey} markers={[q.marker]} pulse hideCaption={!answered} />
 
       <div className="flex min-h-[280px] flex-col">
         <div className="flex items-center justify-between text-xs font-semibold text-slate-400">
@@ -133,6 +137,10 @@ export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
                   {String.fromCharCode(65 + pos)}
                 </span>
                 {q.options[origIdx]}
+                {answered && isCorrect && <span className="sr-only"> (correct answer)</span>}
+                {answered && isPicked && !isCorrect && (
+                  <span className="sr-only"> (your answer, incorrect)</span>
+                )}
               </button>
             );
           })}
@@ -140,6 +148,8 @@ export function AnatomyKnowledgeCheck({ items, onComplete }: Props) {
 
         {answered && (
           <div
+            role="status"
+            aria-live="polite"
             className={[
               'mt-3 rounded-lg border px-3 py-2 text-sm',
               picked === q.correctPos

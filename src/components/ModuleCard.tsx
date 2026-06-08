@@ -63,16 +63,30 @@ export function ModuleCard({
       </ul>
       <div className="mt-4 flex-1" />
       <div className="mt-4 space-y-2">
-        <div className="flex items-center justify-between text-xs text-slate-500">
-          <span>{module.estimatedMinutes} min</span>
-          <span className="tabular-nums">{Math.round(progressPercent)}%</span>
-        </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-ucla-700"
-            style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
-          />
-        </div>
+        {(() => {
+          const complete = progressPercent >= 100;
+          const started = progressPercent > 0;
+          const status = complete ? 'Complete' : started ? 'In progress' : 'Not started';
+          const fill = complete ? 100 : started ? 50 : 0;
+          return (
+            <>
+              <div className="flex items-center justify-between text-xs text-slate-500">
+                <span>{module.estimatedMinutes} min</span>
+                <span
+                  className={complete ? 'font-semibold text-emerald-700' : started ? 'font-semibold text-ucla-700' : ''}
+                >
+                  {status}
+                </span>
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+                <div
+                  className={['h-full rounded-full', complete ? 'bg-emerald-600' : 'bg-ucla-700'].join(' ')}
+                  style={{ width: `${fill}%` }}
+                />
+              </div>
+            </>
+          );
+        })()}
         {typeof confidence === 'number' && confidence > 0 && (
           <div className="flex items-center gap-1 text-xs text-slate-500">
             <Icon name="star" size={12} />

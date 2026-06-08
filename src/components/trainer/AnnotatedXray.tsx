@@ -29,12 +29,14 @@ export function AnnotatedXray({
   }
   return (
     <figure className="m-0">
-      <div className="relative overflow-hidden rounded-xl bg-black">
+      {/* The wrapper hugs the image (w-fit) so the percentage-positioned markers
+          stay aligned even when the film is height-capped on tall phone screens. */}
+      <div className="relative mx-auto w-fit max-w-full overflow-hidden rounded-xl bg-black">
         <img
           src={entry.src}
           alt={entry.alt ?? entry.caption ?? ''}
           draggable={false}
-          className="block w-full select-none"
+          className="mx-auto block max-h-[56vh] w-auto max-w-full select-none lg:max-h-[72vh]"
         />
         {markers.map((m, i) => (
           <div

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { SystematicReadChecklist } from '../components/SystematicReadChecklist';
@@ -90,10 +90,13 @@ export function ModuleDetailPage() {
   // Self-heal: if a post-check was captured but the module was never marked
   // complete (legacy/stuck record, or a partial save), finish it silently.
   // The normal flow already completes via the post-check's completeModuleOnFinish.
+  const healingRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (!user || !module || learnerPreview) return;
     const saved = snapshot.modules.find((m) => m.moduleId === module.id);
     if (!saved || !saved.postCheckAt || saved.completed) return;
+    if (healingRef.current.has(module.id)) return; // already healing this module
+    healingRef.current.add(module.id);
     const completedAt = Date.now();
     void (async () => {
       await saveModuleProgress({
@@ -169,14 +172,15 @@ export function ModuleDetailPage() {
   if (!module) {
     return (
       <div className="container-page py-12">
-        <div className="card p-6 text-center">
-          <h2>Module not found</h2>
-          <p className="mt-2 text-slate-600">
-            We couldn't find that module.{' '}
-            <Link to="/modules" className="underline">
-              Back to modules
-            </Link>
+        <div className="card mx-auto max-w-md p-8 text-center">
+          <h2 className="text-ucla-900">Module not found</h2>
+          <p className="mx-auto mt-2 max-w-prose text-slate-600">
+            We couldn't find that module — it may have moved. The rest of the curriculum is fine.
           </p>
+          <Link to="/modules" className="btn-primary mt-5 inline-flex no-underline">
+            Browse all modules
+            <Icon name="arrow-right" size={14} />
+          </Link>
         </div>
       </div>
     );
@@ -386,6 +390,15 @@ export function ModuleDetailPage() {
                   moduleId={module.id}
                   data={trainer}
                   isAdmin={isAdminBypass}
+                  onCheckComplete={(score, total) => {
+                    if (!user || learnerPreview) return;
+                    void logAuditEvent({
+                      userId: user.uid,
+                      type: 'trainer_check',
+                      moduleId: module.id,
+                      details: { score, total },
+                    });
+                  }}
                 />
               </section>
             )}
@@ -537,11 +550,6 @@ export function ModuleDetailPage() {
                         Full atlas →
                       </Link>
                     </Disclosure>
-                  </div>
-                )}
-                {module.id === 'do-not-miss' && (
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    <XRayImage entry={getImage('do-not-miss-gilula-arcs')} />
                   </div>
                 )}
               </section>
@@ -763,7 +771,7 @@ export function ModuleDetailPage() {
 
             {/* 5 — Recap & finish */}
             <section id="finish" className="scroll-mt-[132px] space-y-4">
-              <SectionHeading n={trainer ? 6 : 5} title="Recap &amp; finish" />
+              <SectionHeading n={trainer ? 6 : 5} title="Recap & check" />
               <article className="card p-5 sm:p-6">
                 <h3 className="text-ucla-900">Key takeaways</h3>
                 <ul className="mt-3 space-y-2">
@@ -808,7 +816,10 @@ export function ModuleDetailPage() {
 function SectionHeading({ n, title }: { n: number; title: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ucla-600 text-sm font-bold text-white">
+      <span
+        aria-hidden="true"
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ucla-600 text-sm font-bold text-white"
+      >
         {n}
       </span>
       <h2 className="text-xl text-ucla-900">{title}</h2>

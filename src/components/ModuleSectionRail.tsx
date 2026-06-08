@@ -17,22 +17,32 @@ export function ModuleSectionRail({ sections, className = '' }: Props) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? '');
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActiveId(visible[0].target.id);
-      },
-      // Account for the sticky site header + this rail (~118px) at the top, and
-      // bias toward the section occupying the upper portion of the viewport.
-      { rootMargin: '-130px 0px -60% 0px', threshold: 0 },
-    );
-    sections.forEach((section) => {
-      const el = document.getElementById(section.id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const ids = sections.map((s) => s.id);
+    if (!ids.length) return;
+    const OFFSET = 140; // sticky site header (68) + this rail + a little slack
+
+    function onScroll() {
+      // Active = the last section whose top has scrolled above the offset band.
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top - OFFSET <= 1) current = id;
+      }
+      // At the very bottom of the page the last section may never reach the band,
+      // so force it active so the rail isn't stuck on the prior section.
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
+        current = ids[ids.length - 1];
+      }
+      setActiveId(current);
+    }
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, [sections]);
 
   function jump(id: string) {
@@ -47,7 +57,7 @@ export function ModuleSectionRail({ sections, className = '' }: Props) {
       ].join(' ')}
       aria-label="On this page"
     >
-      <ul className="flex gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <ul className="flex gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {sections.map((section) => {
           const active = section.id === activeId;
           return (
@@ -55,9 +65,9 @@ export function ModuleSectionRail({ sections, className = '' }: Props) {
               <button
                 type="button"
                 onClick={() => jump(section.id)}
-                aria-current={active ? 'true' : undefined}
+                aria-current={active ? 'location' : undefined}
                 className={[
-                  'rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors',
+                  'inline-flex min-h-[38px] items-center rounded-lg px-3 py-2 text-sm font-semibold transition-colors',
                   active
                     ? 'bg-ucla-600 text-white'
                     : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800',
