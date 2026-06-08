@@ -10,7 +10,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-ap",
         "title": "Get oriented — AP",
-        "note": "This is a frontal (AP) elbow with the arm extended in near-neutral rotation. The distal humerus is at the top with the trochlea and capitellum forming the joint, the radius is on the lateral side and the ulna on the medial side. Scan it systematically: trace each cortex of the distal humerus, then the radial head and neck, then the proximal ulna, and confirm the radiocapitellar line passes through the capitellum.",
+        "note": "This is a frontal (AP, anteroposterior) elbow with the arm extended in near-neutral rotation. The distal humerus is at the top with the trochlea and capitellum forming the joint, the radius is on the lateral side and the ulna on the medial side. Scan it systematically: trace each cortex of the distal humerus, then the radial head and neck, then the proximal ulna, and confirm the radiocapitellar line (drawn through the radial neck, it should always cross the capitellum) passes through the capitellum.",
         "markers": []
       },
       {
@@ -40,7 +40,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-ap",
         "title": "Medial epicondyle",
-        "note": "The medial epicondyle is the bony prominence on the medial (ulnar) side of the distal humerus and the origin of the common flexor tendon. In adolescents it is a separate apophysis whose avulsion is easy to miss on the AP view.",
+        "note": "The medial epicondyle is the bony prominence on the medial (ulnar) side of the distal humerus and the origin of the common flexor tendon. In adolescents it is a separate apophysis (a growth center where a tendon attaches) whose avulsion is easy to miss on the AP view.",
         "markers": [
           {
             "x": 26,
@@ -64,7 +64,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-ap",
         "title": "Radial head",
-        "note": "The radial head is the disc-shaped proximal end of the radius that articulates with the capitellum. Trace its smooth cortex carefully, since nondisplaced fractures often hide behind an effusion in the adult fall-on-outstretched-hand mechanism.",
+        "note": "The radial head is the disc-shaped proximal end of the radius that articulates with the capitellum. Trace its smooth cortex carefully, since nondisplaced fractures often hide behind an effusion in the adult fall-on-outstretched-hand (FOOSH) mechanism.",
         "markers": [
           {
             "x": 60,
@@ -100,13 +100,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-lateral",
         "title": "Get oriented — Lateral",
-        "note": "This is a true lateral elbow flexed about 90 degrees — the teaching view for fat pads and the anterior humeral line. A true lateral shows the distal humerus as concentric hourglass arcs. Scan it by tracing the anterior humeral line through the capitellum, checking for a posterior fat pad, then the radiocapitellar relationship and the olecranon and coronoid.",
+        "note": "This is a true lateral elbow flexed about 90 degrees — the teaching view for fat pads (lucent fat displaced by joint fluid, a sign of effusion) and the anterior humeral line (drawn down the front of the humerus, it should cross the middle third of the capitellum). A true lateral shows the distal humerus as concentric hourglass arcs. Scan it by tracing the anterior humeral line through the capitellum, checking for a posterior fat pad, then the radiocapitellar relationship and the olecranon and coronoid.",
         "markers": []
       },
       {
         "imageKey": "normal:elbow-lateral",
         "title": "Capitellum",
-        "note": "On a true lateral the rounded capitellum is profiled anteriorly. The anterior humeral line drawn down the front of the humerus should pass through the middle third of the capitellum; posterior displacement suggests a supracondylar fracture in children.",
+        "note": "On a true lateral the rounded capitellum is profiled anteriorly. The anterior humeral line drawn down the front of the humerus should pass through the middle third of the capitellum; posterior displacement suggests a supracondylar fracture (a break just above the elbow condyles, the most common pediatric elbow fracture) in children.",
         "markers": [
           {
             "x": 70,
@@ -118,7 +118,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-lateral",
         "title": "Radial head",
-        "note": "The radial head sits just anterior and distal to the capitellum. A line through the radial neck should bisect the capitellum on this view; if it misses, suspect a radial head dislocation or Monteggia injury.",
+        "note": "The radial head sits just anterior and distal to the capitellum. A line through the radial neck should bisect the capitellum on this view; if it misses, suspect a radial head dislocation or Monteggia injury (an ulnar shaft fracture with radial head dislocation).",
         "markers": [
           {
             "x": 67,
@@ -154,7 +154,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:elbow-lateral",
         "title": "Anterior fat pad",
-        "note": "The anterior fat pad is the lucent triangle just in front of the distal humerus. A small anterior fat pad can be normal, but when it is lifted and bowed (sail sign) after trauma it indicates a joint effusion.",
+        "note": "The anterior fat pad is the lucent triangle just in front of the distal humerus. A small anterior fat pad can be normal, but when it is lifted and bowed (sail sign, a triangular fat pad raised like a sail) after trauma it indicates a joint effusion.",
         "markers": [
           {
             "x": 64,
@@ -487,7 +487,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist",
         "title": "Distal radius",
-        "note": "The distal radius carries most of the axial load across the wrist and is the most commonly fractured bone after a fall on an outstretched hand. On the lateral its articular surface normally tilts slightly volar; loss of that volar tilt or dorsal angulation is the hallmark of a dorsally displaced (Colles-type) fracture.",
+        "note": "The distal radius carries most of the axial load across the wrist and is the most commonly fractured bone after a fall on an outstretched hand. On the lateral its articular surface normally tilts slightly volar (toward the palm); loss of that volar tilt or dorsal angulation is the hallmark of a dorsally displaced (Colles-type, i.e. dorsally angulated distal radius) fracture.",
         "markers": [
           {
             "x": 32,
@@ -499,7 +499,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist",
         "title": "Lunate",
-        "note": "The lunate is the half-moon bone seated in the radial cup, the keystone of carpal alignment and the pivot point for perilunate and lunate dislocations. On the lateral its distal concavity (here marked by the dotted line) should cradle the capitate; abnormal volar or dorsal tilt is the 'spilled-teacup' sign of lunate dislocation.",
+        "note": "The lunate is the half-moon bone seated in the radial cup, the keystone of carpal alignment and the pivot point for perilunate (capitate dislocated off a still-aligned lunate) and lunate dislocations. On the lateral its distal concavity (here marked by the dotted line) should cradle the capitate; abnormal volar or dorsal tilt is the 'spilled-teacup' sign (lunate tipped out of the radial cup) of lunate dislocation.",
         "markers": [
           {
             "x": 31,
@@ -541,7 +541,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Distal phalanx",
-        "note": "The distal phalanx anchors the terminal extensor tendon dorsally and the flexor digitorum profundus tendon at its volar base. A dorsal-base avulsion is mallet finger; a volar-base avulsion is jersey finger — tendon-avulsion patterns this module emphasizes.",
+        "note": "The distal phalanx anchors the terminal extensor tendon dorsally and the flexor digitorum profundus tendon (the deep finger-flexor that bends the fingertip) at its volar base. A dorsal-base avulsion is mallet finger (extensor tendon avulsion, drooped fingertip); a volar-base avulsion is jersey finger (flexor tendon avulsion) — tendon-avulsion patterns this module emphasizes.",
         "markers": [
           {
             "x": 45,
@@ -553,7 +553,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Proximal interphalangeal (PIP) joint",
-        "note": "The PIP joint is a hinge between the proximal and middle phalanges and a frequent site of sports dislocations and volar plate avulsion fractures. Confirm the joint space is congruent and uniform on the frontal view.",
+        "note": "The PIP joint is a hinge between the proximal and middle phalanges and a frequent site of sports dislocations and volar plate (the fibrocartilage on the palmar side of the joint) avulsion fractures. Confirm the joint space is congruent and uniform on the frontal view.",
         "markers": [
           {
             "x": 44,
@@ -565,7 +565,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Metacarpophalangeal (MCP) joint",
-        "note": "The MCP joints sit between the metacarpal heads and the proximal phalangeal bases. The thumb MCP is the site of gamekeeper/skier's thumb — an ulnar collateral ligament injury that may show a small avulsion at the proximal phalanx base.",
+        "note": "The MCP joints sit between the metacarpal heads and the proximal phalangeal bases. The thumb MCP is the site of gamekeeper/skier's thumb (ulnar collateral ligament injury of the thumb MCP) — an ulnar collateral ligament injury that may show a small avulsion at the proximal phalanx base.",
         "markers": [
           {
             "x": 47,
@@ -577,7 +577,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Metacarpal shaft",
-        "note": "The metacarpal shafts should be smooth and roughly parallel. The fifth metacarpal neck is the classic 'boxer's fracture' site; remember that radiographs show angulation and shortening but clinical finger rotation determines functional urgency.",
+        "note": "The metacarpal shafts should be smooth and roughly parallel. The fifth metacarpal neck is the classic 'boxer's fracture' (fifth metacarpal neck fracture) site; remember that radiographs show angulation and shortening but clinical finger rotation determines functional urgency.",
         "markers": [
           {
             "x": 42,
@@ -589,7 +589,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Scaphoid",
-        "note": "The scaphoid is the boat-shaped bone on the radial side of the proximal carpal row, distal to the radial styloid and articulating with the trapezium above and the radius below. It is the most commonly fractured carpal bone and the highest-yield structure in this region — be obsessive about it. Anatomic snuffbox tenderness after a FOOSH means a scaphoid fracture until proven otherwise, and a negative first film never excludes it because of the tenuous proximal-pole blood supply. Also keep the scapholunate interval (between scaphoid and lunate) narrow and symmetric.",
+        "note": "The scaphoid is the boat-shaped bone on the radial side of the proximal carpal row, distal to the radial styloid and articulating with the trapezium above and the radius below. It is the most commonly fractured carpal bone and the highest-yield structure in this region — be obsessive about it. Anatomic snuffbox tenderness after a FOOSH (fall on an outstretched hand) means a scaphoid fracture until proven otherwise, and a negative first film never excludes it because of the tenuous proximal-pole blood supply (which risks avascular necrosis). Also keep the scapholunate interval (the space between scaphoid and lunate) narrow and symmetric.",
         "markers": [
           {
             "x": 48,
@@ -601,7 +601,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-pa",
         "title": "Thumb metacarpal base / first CMC joint",
-        "note": "The base of the thumb metacarpal articulates with the trapezium at the first carpometacarpal joint. This is the site of Bennett and Rolando intra-articular fracture-dislocations after axial thumb loading.",
+        "note": "The base of the thumb metacarpal articulates with the trapezium at the first carpometacarpal (CMC) joint. This is the site of Bennett (two-part intra-articular thumb-base fracture-dislocation) and Rolando (comminuted thumb-base fracture) intra-articular fracture-dislocations after axial thumb loading.",
         "markers": [
           {
             "x": 55,
@@ -691,13 +691,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hand-oblique",
         "title": "Get oriented — oblique hand",
-        "note": "This is a semipronated oblique hand that separates the metacarpals and phalanges so cortices overlapping on the PA are thrown into profile. Use it to confirm or refute subtle cortical breaks suggested on the frontal view.",
+        "note": "This is a semipronated oblique hand (rotated about 45 degrees off the flat PA) that separates the metacarpals and phalanges so cortices overlapping on the PA are thrown into profile. Use it to confirm or refute subtle cortical breaks suggested on the frontal view.",
         "markers": []
       },
       {
         "imageKey": "normal:hand-oblique",
         "title": "Distal phalanx",
-        "note": "The oblique gives a second projection of each distal phalanx, helping characterize tuft fractures and dorsal/volar avulsions that a single frontal view can hide.",
+        "note": "The oblique gives a second projection of each distal phalanx, helping characterize tuft fractures (fractures of the fingertip end of the bone) and dorsal/volar avulsions that a single frontal view can hide.",
         "markers": [
           {
             "x": 48,
@@ -871,7 +871,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
           "First metacarpal"
         ],
         "answer": 1,
-        "explanation": "This is the distal radius, the main load-bearing bone of the wrist and the most common FOOSH fracture site."
+        "explanation": "This is the distal radius, the main load-bearing bone of the wrist and the most common FOOSH (fall on an outstretched hand) fracture site."
       },
       {
         "id": "wrist-hand-ck-4",
@@ -999,7 +999,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hip",
         "title": "Get oriented — AP hip (single hip)",
-        "note": "This is an AP radiograph of a single hip. The rounded femoral head sits in the cup-shaped acetabulum at upper right, with the femoral neck angling down to the greater and lesser trochanters and the femoral shaft below. Scan systematically: trace the smooth femoral head, follow the head-neck junction for offset, then sweep the Shenton arc from the inferomedial neck to the superior margin of the obturator foramen, and finally check trochanters and shaft cortex.",
+        "note": "This is an AP radiograph of a single hip. The rounded femoral head sits in the cup-shaped acetabulum at upper right, with the femoral neck angling down to the greater and lesser trochanters and the femoral shaft below. Scan systematically: trace the smooth femoral head, follow the head-neck junction for offset, then sweep the Shenton arc (a smooth curve from the inner femoral neck to the top of the obturator foramen) from the inferomedial neck to the superior margin of the obturator foramen, and finally check trochanters and shaft cortex.",
         "markers": []
       },
       {
@@ -1029,7 +1029,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hip",
         "title": "Femoral head-neck junction / offset",
-        "note": "On this AP view the superolateral head-neck junction is profiled, and there should be a normal concavity (offset) that lets the hip rotate without impingement. Loss of this concavity producing a convex 'bump' is cam morphology associated with femoroacetabular impingement (FAI). The anterosuperior junction — the most common cam location — is best profiled on a frog-leg or Dunn lateral rather than the AP shown here.",
+        "note": "On this AP view the superolateral head-neck junction is profiled, and there should be a normal concavity (offset) that lets the hip rotate without impingement. Loss of this concavity producing a convex 'bump' is cam morphology (an abnormal extra bump of bone at the head-neck junction) associated with femoroacetabular impingement (FAI, hip pain from abnormal contact between the femur and acetabular rim). The anterosuperior junction — the most common cam location — is best profiled on a frog-leg (hip externally rotated) or Dunn lateral (a flexed-hip view that profiles the anterior head-neck junction) rather than the AP shown here.",
         "markers": [
           {
             "x": 24,
@@ -1041,7 +1041,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hip",
         "title": "Greater trochanter",
-        "note": "The greater trochanter is the large lateral bony prominence at the base of the neck and is the insertion for the hip abductors (gluteus medius and minimus). It is also an apophyseal traction site in skeletally immature athletes.",
+        "note": "The greater trochanter is the large lateral bony prominence at the base of the neck and is the insertion for the hip abductors (gluteus medius and minimus). It is also an apophyseal traction site (a growth-plate where a tendon pulls, prone to avulsion in skeletally immature athletes) in skeletally immature athletes.",
         "markers": [
           {
             "x": 16,
@@ -1065,7 +1065,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:hip",
         "title": "Acetabulum",
-        "note": "The acetabulum is the cup of the pelvis that articulates with the femoral head; its smooth crescent should parallel the head with a uniform joint space. The medial wall and the curved sourcil (weight-bearing roof) should be intact and not protruding into the pelvis.",
+        "note": "The acetabulum is the cup of the pelvis that articulates with the femoral head; its smooth crescent should parallel the head with a uniform joint space. The medial wall and the curved sourcil (the dense white weight-bearing roof of the acetabulum) should be intact and not protruding into the pelvis.",
         "markers": [
           {
             "x": 62,
@@ -1089,7 +1089,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap",
         "title": "Get oriented — AP pelvis",
-        "note": "This is an AP pelvis of a young adult showing both hips and the full pelvic ring. Use it for side-to-side comparison of joint spaces, alignment, apophyses, and the SI joints. Scan systematically: check pelvic ring symmetry, trace each Shenton arc, compare both femoral head-neck junctions and joint spaces, then inspect the SI joints, pubic symphysis, and obturator foramina.",
+        "note": "This is an AP pelvis of a young adult showing both hips and the full pelvic ring. Use it for side-to-side comparison of joint spaces, alignment, apophyses, and the SI joints. Scan systematically: check pelvic ring symmetry, trace each Shenton arc, compare both femoral head-neck junctions and joint spaces, then inspect the SI joints (sacroiliac joints), pubic symphysis, and obturator foramina.",
         "markers": []
       },
       {
@@ -1119,7 +1119,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap",
         "title": "Pubic symphysis",
-        "note": "The pubic symphysis is the midline cartilaginous joint joining the two pubic bones; the bony margins should be level and aligned with no more than a few millimeters of vertical offset. Widening or vertical malalignment suggests pelvic ring disruption or osteitis pubis.",
+        "note": "The pubic symphysis is the midline cartilaginous joint joining the two pubic bones; the bony margins should be level and aligned with no more than a few millimeters of vertical offset. Widening or vertical malalignment suggests pelvic ring disruption or osteitis pubis (painful inflammation of the pubic symphysis, common in athletes).",
         "markers": [
           {
             "x": 50,
@@ -1338,7 +1338,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Get oriented — AP",
-        "note": "Frontal (AP) view of a normal right knee (note the 'Dx'/right marker, so the lateral structures sit on the left of the image). Scan top to bottom: distal femur and condyles, the central intercondylar region with the tibial spines, then the medial and lateral compartments and the proximal tibia/fibula. Confirm symmetric joint space and smooth, unbroken cortices throughout.",
+        "note": "Frontal (AP, anteroposterior) view of a normal right knee (note the 'Dx'/right marker, so the lateral structures sit on the left of the image). Scan top to bottom: distal femur and condyles (the two rounded knuckle-like ends), the central intercondylar region with the tibial spines, then the medial and lateral compartments and the proximal tibia/fibula. Confirm symmetric joint space and smooth, unbroken cortices (the dense outer bone margins) throughout.",
         "markers": []
       },
       {
@@ -1356,7 +1356,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Medial femoral condyle",
-        "note": "The medial weight-bearing surface of the distal femur. Compare its joint space and cortical contour with the lateral condyle — asymmetric narrowing is the earliest AP clue to compartment osteoarthritis or chondral loss.",
+        "note": "The medial weight-bearing surface of the distal femur. Compare its joint space and cortical contour with the lateral condyle — asymmetric narrowing is the earliest AP clue to compartment osteoarthritis or chondral (cartilage) loss.",
         "markers": [
           {
             "x": 63,
@@ -1368,7 +1368,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Tibial spines (intercondylar eminence)",
-        "note": "The two bony peaks at the center of the tibial plateau where the cruciate ligaments and menisci attach. Always trace them carefully: an avulsed tibial spine in a pediatric pivot injury is the ACL-avulsion equivalent and is a do-not-miss finding.",
+        "note": "The two bony peaks at the center of the tibial plateau where the cruciate ligaments and menisci attach. Always trace them carefully: an avulsed tibial spine in a pediatric pivot injury is the ACL-avulsion (anterior cruciate ligament) equivalent and is a do-not-miss finding.",
         "markers": [
           {
             "x": 47,
@@ -1380,7 +1380,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Lateral tibial plateau",
-        "note": "The lateral articular surface of the proximal tibia. Follow the lateral cortex for a smooth, unbroken margin — a small avulsion fragment off the lateral tibial plateau (Segond fracture) in a pivot-shift injury implies ACL rupture until proven otherwise.",
+        "note": "The lateral articular surface of the proximal tibia. Follow the lateral cortex for a smooth, unbroken margin — a small avulsion fragment off the lateral tibial plateau (Segond fracture, a lateral tibial-rim avulsion that signals ACL injury) in a pivot-shift injury (a twisting, giving-way mechanism) implies ACL rupture until proven otherwise.",
         "markers": [
           {
             "x": 30,
@@ -1392,7 +1392,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Medial tibial plateau",
-        "note": "The medial articular surface of the proximal tibia. Check for any depression or step-off of the joint surface — even subtle plateau depression from a varus or axial-load mechanism alters management and warrants CT.",
+        "note": "The medial articular surface of the proximal tibia. Check for any depression or step-off of the joint surface — even subtle plateau depression from a varus (bow-legged angulation) or axial-load (force driven straight up the limb) mechanism alters management and warrants CT.",
         "markers": [
           {
             "x": 62,
@@ -1404,7 +1404,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-ap",
         "title": "Fibular head",
-        "note": "The expanded proximal end of the fibula, partly overlapping the lateral tibia on AP. It is the attachment for the LCL and biceps femoris; an avulsion here (arcuate sign) signals posterolateral corner injury, and in a high-energy ankle injury always check the proximal fibula for a Maisonneuve fracture.",
+        "note": "The expanded proximal end of the fibula, partly overlapping the lateral tibia on AP. It is the attachment for the LCL (lateral collateral ligament) and biceps femoris (the lateral hamstring); an avulsion here (arcuate sign, an avulsed fibular-tip fragment) signals posterolateral corner injury (damage to the knee's posterolateral stabilizers), and in a high-energy ankle injury always check the proximal fibula for a Maisonneuve fracture (a proximal fibula fracture with syndesmotic injury).",
         "markers": [
           {
             "x": 21,
@@ -1416,13 +1416,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-lateral",
         "title": "Get oriented — Lateral",
-        "note": "True lateral of the knee with the patella anterior (left of image) and the femoral condyles overlapping behind it. Scan the soft tissues anterior to the distal femur for a suprapatellar effusion, then follow the patella, the trochlea, the joint line, and the proximal tibia and posterior fibula.",
+        "note": "True lateral of the knee with the patella anterior (left of image) and the femoral condyles overlapping behind it. Scan the soft tissues anterior to the distal femur for a suprapatellar effusion (fluid in the pouch above the kneecap), then follow the patella, the trochlea (the femoral groove the kneecap rides in), the joint line, and the proximal tibia and posterior fibula.",
         "markers": []
       },
       {
         "imageKey": "normal:knee-lateral",
         "title": "Patella",
-        "note": "The largest sesamoid bone, seen in profile anteriorly. Confirm a single bone with smooth corticated margins; assess its height relative to Blumensaat line, since patella alta is associated with patellofemoral instability.",
+        "note": "The largest sesamoid bone (a bone embedded within a tendon), seen in profile anteriorly. Confirm a single bone with smooth corticated margins; assess its height relative to Blumensaat line (the dense line of the intercondylar notch roof), since patella alta (a high-riding kneecap) is associated with patellofemoral instability.",
         "markers": [
           {
             "x": 21,
@@ -1446,7 +1446,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-lateral",
         "title": "Blumensaat line (intercondylar notch roof)",
-        "note": "The dense line marking the roof of the intercondylar notch on the lateral view. It is the reference for patellar height — the inferior pole sitting well above it indicates patella alta, well below indicates patella baja.",
+        "note": "The dense line marking the roof of the intercondylar notch on the lateral view. It is the reference for patellar height — the inferior pole sitting well above it indicates patella alta, well below indicates patella baja (a low-riding kneecap).",
         "markers": [
           {
             "x": 48,
@@ -1458,7 +1458,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-lateral",
         "title": "Tibial tuberosity",
-        "note": "The anterior bony prominence of the proximal tibia where the patellar tendon inserts. In skeletally immature athletes this apophysis is the site of Osgood-Schlatter traction injury and, rarely, a tibial tubercle avulsion fracture.",
+        "note": "The anterior bony prominence of the proximal tibia where the patellar tendon inserts. In skeletally immature athletes this apophysis (a growth-plate bony outgrowth where a tendon attaches) is the site of Osgood-Schlatter traction injury (painful traction apophysitis at the tibial tubercle) and, rarely, a tibial tubercle avulsion fracture.",
         "markers": [
           {
             "x": 44,
@@ -1494,13 +1494,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:patella-skyline",
         "title": "Get oriented — Special (skyline)",
-        "note": "Axial skyline (sunrise/Merchant) view looking up the patellofemoral joint with the knee flexed. The patella is the bright crescent on top and the femoral trochlea is below it. Assess patellar position in the groove, facet symmetry, and trochlear depth — the key view for patellar tilt, instability, and patellofemoral OA.",
+        "note": "Axial skyline (sunrise/Merchant view, an axial projection looking up the kneecap groove) looking up the patellofemoral joint with the knee flexed. The patella is the bright crescent on top and the femoral trochlea is below it. Assess patellar position in the groove, facet symmetry, and trochlear depth — the key view for patellar tilt, instability, and patellofemoral OA (osteoarthritis).",
         "markers": []
       },
       {
         "imageKey": "normal:patella-skyline",
         "title": "Patella (axial profile)",
-        "note": "The patella viewed end-on, showing its anterior cortex and articular surface. The skyline view is where you assess patellar tilt and lateral subluxation; after a transient lateral dislocation look for an osteochondral fragment off the medial facet.",
+        "note": "The patella viewed end-on, showing its anterior cortex and articular surface. The skyline view is where you assess patellar tilt and lateral subluxation; after a transient lateral dislocation look for an osteochondral fragment (a piece of bone plus its overlying cartilage) off the medial facet.",
         "markers": [
           {
             "x": 47,
@@ -1512,7 +1512,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:patella-skyline",
         "title": "Median ridge of patella",
-        "note": "The central vertical ridge of the patellar articular surface that should seat in the deepest part of the trochlear groove. Its position relative to the sulcus is the reference point for judging patellar tilt and lateral translation.",
+        "note": "The central vertical ridge of the patellar articular surface that should seat in the deepest part of the trochlear groove. Its position relative to the sulcus (the groove's lowest point) is the reference point for judging patellar tilt and lateral translation.",
         "markers": [
           {
             "x": 42,
@@ -1524,7 +1524,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:patella-skyline",
         "title": "Lateral patellar facet",
-        "note": "The larger lateral articular facet of the patella. The congruence angle and lateral patellofemoral angle are measured here; lateral facet overload and early lateral patellofemoral OA are common causes of anterior knee pain in athletes.",
+        "note": "The larger lateral articular facet of the patella. The congruence angle and lateral patellofemoral angle (alignment measurements of the kneecap in its groove) are measured here; lateral facet overload and early lateral patellofemoral OA are common causes of anterior knee pain in athletes.",
         "markers": [
           {
             "x": 64,
@@ -1548,7 +1548,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:patella-skyline",
         "title": "Trochlear groove (sulcus)",
-        "note": "The concave femoral sulcus into which the patella articulates. A shallow trochlea (trochlear dysplasia) reduces the bony restraint to the patella and predisposes to patellofemoral instability and recurrent dislocation.",
+        "note": "The concave femoral sulcus into which the patella articulates. A shallow trochlea (trochlear dysplasia, an abnormally flat or shallow groove) reduces the bony restraint to the patella and predisposes to patellofemoral instability and recurrent dislocation.",
         "markers": [
           {
             "x": 53,
@@ -1719,13 +1719,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Get oriented — AP ankle",
-        "note": "This is an AP of the ankle: the distal tibia and fibula sit above the talus, with the foot in neutral. Scan top-to-bottom along both cortices of the tibia and the entire fibula, then assess the tibial plafond and the talar dome beneath it. On a plain AP there is normal overlap of the distal tibia and fibula, so the lateral part of the joint is partly obscured — that is why the mortise view is added.",
+        "note": "This is an AP (anteroposterior, front-to-back) of the ankle: the distal tibia and fibula sit above the talus, with the foot in neutral. Scan top-to-bottom along both cortices of the tibia and the entire fibula, then assess the tibial plafond (the flat roof of the ankle joint formed by the distal tibia) and the talar dome beneath it. On a plain AP there is normal overlap of the distal tibia and fibula, so the lateral part of the joint is partly obscured — that is why the mortise view (a slightly rotated view that opens the joint space) is added.",
         "markers": []
       },
       {
         "imageKey": "normal:ankle-ap",
         "title": "Distal tibia and tibial plafond",
-        "note": "The tibia is the weightbearing bone; its smooth horizontal articular surface is the plafond, which forms the roof of the ankle joint. Trace the plafond for any step-off or impaction — a depressed plafond signals a pilon-type injury.",
+        "note": "The tibia is the weightbearing bone; its smooth horizontal articular surface is the plafond, which forms the roof of the ankle joint. Trace the plafond for any step-off or impaction — a depressed plafond signals a pilon-type injury (a high-energy axial-load fracture driving the talus into the tibia).",
         "markers": [
           {
             "x": 47,
@@ -1737,7 +1737,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Distal fibula (lateral malleolus)",
-        "note": "The fibula descends lateral to the tibia and ends as the lateral malleolus, which extends more distally than the medial malleolus. Most rotational ankle fractures involve the fibula, so follow its cortex to the tip; on a high ankle injury follow the whole bone to exclude a proximal Maisonneuve fracture.",
+        "note": "The fibula descends lateral to the tibia and ends as the lateral malleolus, which extends more distally than the medial malleolus. Most rotational ankle fractures involve the fibula, so follow its cortex to the tip; on a high ankle injury follow the whole bone to exclude a proximal Maisonneuve fracture (a proximal fibula fracture with syndesmotic injury).",
         "markers": [
           {
             "x": 73,
@@ -1749,7 +1749,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Medial malleolus",
-        "note": "The medial malleolus is the distal projection of the tibia on the inner side of the ankle. It is the medial buttress of the mortise; an isolated medial malleolar fracture or a widened medial gutter should prompt a search for a fibular or syndesmotic injury (a bimalleolar-equivalent pattern).",
+        "note": "The medial malleolus is the distal projection of the tibia on the inner side of the ankle. It is the medial buttress of the mortise; an isolated medial malleolar fracture or a widened medial gutter should prompt a search for a fibular or syndesmotic (the ligaments binding the distal tibia and fibula) injury (a bimalleolar-equivalent pattern, where one malleolus is fractured and the opposite ligament is torn).",
         "markers": [
           {
             "x": 33,
@@ -1773,7 +1773,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Talar dome",
-        "note": "The dome of the talus articulates with the plafond and is normally smooth and congruent with it. Persistent pain after a 'sprain' with a subchondral lucency or flattening here suggests an osteochondral lesion of the talar dome — a do-not-miss that often needs MRI.",
+        "note": "The dome of the talus articulates with the plafond and is normally smooth and congruent with it. Persistent pain after a 'sprain' with a subchondral lucency or flattening here suggests an osteochondral lesion (a cartilage-and-bone injury) of the talar dome — a do-not-miss that often needs MRI.",
         "markers": [
           {
             "x": 47,
@@ -1797,13 +1797,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-lateral",
         "title": "Get oriented — lateral ankle",
-        "note": "On the lateral view the tibia and fibula are superimposed above the talus, and the hindfoot is profiled with the calcaneus posteriorly. Scan the anterior and posterior tibial margins, the talar dome, the dorsal talar neck, and the calcaneus. This view best shows the posterior malleolus and the talar dome contour.",
+        "note": "On the lateral view the tibia and fibula are superimposed above the talus, and the hindfoot is profiled with the calcaneus (heel bone) posteriorly. Scan the anterior and posterior tibial margins, the talar dome, the dorsal talar neck, and the calcaneus. This view best shows the posterior malleolus and the talar dome contour.",
         "markers": []
       },
       {
         "imageKey": "normal:ankle-lateral",
         "title": "Posterior malleolus",
-        "note": "The posterior lip of the distal tibia is the posterior malleolus, seen only in profile on the lateral. A posterior malleolar fragment completes a trimalleolar pattern and affects joint stability and surgical decision-making.",
+        "note": "The posterior lip of the distal tibia is the posterior malleolus, seen only in profile on the lateral. A posterior malleolar fragment completes a trimalleolar pattern (fractures of all three malleoli) and affects joint stability and surgical decision-making.",
         "markers": [
           {
             "x": 57,
@@ -1827,7 +1827,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-lateral",
         "title": "Calcaneus and Böhler angle",
-        "note": "The calcaneus is the largest tarsal bone and bears body weight at the heel. The lateral view is where you assess Böhler angle; flattening after an axial-load fall suggests a calcaneal compression fracture, which should also prompt a search for an associated thoracolumbar spine fracture.",
+        "note": "The calcaneus is the largest tarsal bone and bears body weight at the heel. The lateral view is where you assess Böhler angle (a heel-bone angle, normally ~20-40°, that drops with calcaneal collapse); flattening after an axial-load fall suggests a calcaneal compression fracture, which should also prompt a search for an associated thoracolumbar spine fracture.",
         "markers": [
           {
             "x": 67,
@@ -1851,7 +1851,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-lateral",
         "title": "Posterior talar process region",
-        "note": "Behind the talus is where an os trigonum or a posterior talar process can be seen on the lateral. A corticated, well-defined ossicle here is a normal variant (os trigonum) and should not be called an acute fracture.",
+        "note": "Behind the talus is where an os trigonum (an accessory bone behind the talus) or a posterior talar process can be seen on the lateral. A corticated, well-defined ossicle here is a normal variant (os trigonum) and should not be called an acute fracture.",
         "markers": [
           {
             "x": 53,
@@ -1869,7 +1869,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-mortise",
         "title": "Medial clear space",
-        "note": "The medial clear space is the gap between the medial talus and the medial malleolus. It should measure about 2-4 mm and be roughly equal to the superior clear space; a medial clear space greater than 4 mm or wider than the superior space implies deltoid and/or syndesmotic injury.",
+        "note": "The medial clear space is the gap between the medial talus and the medial malleolus. It should measure about 2-4 mm and be roughly equal to the superior clear space; a medial clear space greater than 4 mm or wider than the superior space implies deltoid (the medial ankle ligament) and/or syndesmotic injury.",
         "markers": [
           {
             "x": 35,
@@ -1929,13 +1929,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-ap",
         "title": "Get oriented — AP foot",
-        "note": "This dorsoplantar view shows the forefoot and midfoot best. Count the five metatarsals and their phalanges, then drop to the tarsometatarsal (Lisfranc) joints and the cuneiform-navicular row. Alignment of the metatarsal bases is the key Lisfranc check.",
+        "note": "This dorsoplantar (top-of-foot to sole) view shows the forefoot and midfoot best. Count the five metatarsals and their phalanges, then drop to the tarsometatarsal (Lisfranc) joints and the cuneiform-navicular row. Alignment of the metatarsal bases is the key Lisfranc (midfoot tarsometatarsal complex) check.",
         "markers": []
       },
       {
         "imageKey": "normal:foot-ap",
         "title": "Lisfranc alignment — 2nd MT base",
-        "note": "The medial border of the 2nd metatarsal base should line up exactly with the medial border of the middle cuneiform. Any diastasis between the 1st and 2nd metatarsal bases, or a small fleck of bone in the interspace, signals a Lisfranc injury — easily missed on non-weightbearing films.",
+        "note": "The medial border of the 2nd metatarsal base should line up exactly with the medial border of the middle cuneiform. Any diastasis (abnormal gap) between the 1st and 2nd metatarsal bases, or a small fleck of bone in the interspace, signals a Lisfranc injury — easily missed on non-weightbearing films.",
         "markers": [
           {
             "x": 43,
@@ -1947,7 +1947,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-ap",
         "title": "Base of the 5th metatarsal",
-        "note": "The 5th metatarsal base has three zones: the tuberosity (avulsion), the metaphyseal-diaphyseal junction (Jones), and the proximal diaphysis (stress). Fracture location, not just its presence, determines management — Jones fractures have a high nonunion rate in athletes.",
+        "note": "The 5th metatarsal base has three zones: the tuberosity (avulsion), the metaphyseal-diaphyseal junction (Jones), and the proximal diaphysis (stress). Fracture location, not just its presence, determines management — Jones fractures (a fracture at the base where blood supply is poor) have a high nonunion rate in athletes.",
         "markers": [
           {
             "x": 76,
@@ -1971,7 +1971,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-ap",
         "title": "First metatarsophalangeal joint and sesamoids",
-        "note": "The big-toe MTP joint carries large loads at push-off; the two sesamoids sit beneath the 1st metatarsal head. Sesamoid pain or a bipartite sesamoid mimicking a fracture is common, and turf toe involves this joint's plantar plate.",
+        "note": "The big-toe MTP (metatarsophalangeal) joint carries large loads at push-off; the two sesamoids (small bones embedded in tendon) sit beneath the 1st metatarsal head. Sesamoid pain or a bipartite sesamoid (a normal two-part variant) mimicking a fracture is common, and turf toe (a sprain of the big-toe joint) involves this joint's plantar plate.",
         "markers": [
           {
             "x": 20,
@@ -1983,7 +1983,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-ap",
         "title": "Proximal phalanx of the great toe",
-        "note": "The phalanges of the hallux are short and stout. Tracing each phalanx and joint distally is part of a systematic forefoot read so subtle phalangeal and intra-articular fractures are not overlooked.",
+        "note": "The phalanges of the hallux (great toe) are short and stout. Tracing each phalanx and joint distally is part of a systematic forefoot read so subtle phalangeal and intra-articular fractures are not overlooked.",
         "markers": [
           {
             "x": 19,
@@ -2037,7 +2037,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-lateral",
         "title": "Cuboid",
-        "note": "The cuboid lies on the lateral column between the calcaneus and the 4th and 5th metatarsal bases. It can be compressed in a 'nutcracker' fracture during forefoot abduction and should be checked when there is lateral midfoot pain.",
+        "note": "The cuboid lies on the lateral column between the calcaneus and the 4th and 5th metatarsal bases. It can be compressed in a 'nutcracker' fracture (a crush of the cuboid during forefoot abduction) during forefoot abduction and should be checked when there is lateral midfoot pain.",
         "markers": [
           {
             "x": 65,
@@ -2127,7 +2127,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:foot-oblique",
         "title": "Metatarsal shafts",
-        "note": "The oblique separates the overlapping metatarsal shafts so each can be traced individually. Following each shaft from base to head is how subtle shaft and stress (e.g., 'march') fractures are caught.",
+        "note": "The oblique separates the overlapping metatarsal shafts so each can be traced individually. Following each shaft from base to head is how subtle shaft and stress (e.g., 'march') fractures (stress fractures from repetitive marching or walking) are caught.",
         "markers": [
           {
             "x": 45,
@@ -2187,7 +2187,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
           "Lateral gutter"
         ],
         "answer": 2,
-        "explanation": "The gap between the medial talus and medial malleolus is the medial clear space; widening beyond 4 mm or greater than the superior space suggests deltoid/syndesmotic injury."
+        "explanation": "The gap between the medial talus and medial malleolus is the medial clear space; widening beyond 4 mm or greater than the superior space suggests deltoid (medial ankle ligament)/syndesmotic injury."
       },
       {
         "id": "ankle-foot-ck-4",
@@ -2298,13 +2298,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-lateral",
         "title": "Get oriented — Lateral cervical spine",
-        "note": "This lateral view profiles C1 down toward the cervicothoracic junction and is the workhorse for cervical alignment. Scan it systematically: trace the three smooth alignment curves (anterior vertebral, posterior vertebral, spinolaminar), check vertebral body heights, then look at the prevertebral soft tissue stripe. Confirm you can see through C7-T1 before calling the film adequate; here the shoulders overlie the lowest segments.",
+        "note": "This lateral view profiles C1 down toward the cervicothoracic junction (where the neck meets the upper back, C7-T1) and is the workhorse for cervical alignment. Scan it systematically: trace the three smooth alignment curves (anterior vertebral, posterior vertebral, spinolaminar), check vertebral body heights, then look at the prevertebral soft tissue stripe (the band in front of the spine). Confirm you can see through C7-T1 before calling the film adequate; here the shoulders overlie the lowest segments.",
         "markers": []
       },
       {
         "imageKey": "normal:cervical-spine-lateral",
         "title": "Anterior vertebral line",
-        "note": "A smooth curve connecting the anterior margins of the vertebral bodies. Any step-off here is an early clue to instability or anterolisthesis from ligamentous or bony injury — a do-not-miss in the neck-injured athlete.",
+        "note": "A smooth curve connecting the anterior margins of the vertebral bodies. Any step-off here is an early clue to instability or anterolisthesis (forward slip of one vertebra on the one below) from ligamentous or bony injury — a do-not-miss in the neck-injured athlete.",
         "markers": [
           {
             "x": 30,
@@ -2340,7 +2340,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-lateral",
         "title": "Odontoid process (dens) of C2",
-        "note": "The dens projects upward from the C2 body behind the anterior arch of C1. The predental (atlanto-dental) space between the C1 arch and the front of the dens should be narrow in adults; widening signals transverse ligament injury and atlantoaxial instability.",
+        "note": "The dens projects upward from the C2 body behind the anterior arch of C1. The predental (atlanto-dental) space (the gap between the C1 arch and the front of the dens) between the C1 arch and the front of the dens should be narrow in adults; widening signals transverse ligament injury and atlantoaxial instability (abnormal motion between C1 and C2).",
         "markers": [
           {
             "x": 41,
@@ -2352,7 +2352,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-lateral",
         "title": "Cervical facet joints / articular pillars",
-        "note": "The articular pillars are the rhomboid bony columns behind the vertebral bodies, and the facet (zygapophyseal) joints are the oblique lucent lines between adjacent pillars. Normally they overlap like smooth, evenly stacked shingles. Disruption of this shingled pattern — a 'naked', perched, or locked facet — is the key clue to facet subluxation or dislocation, a do-not-miss in the neck-injured athlete.",
+        "note": "The articular pillars (the bony columns formed by the stacked facets) are the rhomboid bony columns behind the vertebral bodies, and the facet (zygapophyseal) joints are the oblique lucent lines between adjacent pillars. Normally they overlap like smooth, evenly stacked shingles. Disruption of this shingled pattern — a 'naked', perched, or locked facet (a facet that has slipped out of its normal stacked position) — is the key clue to facet subluxation or dislocation, a do-not-miss in the neck-injured athlete.",
         "markers": [
           {
             "x": 45,
@@ -2364,7 +2364,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-lateral",
         "title": "Cervical spinous process",
-        "note": "The spinous processes project posteroinferiorly from each cervical vertebra, behind the spinolaminar line. The marked tip is a clearly profiled mid-cervical spinous process. (The most prominent, C7, is the vertebra prominens; visualizing down through C7-T1 is the adequacy test, but on this film the shoulders overlie the lowest segments.)",
+        "note": "The spinous processes project posteroinferiorly from each cervical vertebra, behind the spinolaminar line. The marked tip is a clearly profiled mid-cervical spinous process. (The most prominent, C7, is the vertebra prominens (the bony bump felt at the base of the neck); visualizing down through C7-T1 is the adequacy test, but on this film the shoulders overlie the lowest segments.)",
         "markers": [
           {
             "x": 50,
@@ -2388,7 +2388,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-ap",
         "title": "Get oriented — AP cervical spine",
-        "note": "The frontal view shows the lower cervical vertebral bodies stacked in the midline with the spinous processes projecting as midline teardrops and the uncovertebral joints flanking each body. Scan up the column for aligned spinous processes, symmetric vertebral bodies, and a midline trachea/airway column.",
+        "note": "The frontal view shows the lower cervical vertebral bodies stacked in the midline with the spinous processes projecting as midline teardrops and the uncovertebral joints (small lateral joints unique to the cervical spine) flanking each body. Scan up the column for aligned spinous processes, symmetric vertebral bodies, and a midline trachea/airway column.",
         "markers": []
       },
       {
@@ -2418,7 +2418,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:cervical-spine-ap",
         "title": "Uncovertebral (Luschka) joint",
-        "note": "The small lateral articulations at the superolateral corners of the cervical bodies. They are a common site of degenerative osteophytes that can narrow the neural foramen and cause radicular symptoms.",
+        "note": "The small lateral articulations at the superolateral corners of the cervical bodies. They are a common site of degenerative osteophytes (bone spurs) that can narrow the neural foramen (the canal where the nerve root exits) and cause radicular symptoms (pain or tingling along a nerve root).",
         "markers": [
           {
             "x": 58,
@@ -2454,7 +2454,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:lumbar-spine-lateral",
         "title": "Get oriented — Lateral lumbar spine",
-        "note": "This lateral view shows the lumbar bodies stacked with intervening disc spaces, the posterior elements behind them, and the L5-S1 junction at the sacrum. Scan vertebral body heights, endplate contours, disc space heights, and the alignment of the posterior body margins for spondylolisthesis.",
+        "note": "This lateral view shows the lumbar bodies stacked with intervening disc spaces, the posterior elements behind them, and the L5-S1 junction at the sacrum. Scan vertebral body heights, endplate contours, disc space heights, and the alignment of the posterior body margins for spondylolisthesis (forward slip of one vertebra on the one below).",
         "markers": []
       },
       {
@@ -2484,7 +2484,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:lumbar-spine-lateral",
         "title": "Pars interarticularis",
-        "note": "The bony bridge between the superior and inferior articular processes of the posterior element. This is the site of stress injury (spondylolysis) in adolescent extension athletes; a lucency or sclerosis here is the key finding, though early stress reaction is often only seen on MRI.",
+        "note": "The bony bridge between the superior and inferior articular processes of the posterior element. This is the site of stress injury (spondylolysis, a stress fracture of the pars) in adolescent extension athletes; a lucency or sclerosis here is the key finding, though early stress reaction is often only seen on MRI.",
         "markers": [
           {
             "x": 40,
@@ -2602,7 +2602,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
           "Pedicle"
         ],
         "answer": 0,
-        "explanation": "The small lateral articulation at the superolateral corner of a cervical body is the uncovertebral (Luschka) joint, a common site of degenerative osteophytes."
+        "explanation": "The small lateral articulation at the superolateral corner of a cervical body is the uncovertebral (Luschka) joint, a common site of degenerative osteophytes (bone spurs)."
       },
       {
         "id": "spine-ck-8",
@@ -2619,7 +2619,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
           "Vertebral endplate"
         ],
         "answer": 0,
-        "explanation": "The bony bridge between the superior and inferior articular processes is the pars interarticularis, the site of spondylolysis in extension athletes."
+        "explanation": "The bony bridge between the superior and inferior articular processes is the pars interarticularis, the site of spondylolysis (a pars stress fracture) in extension athletes."
       },
       {
         "id": "spine-ck-9",
@@ -2662,13 +2662,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap-pediatric",
         "title": "Get oriented — AP pelvis",
-        "note": "This is a normal AP pelvis in a skeletally immature child: confirm symmetry first, then scan the open physes and synchondroses that will look 'abnormal' to an untrained eye. Work the sacrum and iliac wings, both sacroiliac joints, each acetabulum (triradiate cartilage), then the proximal femora and capital femoral epiphyses, comparing left to right at every step.",
+        "note": "This is a normal AP pelvis in a skeletally immature child: confirm symmetry first, then scan the open physes (growth plates) and synchondroses (cartilage joints between bones) that will look 'abnormal' to an untrained eye. Work the sacrum and iliac wings, both sacroiliac joints, each acetabulum (triradiate cartilage), then the proximal femora and capital femoral epiphyses (the secondary ossification centers capping the femoral heads), comparing left to right at every step.",
         "markers": []
       },
       {
         "imageKey": "normal:pelvis-ap-pediatric",
         "title": "Capital femoral epiphysis",
-        "note": "The capital femoral epiphysis is the secondary ossification center of the femoral head, sitting on the metaphysis across the proximal femoral physis. It should be symmetric in height and position with the opposite side; posteroinferior slip of this epiphysis is the finding in SCFE.",
+        "note": "The capital femoral epiphysis is the secondary ossification center of the femoral head, sitting on the metaphysis (the flared bone end next to the growth plate) across the proximal femoral physis. It should be symmetric in height and position with the opposite side; posteroinferior slip of this epiphysis is the finding in SCFE (slipped capital femoral epiphysis).",
         "markers": [
           {
             "x": 25,
@@ -2680,7 +2680,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap-pediatric",
         "title": "Proximal femoral physis",
-        "note": "The proximal femoral physis is the lucent growth plate between the femoral head epiphysis and the femoral neck metaphysis. In adolescents, watch for physeal widening or a step-off — Klein's line drawn along the superior femoral neck should normally intersect the lateral epiphysis.",
+        "note": "The proximal femoral physis is the lucent growth plate between the femoral head epiphysis and the femoral neck metaphysis. In adolescents, watch for physeal widening or a step-off — Klein's line (drawn along the superior femoral neck) should normally intersect the lateral epiphysis.",
         "markers": [
           {
             "x": 78,
@@ -2716,7 +2716,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap-pediatric",
         "title": "Ischial tuberosity apophysis",
-        "note": "The ischial tuberosity is the hamstring origin and carries a traction apophysis that ossifies and fuses in adolescence. It is the single most common site of pelvic apophyseal avulsion in sprinters and hurdlers, so correlate focal ischial tenderness after an explosive sprint with a displaced fragment here.",
+        "note": "The ischial tuberosity is the hamstring origin and carries a traction apophysis (a growth center where a tendon pulls on bone) that ossifies and fuses in adolescence. It is the single most common site of pelvic apophyseal avulsion in sprinters and hurdlers, so correlate focal ischial tenderness after an explosive sprint with a displaced fragment here.",
         "markers": [
           {
             "x": 31,
@@ -2728,7 +2728,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-ap-pediatric",
         "title": "Iliac crest apophysis",
-        "note": "The iliac crest apophysis is a traction growth center along the superior margin of the iliac wing (the Risser sign of skeletal maturity). It is a site of avulsion in sprinting/jumping athletes and of apophysitis from abdominal-wall traction, so correlate focal crest tenderness with the exam.",
+        "note": "The iliac crest apophysis is a traction growth center along the superior margin of the iliac wing (the Risser sign, a marker of skeletal maturity used in scoliosis). It is a site of avulsion in sprinting/jumping athletes and of apophysitis (painful inflammation of an apophysis) from abdominal-wall traction, so correlate focal crest tenderness with the exam.",
         "markers": [
           {
             "x": 16,
@@ -2752,7 +2752,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:pelvis-frog-leg-pediatric",
         "title": "Get oriented — frog-leg lateral",
-        "note": "This is a normal frog-leg (Lauenstein) pelvis: the hips are abducted and externally rotated to profile the femoral necks and capital epiphyses, the projection that best detects subtle SCFE. The bright round density overlying the midline inferiorly is a gonadal contact shield, not bone; scan each capital femoral epiphysis, physis, and femoral neck symmetrically.",
+        "note": "This is a normal frog-leg (Lauenstein, the lateral hip projection) pelvis: the hips are abducted and externally rotated to profile the femoral necks and capital epiphyses, the projection that best detects subtle SCFE. The bright round density overlying the midline inferiorly is a gonadal contact shield, not bone; scan each capital femoral epiphysis, physis, and femoral neck symmetrically.",
         "markers": []
       },
       {
@@ -2824,7 +2824,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist-pediatric",
         "title": "Distal radial physis",
-        "note": "The distal radial physis is the transverse lucency between the radial metaphysis and epiphysis and is the most commonly injured physis in children. Focal tenderness here with a normal-looking plate may still be a Salter-Harris I, and physeal widening is the clue to Salter-Harris injury.",
+        "note": "The distal radial physis is the transverse lucency between the radial metaphysis and epiphysis and is the most commonly injured physis in children. Focal tenderness here with a normal-looking plate may still be a Salter-Harris I (a growth-plate fracture classified by which adjacent bone is involved), and physeal widening is the clue to Salter-Harris injury.",
         "markers": [
           {
             "x": 33,
@@ -2890,7 +2890,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-pediatric",
         "title": "Distal femoral physis",
-        "note": "The distal femoral physis is the broad transverse growth plate above the knee and is the fastest-growing physis in the body, contributing the most to leg length. Injury is relatively uncommon but high-risk: widening or a metaphyseal (Thurston-Holland) fragment signals a Salter-Harris injury with a high rate of growth disturbance that needs orthopedic attention.",
+        "note": "The distal femoral physis is the broad transverse growth plate above the knee and is the fastest-growing physis in the body, contributing the most to leg length. Injury is relatively uncommon but high-risk: widening or a metaphyseal (Thurston-Holland, the metaphyseal corner fragment of a Salter-Harris II) fragment signals a Salter-Harris injury with a high rate of growth disturbance that needs orthopedic attention.",
         "markers": [
           {
             "x": 50,
@@ -2914,7 +2914,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-pediatric",
         "title": "Proximal tibial physis",
-        "note": "The proximal tibial physis is the growth plate below the joint; its anterior extension feeds the tibial tubercle apophysis (the site of Osgood-Schlatter traction injury). Salter-Harris fractures here are uncommon but high-risk because of the adjacent popliteal vessels.",
+        "note": "The proximal tibial physis is the growth plate below the joint; its anterior extension feeds the tibial tubercle apophysis (the site of Osgood-Schlatter, traction apophysitis of the tibial tubercle). Salter-Harris fractures here are uncommon but high-risk because of the adjacent popliteal vessels.",
         "markers": [
           {
             "x": 50,
@@ -2938,7 +2938,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-pediatric",
         "title": "Proximal fibular epiphysis",
-        "note": "The proximal fibular epiphysis forms the fibular head and is a traction apophysis for the biceps femoris and lateral collateral ligament. Avulsion here (the arcuate sign) marks posterolateral corner injury in the adolescent athlete.",
+        "note": "The proximal fibular epiphysis forms the fibular head and is a traction apophysis for the biceps femoris and lateral collateral ligament. Avulsion here (the arcuate sign, a fibular-head avulsion fragment) marks posterolateral corner injury (the lateral knee-stabilizing complex) in the adolescent athlete.",
         "markers": [
           {
             "x": 21,
@@ -2962,13 +2962,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-pediatric",
         "title": "Get oriented — AP ankle",
-        "note": "This is a normal pediatric AP ankle with open distal tibial and fibular physes. Scan the distal tibia and its physis, the medial malleolus, the distal fibula with its physis and malleolus, then the talar dome, keeping in mind that physes here are common sites of transitional fractures in adolescents.",
+        "note": "This is a normal pediatric AP ankle with open distal tibial and fibular physes. Scan the distal tibia and its physis, the medial malleolus, the distal fibula with its physis and malleolus, then the talar dome, keeping in mind that physes here are common sites of transitional fractures (those occurring as the growth plate closes) in adolescents.",
         "markers": []
       },
       {
         "imageKey": "normal:ankle-pediatric",
         "title": "Distal tibial physis",
-        "note": "The distal tibial physis is the transverse growth plate above the ankle mortise and a frequent site of Salter-Harris injury. It closes asymmetrically (central, then medial, then lateral), which sets up the transitional Tillaux and triplane fractures of late adolescence.",
+        "note": "The distal tibial physis is the transverse growth plate above the ankle mortise (the socket formed by the tibia and fibula around the talus) and a frequent site of Salter-Harris injury. It closes asymmetrically (central, then medial, then lateral), which sets up the transitional Tillaux (an avulsion of the lateral tibial epiphysis) and triplane (a fracture running in three planes) fractures of late adolescence.",
         "markers": [
           {
             "x": 33,
@@ -3016,7 +3016,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-pediatric",
         "title": "Talar dome",
-        "note": "The talar dome is the superior articular surface of the talus seated within the mortise. It is the classic location for osteochondral lesions after an inversion injury, so scan its corners carefully when an athlete has persistent ankle pain.",
+        "note": "The talar dome is the superior articular surface of the talus seated within the mortise. It is the classic location for osteochondral lesions (injuries of the cartilage and underlying bone) after an inversion injury, so scan its corners carefully when an athlete has persistent ankle pain.",
         "markers": [
           {
             "x": 38,
@@ -3204,7 +3204,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "shoulder:posterior-dislocation",
         "title": "Posterior shoulder dislocation — light bulb sign",
-        "note": "The humeral head is locked in fixed internal rotation, so it appears symmetric and rounded like a light bulb on the AP (left panel). Posterior dislocations follow seizures or electrocution and are missed in over half of cases on the AP alone — confirm with an axillary or scapular Y view and arrange reduction.",
+        "note": "The humeral head is locked in fixed internal rotation, so it appears symmetric and rounded like a light bulb on the AP (left panel). Posterior dislocations follow seizures or electrocution and are missed in over half of cases on the AP alone — confirm with an axillary (an underarm view down the joint) or scapular Y view (a lateral that shows the head relative to the socket) and arrange reduction.",
         "markers": [
           {
             "x": 31,
@@ -3216,7 +3216,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "shoulder:ac-separation-grade-iii",
         "title": "Grade III AC separation — widened coracoclavicular distance",
-        "note": "The distal clavicle rides high relative to the acromion with an increased coracoclavicular distance, indicating complete tearing of both AC and CC ligaments. Grade III separations in overhead and contact athletes change management toward sling immobilization and orthopedic discussion of operative options.",
+        "note": "The distal clavicle rides high relative to the acromion with an increased coracoclavicular distance (gap between the coracoid and clavicle), indicating complete tearing of both AC (acromioclavicular) and CC (coracoclavicular) ligaments. Grade III separations in overhead and contact athletes change management toward sling immobilization and orthopedic discussion of operative options.",
         "markers": [
           {
             "x": 65,
@@ -3228,7 +3228,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "shoulder:hill-sachs",
         "title": "Hill-Sachs lesion — post-reduction defect",
-        "note": "This wedge-shaped flattening of the posterosuperolateral humeral head is an impaction fracture from the glenoid rim during anterior dislocation. A large Hill-Sachs lesion predicts recurrent instability and is a clue a dislocation occurred — pair it with a Bankart search and consider MRI before return to sport. Note this post-reduction film is in external rotation, on which the defect is poorly profiled and may be subtle; it is best demonstrated on an AP in internal rotation or a Stryker notch view.",
+        "note": "This wedge-shaped flattening of the posterosuperolateral humeral head is an impaction fracture from the glenoid rim during anterior dislocation. A large Hill-Sachs lesion (a dent in the humeral head from anterior dislocation) predicts recurrent instability and is a clue a dislocation occurred — pair it with a Bankart search (for an anteroinferior glenoid-rim/labral injury) and consider MRI before return to sport. Note this post-reduction film is in external rotation, on which the defect is poorly profiled and may be subtle; it is best demonstrated on an AP in internal rotation or a Stryker notch view (an angled view that profiles the head defect).",
         "markers": [
           {
             "x": 68,
@@ -3240,7 +3240,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "elbow:fat-pad-sign",
         "title": "Posterior fat pad sign — occult radial head/supracondylar fracture",
-        "note": "The lucent triangle lifted off the posterior distal humerus (right-hand arrow) is the posterior fat pad sign, which is never normal and signals a joint effusion (hemarthrosis). In adults it implies an occult radial head fracture, in children a supracondylar fracture — treat as a fracture, splint, and repeat films even when no line is seen.",
+        "note": "The lucent triangle lifted off the posterior distal humerus (right-hand arrow) is the posterior fat pad sign, which is never normal and signals a joint effusion (hemarthrosis, blood in the joint). In adults it implies an occult radial head fracture, in children a supracondylar fracture (across the distal humerus above the condyles) — treat as a fracture, splint, and repeat films even when no line is seen.",
         "markers": [
           {
             "x": 63,
@@ -3252,7 +3252,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "elbow:medial-epicondyle-avulsion",
         "title": "Medial epicondyle avulsion — adolescent thrower",
-        "note": "The medial epicondyle apophysis (lower-left radiograph) has been avulsed by the flexor-pronator/UCL traction (\"little league elbow\"). The danger is entrapment of the displaced fragment within the joint, which can be mistaken for the trochlear ossification center — confirm displacement and refer, as significant displacement is operative.",
+        "note": "The medial epicondyle apophysis (a growth center where tendons attach, lower-left radiograph) has been avulsed by the flexor-pronator/UCL (ulnar collateral ligament) traction (\"little league elbow,\" overuse throwing injury). The danger is entrapment of the displaced fragment within the joint, which can be mistaken for the trochlear ossification center (the normal growth center of the inner elbow) — confirm displacement and refer, as significant displacement is operative.",
         "markers": [
           {
             "x": 39,
@@ -3264,7 +3264,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "wrist:perilunate-dislocation",
         "title": "Perilunate dislocation — disrupted Gilula arcs",
-        "note": "The lunate (outlined) loses its normal alignment so the three smooth Gilula arcs are broken and the capitate no longer sits in the lunate cup. This high-energy FOOSH injury carries median nerve risk and demands urgent reduction and hand-surgery referral, not just splinting.",
+        "note": "The lunate (outlined) loses its normal alignment so the three smooth Gilula arcs (smooth curves along the carpal rows) are broken and the capitate no longer sits in the lunate cup. This high-energy FOOSH injury (fall onto an outstretched hand) carries median nerve risk and demands urgent reduction and hand-surgery referral, not just splinting.",
         "markers": [
           {
             "x": 33,
@@ -3276,7 +3276,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "wrist:scaphoid-waist-fracture",
         "title": "Scaphoid waist fracture — PA wrist",
-        "note": "A subtle lucent line crosses the waist of the scaphoid. Because the scaphoid's blood supply enters distally, proximal-pole and waist fractures risk avascular necrosis and nonunion — any snuffbox tenderness warrants thumb-spica immobilization and repeat films or MRI even if the initial film looks normal.",
+        "note": "A subtle lucent line crosses the waist of the scaphoid. Because the scaphoid's blood supply enters distally, proximal-pole and waist fractures risk avascular necrosis (bone death from lost blood supply) and nonunion — any snuffbox tenderness warrants thumb-spica immobilization and repeat films or MRI even if the initial film looks normal.",
         "markers": [
           {
             "x": 40,
@@ -3288,7 +3288,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "hip:scfe",
         "title": "SCFE — Klein line fails to intersect the epiphysis",
-        "note": "On this coned-down hip the capital femoral epiphysis slips medially and posteriorly, so a line drawn along the lateral femoral neck (Klein line, sketched below) fails to intersect the epiphysis it should clip. SCFE in an adolescent is an emergency — make the patient non-weightbearing and obtain emergent orthopedic referral to prevent AVN.",
+        "note": "On this coned-down hip the capital femoral epiphysis slips medially and posteriorly, so a line drawn along the lateral femoral neck (Klein line, sketched below) fails to intersect the epiphysis it should clip. SCFE (slipped capital femoral epiphysis) in an adolescent is an emergency — make the patient non-weightbearing and obtain emergent orthopedic referral to prevent AVN (avascular necrosis).",
         "markers": [
           {
             "x": 47,
@@ -3300,7 +3300,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "hip:scfe-frog-leg",
         "title": "SCFE — frog-leg lateral",
-        "note": "The frog-leg lateral shows the epiphysis slipping off the metaphysis like ice cream off a cone, confirming the slip suspected on the AP. This orthogonal view detects subtle (pre-slip) cases — keep the patient non-weightbearing and refer emergently for in-situ fixation.",
+        "note": "The frog-leg lateral (a lateral hip view with hips flexed and abducted) shows the epiphysis slipping off the metaphysis like ice cream off a cone, confirming the slip suspected on the AP. This orthogonal view detects subtle (pre-slip) cases — keep the patient non-weightbearing and refer emergently for in-situ fixation (pinning the head where it lies).",
         "markers": [
           {
             "x": 42,
@@ -3312,7 +3312,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "hip:femoral-neck-stress-fracture",
         "title": "Femoral neck stress fracture — subtle",
-        "note": "A faint sclerotic/lucent line crosses the inferomedial (compression-side) femoral neck (arrow) in a runner with progressive groin pain. Tension-side fractures can complete catastrophically with displacement, so suspicion plus normal-looking films should trigger protected weightbearing and urgent MRI.",
+        "note": "A faint sclerotic/lucent line crosses the inferomedial (compression-side) femoral neck (arrow) in a runner with progressive groin pain. Tension-side fractures (along the superior neck) can complete catastrophically with displacement, so suspicion plus normal-looking films should trigger protected weightbearing and urgent MRI.",
         "markers": [
           {
             "x": 53,
@@ -3324,7 +3324,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "hip:fai-cam-morphology",
         "title": "Cam morphology (FAI) — aspherical head-neck junction",
-        "note": "The right femoral head-neck junction loses its normal concave waist, producing a convex \"bump\" (pistol-grip deformity) that abuts the acetabular rim in flexion. This cam morphology causes femoroacetabular impingement and labral/chondral injury in young athletes with groin pain — confirm with a Dunn view and MRI if symptomatic.",
+        "note": "The right femoral head-neck junction loses its normal concave waist, producing a convex \"bump\" (pistol-grip deformity, an angular head-neck contour) that abuts the acetabular rim in flexion. This cam morphology causes femoroacetabular impingement (FAI, abnormal contact between femur and socket) and labral/chondral injury in young athletes with groin pain — confirm with a Dunn view (an angled hip view profiling the head-neck junction) and MRI if symptomatic.",
         "markers": [
           {
             "x": 16,
@@ -3336,7 +3336,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "knee:segond-fracture",
         "title": "Segond fracture — lateral tibial avulsion",
-        "note": "The small vertical cortical fleck (outlined) avulsed off the lateral tibial plateau is a Segond fracture. It is a near-pathognomonic marker of an ACL tear (and often meniscal injury) in a pivot-shift mechanism — the bony fragment is trivial but the soft-tissue implication is large, so order an MRI.",
+        "note": "The small vertical cortical fleck (outlined) avulsed off the lateral tibial plateau is a Segond fracture (a lateral tibial-rim avulsion). It is a near-pathognomonic (highly specific) marker of an ACL tear (anterior cruciate ligament) (and often meniscal injury) in a pivot-shift mechanism (a twisting, planted-foot injury) — the bony fragment is trivial but the soft-tissue implication is large, so order an MRI.",
         "markers": [
           {
             "x": 83,
@@ -3360,7 +3360,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "knee:bipartite-patella",
         "title": "Bipartite patella — NORMAL VARIANT (do not call a fracture)",
-        "note": "The separate ossicle at the lateral corner of the patella (skyline view, right panel) with smooth, corticated, rounded margins is a bipartite patella, a developmental variant — not an acute fracture. Acute fractures have sharp non-corticated edges that fit back together; recognizing this variant prevents unnecessary immobilization, though it can rarely become symptomatic.",
+        "note": "The separate ossicle at the lateral corner of the patella (skyline view, an axial view of the patella, right panel) with smooth, corticated, rounded margins is a bipartite patella (a kneecap with an unfused accessory ossicle), a developmental variant — not an acute fracture. Acute fractures have sharp non-corticated edges that fit back together; recognizing this variant prevents unnecessary immobilization, though it can rarely become symptomatic.",
         "markers": [
           {
             "x": 86,
@@ -3372,7 +3372,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "foot:lisfranc-injury",
         "title": "Lisfranc injury — tarsometatarsal diastasis",
-        "note": "There is widening between the bases of the first and second metatarsals (loss of the normal medial-cuneiform/second-metatarsal alignment), at the arrow. Midfoot diastasis with plantar ecchymosis indicates a Lisfranc ligament injury that destabilizes the foot — obtain weightbearing films or CT and refer, as instability is operative.",
+        "note": "There is widening between the bases of the first and second metatarsals (loss of the normal medial-cuneiform/second-metatarsal alignment), at the arrow. Midfoot diastasis (abnormal separation between bones) with plantar ecchymosis indicates a Lisfranc ligament injury (a midfoot tarsometatarsal joint disruption) that destabilizes the foot — obtain weightbearing films or CT and refer, as instability is operative.",
         "markers": [
           {
             "x": 50,
@@ -3384,7 +3384,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "foot:jones-fracture",
         "title": "Jones fracture — 5th metatarsal metaphyseal-diaphyseal junction",
-        "note": "A transverse fracture at the metaphyseal-diaphyseal junction of the fifth metatarsal — just distal to the tuberosity at the proximal lateral foot — is a true Jones fracture, which sits in a watershed blood-supply zone with high nonunion risk. Unlike a proximal avulsion (tuberosity), this zone matters: place in a non-weightbearing CAM boot and refer to orthopedics for possible operative fixation in athletes.",
+        "note": "A transverse fracture at the metaphyseal-diaphyseal junction of the fifth metatarsal — just distal to the tuberosity at the proximal lateral foot — is a true Jones fracture (a fracture at the base of the 5th metatarsal in a poor-healing zone), which sits in a watershed blood-supply zone (a poorly perfused border zone) with high nonunion risk. Unlike a proximal avulsion (tuberosity), this zone matters: place in a non-weightbearing CAM boot and refer to orthopedics for possible operative fixation in athletes.",
         "markers": [
           {
             "x": 78,
@@ -3396,7 +3396,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "ankle:talar-dome-ocd",
         "title": "Talar dome osteochondral lesion — medial dome",
-        "note": "The medial corner of the talar dome (toward the medial malleolus) shows a lucent osteochondral defect with subchondral irregularity. Persistent pain, catching, or clicking weeks after an ankle \"sprain\" is the classic presentation — obtain MRI to stage the osteochondral lesion and guide orthopedic management.",
+        "note": "The medial corner of the talar dome (the top of the talus, toward the medial malleolus) shows a lucent osteochondral defect (damage to cartilage and underlying bone) with subchondral irregularity. Persistent pain, catching, or clicking weeks after an ankle \"sprain\" is the classic presentation — obtain MRI to stage the osteochondral lesion and guide orthopedic management.",
         "markers": [
           {
             "x": 30,
@@ -3408,7 +3408,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "pediatric:salter-harris-ii-distal-radius",
         "title": "Salter-Harris II — distal radius (Thurston-Holland fragment)",
-        "note": "The fracture runs through the distal radial physis and exits through a triangular metaphyseal corner — the Thurston-Holland fragment — which defines a Salter-Harris type II injury. Recognizing growth-plate involvement matters for reduction adequacy and growth-arrest counseling; reduce, immobilize, and arrange orthopedic follow-up.",
+        "note": "The fracture runs through the distal radial physis (growth plate) and exits through a triangular metaphyseal corner — the Thurston-Holland fragment (a metaphyseal corner piece) — which defines a Salter-Harris type II injury (a growth-plate fracture classification). Recognizing growth-plate involvement matters for reduction adequacy and growth-arrest counseling; reduce, immobilize, and arrange orthopedic follow-up.",
         "markers": [
           {
             "x": 24,
@@ -3420,7 +3420,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "ankle:mortise-widening",
         "title": "Disrupted ankle mortise — trimalleolar fracture",
-        "note": "Always check the ankle mortise for symmetric clear spaces — the medial, superior, and lateral tibiotalar gaps should be roughly equal (~3-4 mm). Here both malleoli are fractured and the mortise is disrupted with an asymmetric/widened medial clear space and talar shift. Asymmetric clear spaces or talar shift mean an unstable ankle (deltoid/syndesmotic disruption) even when the fracture looks subtle — splint, keep non-weightbearing, and refer.",
+        "note": "Always check the ankle mortise (the U-shaped socket the talus sits in) for symmetric clear spaces — the medial, superior, and lateral tibiotalar gaps should be roughly equal (~3-4 mm). Here both malleoli are fractured and the mortise is disrupted with an asymmetric/widened medial clear space and talar shift. Asymmetric clear spaces or talar shift mean an unstable ankle (deltoid/syndesmotic disruption — torn medial ligament/the tibia-fibula joint) even when the fracture looks subtle — splint, keep non-weightbearing, and refer.",
         "markers": [
           {
             "x": 33,
@@ -3701,7 +3701,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-lateral",
         "title": "Cartilage — the tibiofemoral joint space",
-        "note": "Cartilage & joint space step: the lucent gap between femoral condyle and tibial plateau reflects articular cartilage. Check it is preserved and symmetric, with no narrowing, osteophytes, or subchondral sclerosis.",
+        "note": "Cartilage & joint space step: the lucent gap between femoral condyle and tibial plateau reflects articular cartilage. Check it is preserved and symmetric, with no narrowing, osteophytes (bone spurs at joint margins), or subchondral sclerosis (dense bone just under the cartilage).",
         "markers": [
           {
             "x": 52,
@@ -3713,7 +3713,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:knee-lateral",
         "title": "Soft Tissues — suprapatellar effusion zone",
-        "note": "Soft Tissues step: look behind the quadriceps tendon, above the patella, for the suprapatellar recess. Distension of this recess (soft-tissue thickness greater than ~10 mm, or a visible fat–fluid level) indicates a knee effusion — sometimes the only clue to an occult intra-articular fracture (lipohemarthrosis).",
+        "note": "Soft Tissues step: look behind the quadriceps tendon, above the patella, for the suprapatellar recess. Distension of this recess (soft-tissue thickness greater than ~10 mm, or a visible fat–fluid level) indicates a knee effusion — sometimes the only clue to an occult intra-articular fracture (lipohemarthrosis, a fat-fluid level in the joint from marrow fat leaking out of a fracture).",
         "markers": [
           {
             "x": 24,
@@ -3791,7 +3791,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Orient: Normal ankle — AP",
-        "note": "This AP ankle shows the distal tibia, fibula, and talus forming the mortise. Apply the same systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The medial clear space and mortise symmetry are the high-yield targets here.",
+        "note": "This AP ankle shows the distal tibia, fibula, and talus forming the mortise (the U-shaped socket the talus sits in). Apply the same systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The medial clear space (gap between the medial malleolus and the talus) and mortise symmetry are the high-yield targets here.",
         "markers": []
       },
       {
@@ -3809,7 +3809,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:ankle-ap",
         "title": "Alignment — the mortise",
-        "note": "Alignment step: confirm the talus sits squarely under the tibial plafond with a congruent, uniform mortise and no talar shift or syndesmotic widening.",
+        "note": "Alignment step: confirm the talus sits squarely under the tibial plafond (the flat distal-tibia weightbearing surface) with a congruent, uniform mortise and no talar shift or syndesmotic widening (separation of the distal tibiofibular joint).",
         "markers": [
           {
             "x": 48,
@@ -3857,7 +3857,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist",
         "title": "Orient: Normal wrist — lateral",
-        "note": "Use the LEFT panel (lateral wrist). It shows the radius, carpus, and metacarpal bases in profile. Run the systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The lateral is your key view for carpal alignment (the radius–lunate–capitate line).",
+        "note": "Use the LEFT panel (lateral wrist). It shows the radius, carpus, and metacarpal bases in profile. Run the systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The lateral is your key view for carpal alignment (the radius–lunate–capitate line, three wrist bones that should stack in a straight line).",
         "markers": []
       },
       {
@@ -3875,7 +3875,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist",
         "title": "Alignment — radiolunate-capitate line",
-        "note": "Alignment step: on the lateral, draw a longitudinal (near-vertical) line through the centers of the radius, lunate, and capitate, parallel to the radial shaft — in neutral they stack colinearly. Loss of this line indicates DISI/VISI or a perilunate dislocation.",
+        "note": "Alignment step: on the lateral, draw a longitudinal (near-vertical) line through the centers of the radius, lunate, and capitate, parallel to the radial shaft — in neutral they stack colinearly. Loss of this line indicates DISI/VISI (dorsal/volar carpal-instability tilt patterns) or a perilunate dislocation (the carpus dislocated around the lunate).",
         "markers": [
           {
             "x": 26,
@@ -3887,7 +3887,7 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       {
         "imageKey": "normal:wrist",
         "title": "Bone — distal radius & carpal cortices",
-        "note": "Bone step: on the lateral, trace the distal radius dorsal and volar cortices and the dorsal carpal margins for a break or a dorsal/volar chip. The scaphoid overlaps heavily here and is best profiled — and any fracture best detected — on the PA and dedicated scaphoid views, not the lateral.",
+        "note": "Bone step: on the lateral, trace the distal radius dorsal and volar cortices and the dorsal carpal margins for a break or a dorsal/volar chip. The scaphoid overlaps heavily here and is best profiled — and any fracture best detected — on the PA (posteroanterior) and dedicated scaphoid views, not the lateral.",
         "markers": [
           {
             "x": 22,

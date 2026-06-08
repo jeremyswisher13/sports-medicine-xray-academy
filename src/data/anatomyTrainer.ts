@@ -82,7 +82,7 @@ const shoulder: ModuleTrainerData = {
       imageKey: 'normal:shoulder-grashey',
       markers: [{ x: 33, y: 13, label: 'Acromion' }],
       title: 'Acromion',
-      note: 'The flat lateral projection of the scapular spine forming the roof of the shoulder. The acromiohumeral interval beneath it should be ≥ 7 mm; a high-riding head means chronic cuff insufficiency.',
+      note: 'The flat lateral projection of the scapular spine forming the roof of the shoulder. The acromiohumeral interval (AHI, the gap between acromion and humeral head) beneath it should be ≥ 7 mm; a high-riding head means chronic cuff insufficiency.',
     },
     {
       imageKey: 'normal:shoulder-grashey',
@@ -94,7 +94,7 @@ const shoulder: ModuleTrainerData = {
       imageKey: 'normal:shoulder-grashey',
       markers: [{ x: 62, y: 22, label: 'Coracoid process' }],
       title: 'Coracoid process',
-      note: 'The anterior "hook" of the scapula, the anchor for the conjoint tendon and coracoclavicular ligaments. A useful landmark for grading AC injuries and the donor in a Latarjet.',
+      note: 'The anterior "hook" of the scapula, the anchor for the conjoint tendon and coracoclavicular ligaments. A useful landmark for grading AC injuries and the donor in a Latarjet (a coracoid bone-block stabilization for instability).',
     },
     {
       imageKey: 'normal:shoulder-y',
