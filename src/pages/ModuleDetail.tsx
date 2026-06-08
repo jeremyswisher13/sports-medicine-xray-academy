@@ -24,7 +24,7 @@ import { ModuleCompletionReward } from '../components/ModuleCompletionReward';
 import { Disclosure } from '../components/ui/Disclosure';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
-import { getTrainerForModule } from '../data/anatomyTrainer';
+import { getTrainerForModule, trainerKind, trainerLabels } from '../data/anatomyTrainer';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import {
   getDiagramsForModule,
@@ -151,20 +151,20 @@ export function ModuleDetailPage() {
     () => (module ? getTrainerForModule(module.id) : undefined),
     [module],
   );
-  const sections = useMemo(
-    () =>
-      trainer
-        ? [
-            { id: 'trainer', label: 'Normal anatomy' },
-            { id: 'read', label: 'How to read it' },
-            { id: 'views', label: 'Views' },
-            { id: 'images', label: "Pathology & can't-miss" },
-            { id: 'practice', label: 'Practice' },
-            { id: 'finish', label: 'Recap & check' },
-          ]
-        : MODULE_SECTIONS,
-    [trainer],
-  );
+  const sections = useMemo(() => {
+    if (!trainer || !module) return MODULE_SECTIONS;
+    const kind = trainerKind(module.id);
+    const trainerLabel =
+      kind === 'finding' ? "Can't-miss" : kind === 'systematic' ? 'Systematic read' : 'Normal anatomy';
+    return [
+      { id: 'trainer', label: trainerLabel },
+      { id: 'read', label: 'How to read it' },
+      { id: 'views', label: 'Views' },
+      { id: 'images', label: "Pathology & can't-miss" },
+      { id: 'practice', label: 'Practice' },
+      { id: 'finish', label: 'Recap & check' },
+    ];
+  }, [trainer, module]);
 
   if (!module) {
     return (
@@ -381,7 +381,7 @@ export function ModuleDetailPage() {
 
             {trainer && (
               <section id="trainer" className="scroll-mt-[132px] space-y-4">
-                <SectionHeading n={1} title="Master the normal anatomy" />
+                <SectionHeading n={1} title={trainerLabels(module.id).section} />
                 <ModuleTrainer
                   moduleId={module.id}
                   data={trainer}

@@ -3,7 +3,7 @@ import { AnatomyGuidedTour } from './AnatomyGuidedTour';
 import { AnatomyKnowledgeCheck } from './AnatomyKnowledgeCheck';
 import { MarkerAdjuster } from './MarkerAdjuster';
 import { Icon, type IconName } from '../ui/Icon';
-import type { ModuleTrainerData } from '../../data/anatomyTrainer';
+import { trainerLabels, type ModuleTrainerData } from '../../data/anatomyTrainer';
 
 type Mode = 'learn' | 'test' | 'adjust';
 
@@ -18,9 +18,10 @@ interface Props {
 // structures, then get tested by identifying markers on the films.
 export function ModuleTrainer({ moduleId, data, isAdmin = false, onCheckComplete }: Props) {
   const [mode, setMode] = useState<Mode>('learn');
+  const labels = trainerLabels(moduleId);
 
   const tabs: { id: Mode; label: string; icon: IconName; admin?: boolean }[] = [
-    { id: 'learn', label: 'Learn the normal', icon: 'book-open' },
+    { id: 'learn', label: labels.learnTab, icon: 'book-open' },
     { id: 'test', label: 'Test yourself', icon: 'clipboard' },
     { id: 'adjust', label: 'Adjust markers', icon: 'image', admin: true },
   ];
@@ -53,19 +54,14 @@ export function ModuleTrainer({ moduleId, data, isAdmin = false, onCheckComplete
 
       {mode === 'learn' && (
         <div className="animate-fade-in">
-          <p className="mb-3 text-sm text-slate-600">
-            Walk each labeled structure on the normal film. Master normal first — pathology is
-            just a deviation from what you see here.
-          </p>
+          <p className="mb-3 text-sm text-slate-600">{labels.learnIntro}</p>
           <AnatomyGuidedTour steps={data.tour} />
         </div>
       )}
 
       {mode === 'test' && (
         <div className="animate-fade-in">
-          <p className="mb-3 text-sm text-slate-600">
-            A marker lands on the film — name the structure. No labels this time.
-          </p>
+          <p className="mb-3 text-sm text-slate-600">{labels.testIntro}</p>
           <AnatomyKnowledgeCheck items={data.check} onComplete={onCheckComplete} />
         </div>
       )}

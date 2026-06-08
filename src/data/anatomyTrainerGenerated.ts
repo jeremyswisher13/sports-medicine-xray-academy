@@ -3211,5 +3211,895 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
         "explanation": "The growth plate just above the lateral malleolus is the distal fibular physis, the classic site of Salter-Harris I injury after an inversion sprain."
       }
     ]
+  },
+  "do-not-miss": {
+    "tour": [
+      {
+        "imageKey": "shoulder:posterior-dislocation",
+        "title": "Posterior shoulder dislocation — light bulb sign",
+        "note": "The humeral head is locked in fixed internal rotation, so it appears symmetric and rounded like a light bulb on the AP (left panel). Posterior dislocations follow seizures or electrocution and are missed in over half of cases on the AP alone — confirm with an axillary or scapular Y view and arrange reduction.",
+        "markers": [
+          {
+            "x": 31,
+            "y": 49,
+            "label": "Light bulb sign — internally rotated humeral head"
+          }
+        ]
+      },
+      {
+        "imageKey": "shoulder:posterior-dislocation-y-view",
+        "title": "Posterior shoulder dislocation — orthogonal confirmation",
+        "note": "This orthogonal projection confirms the malposition only hinted at on the single AP: the humeral head no longer sits congruently in the glenoid. An orthogonal view (axillary or scapular Y) is mandatory to prove or exclude a posterior dislocation, because the head can look deceptively normal on one plane. Reduce and obtain post-reduction films.",
+        "markers": [
+          {
+            "x": 20,
+            "y": 44,
+            "label": "Humeral head incongruent with glenoid"
+          }
+        ]
+      },
+      {
+        "imageKey": "shoulder:ac-separation-grade-iii",
+        "title": "Grade III AC separation — widened coracoclavicular distance",
+        "note": "The distal clavicle rides high relative to the acromion with an increased coracoclavicular distance, indicating complete tearing of both AC and CC ligaments. Grade III separations in overhead and contact athletes change management toward sling immobilization and orthopedic discussion of operative options.",
+        "markers": [
+          {
+            "x": 65,
+            "y": 22,
+            "label": "Elevated distal clavicle / widened CC distance"
+          }
+        ]
+      },
+      {
+        "imageKey": "shoulder:hill-sachs",
+        "title": "Hill-Sachs lesion — post-reduction defect",
+        "note": "This wedge-shaped flattening of the posterosuperolateral humeral head is an impaction fracture from the glenoid rim during anterior dislocation. A large Hill-Sachs lesion predicts recurrent instability and is a clue a dislocation occurred — pair it with a Bankart search and consider MRI before return to sport.",
+        "markers": [
+          {
+            "x": 62,
+            "y": 26,
+            "label": "Hill-Sachs impaction defect"
+          }
+        ]
+      },
+      {
+        "imageKey": "elbow:fat-pad-sign",
+        "title": "Posterior fat pad sign — occult radial head/supracondylar fracture",
+        "note": "The lucent triangle lifted off the posterior distal humerus (right-hand arrow) is the posterior fat pad sign, which is never normal and signals a joint effusion (hemarthrosis). In adults it implies an occult radial head fracture, in children a supracondylar fracture — treat as a fracture, splint, and repeat films even when no line is seen.",
+        "markers": [
+          {
+            "x": 63,
+            "y": 46,
+            "label": "Posterior fat pad elevated by effusion"
+          }
+        ]
+      },
+      {
+        "imageKey": "elbow:medial-epicondyle-avulsion",
+        "title": "Medial epicondyle avulsion — adolescent thrower",
+        "note": "The medial epicondyle apophysis (lower-left radiograph) has been avulsed by the flexor-pronator/UCL traction (\"little league elbow\"). The danger is entrapment of the displaced fragment within the joint, which can be mistaken for the trochlear ossification center — confirm displacement and refer, as significant displacement is operative.",
+        "markers": [
+          {
+            "x": 20,
+            "y": 71,
+            "label": "Avulsed medial epicondyle fragment"
+          }
+        ]
+      },
+      {
+        "imageKey": "wrist:perilunate-dislocation",
+        "title": "Perilunate dislocation — disrupted Gilula arcs",
+        "note": "The lunate (outlined) loses its normal alignment so the three smooth Gilula arcs are broken and the capitate no longer sits in the lunate cup. This high-energy FOOSH injury carries median nerve risk and demands urgent reduction and hand-surgery referral, not just splinting.",
+        "markers": [
+          {
+            "x": 33,
+            "y": 50,
+            "label": "Malaligned lunate — broken Gilula arc"
+          }
+        ]
+      },
+      {
+        "imageKey": "wrist:scaphoid-waist-fracture",
+        "title": "Scaphoid waist fracture — PA wrist",
+        "note": "A subtle lucent line crosses the waist of the scaphoid. Because the scaphoid's blood supply enters distally, proximal-pole and waist fractures risk avascular necrosis and nonunion — any snuffbox tenderness warrants thumb-spica immobilization and repeat films or MRI even if the initial film looks normal.",
+        "markers": [
+          {
+            "x": 40,
+            "y": 35,
+            "label": "Lucent fracture line at scaphoid waist"
+          }
+        ]
+      },
+      {
+        "imageKey": "hip:scfe",
+        "title": "SCFE — Klein line fails to intersect the epiphysis",
+        "note": "On this coned-down hip the capital femoral epiphysis slips medially and posteriorly, so a line drawn along the lateral femoral neck (Klein line, sketched below) fails to intersect the epiphysis it should clip. SCFE in an adolescent is an emergency — make the patient non-weightbearing and obtain emergent orthopedic referral to prevent AVN.",
+        "markers": [
+          {
+            "x": 47,
+            "y": 30,
+            "label": "Slipped capital femoral epiphysis (Klein line fails)"
+          }
+        ]
+      },
+      {
+        "imageKey": "hip:scfe-frog-leg",
+        "title": "SCFE — frog-leg lateral",
+        "note": "The frog-leg lateral shows the epiphysis slipping off the metaphysis like ice cream off a cone, confirming the slip suspected on the AP. This orthogonal view detects subtle (pre-slip) cases — keep the patient non-weightbearing and refer emergently for in-situ fixation.",
+        "markers": [
+          {
+            "x": 42,
+            "y": 30,
+            "label": "Epiphysis slipping posteromedially off metaphysis"
+          }
+        ]
+      },
+      {
+        "imageKey": "hip:femoral-neck-stress-fracture",
+        "title": "Femoral neck stress fracture — subtle",
+        "note": "A faint sclerotic/lucent line crosses the inferomedial (compression-side) femoral neck (arrow) in a runner with progressive groin pain. Tension-side fractures can complete catastrophically with displacement, so suspicion plus normal-looking films should trigger protected weightbearing and urgent MRI.",
+        "markers": [
+          {
+            "x": 53,
+            "y": 70,
+            "label": "Stress fracture line — inferomedial femoral neck"
+          }
+        ]
+      },
+      {
+        "imageKey": "hip:fai-cam-morphology",
+        "title": "Cam morphology (FAI) — aspherical head-neck junction",
+        "note": "The right femoral head-neck junction loses its normal concave waist, producing a convex \"bump\" (pistol-grip deformity) that abuts the acetabular rim in flexion. This cam morphology causes femoroacetabular impingement and labral/chondral injury in young athletes with groin pain — confirm with a Dunn view and MRI if symptomatic.",
+        "markers": [
+          {
+            "x": 18,
+            "y": 58,
+            "label": "Cam bump — aspherical head-neck junction"
+          }
+        ]
+      },
+      {
+        "imageKey": "knee:segond-fracture",
+        "title": "Segond fracture — lateral tibial avulsion",
+        "note": "The small vertical cortical fleck (outlined) avulsed off the lateral tibial plateau is a Segond fracture. It is a near-pathognomonic marker of an ACL tear (and often meniscal injury) in a pivot-shift mechanism — the bony fragment is trivial but the soft-tissue implication is large, so order an MRI.",
+        "markers": [
+          {
+            "x": 83,
+            "y": 58,
+            "label": "Lateral tibial cortical avulsion (Segond)"
+          }
+        ]
+      },
+      {
+        "imageKey": "knee:tibial-plateau-fracture",
+        "title": "Tibial plateau fracture — articular depression",
+        "note": "There is subtle articular depression and a lucent line through the tibial plateau at the arrow. Even minor depression alters the operative plan, so an effusion with an axial-load mechanism warrants CT for fragment and depression assessment plus orthopedic consultation.",
+        "markers": [
+          {
+            "x": 48,
+            "y": 54,
+            "label": "Depressed tibial plateau (arrow)"
+          }
+        ]
+      },
+      {
+        "imageKey": "knee:bipartite-patella",
+        "title": "Bipartite patella — NORMAL VARIANT (do not call a fracture)",
+        "note": "The separate ossicle at the superolateral corner of the patella (skyline view, right panel) with smooth, corticated, rounded margins is a bipartite patella, a developmental variant — not an acute fracture. Acute fractures have sharp non-corticated edges that fit back together; recognizing this variant prevents unnecessary immobilization, though it can rarely become symptomatic.",
+        "markers": [
+          {
+            "x": 87,
+            "y": 24,
+            "label": "Corticated superolateral ossicle (normal variant)"
+          }
+        ]
+      },
+      {
+        "imageKey": "foot:lisfranc-injury",
+        "title": "Lisfranc injury — tarsometatarsal diastasis",
+        "note": "There is widening between the bases of the first and second metatarsals (loss of the normal medial-cuneiform/second-metatarsal alignment), at the arrow. Midfoot diastasis with plantar ecchymosis indicates a Lisfranc ligament injury that destabilizes the foot — obtain weightbearing films or CT and refer, as instability is operative.",
+        "markers": [
+          {
+            "x": 50,
+            "y": 54,
+            "label": "1st–2nd metatarsal base diastasis"
+          }
+        ]
+      },
+      {
+        "imageKey": "foot:jones-fracture",
+        "title": "Jones fracture — 5th metatarsal metaphyseal-diaphyseal junction",
+        "note": "A transverse fracture at the metaphyseal-diaphyseal junction of the fifth metatarsal — just distal to the tuberosity at the proximal lateral foot — is a true Jones fracture, which sits in a watershed blood-supply zone with high nonunion risk. Unlike a proximal avulsion (tuberosity), this zone matters: place in a non-weightbearing CAM boot and refer to orthopedics for possible operative fixation in athletes.",
+        "markers": [
+          {
+            "x": 78,
+            "y": 55,
+            "label": "Fracture at 5th MT metaphyseal-diaphyseal junction"
+          }
+        ]
+      },
+      {
+        "imageKey": "ankle:talar-dome-ocd",
+        "title": "Talar dome osteochondral lesion — medial dome",
+        "note": "The medial corner of the talar dome (toward the medial malleolus) shows a lucent osteochondral defect with subchondral irregularity. Persistent pain, catching, or clicking weeks after an ankle \"sprain\" is the classic presentation — obtain MRI to stage the osteochondral lesion and guide orthopedic management.",
+        "markers": [
+          {
+            "x": 30,
+            "y": 53,
+            "label": "Osteochondral lesion of medial talar dome"
+          }
+        ]
+      },
+      {
+        "imageKey": "ankle:mortise-widening",
+        "title": "Mortise widening — deltoid ligament tear",
+        "note": "The medial clear space between the medial malleolus and talus is widened, indicating a deltoid ligament tear and an unstable mortise (often with a high fibular or syndesmotic injury). Medial widening signals instability that x-rays may only show under stress or weightbearing — treat as unstable and refer, since it frequently needs fixation.",
+        "markers": [
+          {
+            "x": 50,
+            "y": 45,
+            "label": "Widened medial clear space (deltoid tear)"
+          }
+        ]
+      },
+      {
+        "imageKey": "pediatric:salter-harris-ii-distal-radius",
+        "title": "Salter-Harris II — distal radius (Thurston-Holland fragment)",
+        "note": "The fracture runs through the distal radial physis and exits through a triangular metaphyseal corner — the Thurston-Holland fragment — which defines a Salter-Harris type II injury. Recognizing growth-plate involvement matters for reduction adequacy and growth-arrest counseling; reduce, immobilize, and arrange orthopedic follow-up.",
+        "markers": [
+          {
+            "x": 40,
+            "y": 51,
+            "label": "Thurston-Holland metaphyseal fragment (SH II)"
+          }
+        ]
+      }
+    ],
+    "check": [
+      {
+        "id": "dnm-ck-1",
+        "imageKey": "shoulder:posterior-dislocation",
+        "marker": {
+          "x": 31,
+          "y": 49
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Posterior shoulder dislocation (light bulb sign)",
+          "Anterior shoulder dislocation",
+          "Grade III AC separation",
+          "Greater tuberosity fracture"
+        ],
+        "answer": 0,
+        "explanation": "The fixed internally rotated, rounded \"light bulb\" humeral head on the AP is the hallmark of posterior dislocation."
+      },
+      {
+        "id": "dnm-ck-2",
+        "imageKey": "knee:segond-fracture",
+        "marker": {
+          "x": 83,
+          "y": 58
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Tibial plateau depression fracture",
+          "Segond fracture (lateral tibial avulsion)",
+          "Bipartite patella",
+          "Fibular head fracture"
+        ],
+        "answer": 1,
+        "explanation": "A vertical cortical fleck off the lateral tibial plateau is a Segond fracture, strongly associated with ACL tear."
+      },
+      {
+        "id": "dnm-ck-3",
+        "imageKey": "wrist:scaphoid-waist-fracture",
+        "marker": {
+          "x": 40,
+          "y": 35
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Perilunate dislocation",
+          "Distal radius fracture",
+          "Scaphoid waist fracture",
+          "Triquetral avulsion"
+        ],
+        "answer": 2,
+        "explanation": "A lucent line through the scaphoid waist risks AVN/nonunion given the distal-to-proximal blood supply."
+      },
+      {
+        "id": "dnm-ck-4",
+        "imageKey": "hip:scfe",
+        "marker": {
+          "x": 47,
+          "y": 30
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Femoral neck stress fracture",
+          "Cam morphology (FAI)",
+          "Legg-Calvé-Perthes disease",
+          "Slipped capital femoral epiphysis (SCFE)"
+        ],
+        "answer": 3,
+        "explanation": "The epiphysis slips medially so Klein's line fails to intersect it — SCFE, an orthopedic emergency."
+      },
+      {
+        "id": "dnm-ck-5",
+        "imageKey": "foot:lisfranc-injury",
+        "marker": {
+          "x": 50,
+          "y": 54
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Lisfranc injury (tarsometatarsal diastasis)",
+          "Jones fracture",
+          "Talar dome osteochondral lesion",
+          "Navicular stress fracture"
+        ],
+        "answer": 0,
+        "explanation": "Widening between the first and second metatarsal bases indicates Lisfranc ligamentous injury and midfoot instability."
+      },
+      {
+        "id": "dnm-ck-6",
+        "imageKey": "elbow:fat-pad-sign",
+        "marker": {
+          "x": 63,
+          "y": 46
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Olecranon bursitis",
+          "Posterior fat pad sign (occult fracture)",
+          "Medial epicondyle avulsion",
+          "Radial head dislocation"
+        ],
+        "answer": 1,
+        "explanation": "An elevated posterior fat pad is never normal and signals a joint effusion from an occult radial head or supracondylar fracture."
+      },
+      {
+        "id": "dnm-ck-7",
+        "imageKey": "knee:bipartite-patella",
+        "marker": {
+          "x": 87,
+          "y": 24
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Acute patellar fracture",
+          "Patellar dislocation",
+          "Bipartite patella (normal variant)",
+          "Osgood-Schlatter ossicle"
+        ],
+        "answer": 2,
+        "explanation": "A smooth, corticated, rounded ossicle at the superolateral patella is a developmental bipartite patella — not an acute fracture."
+      },
+      {
+        "id": "dnm-ck-8",
+        "imageKey": "foot:jones-fracture",
+        "marker": {
+          "x": 78,
+          "y": 55
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Fifth metatarsal tuberosity avulsion",
+          "Lisfranc injury",
+          "Cuboid fracture",
+          "Jones fracture (metaphyseal-diaphyseal junction)"
+        ],
+        "answer": 3,
+        "explanation": "A transverse fracture at the metaphyseal-diaphyseal junction of the 5th metatarsal is a Jones fracture with high nonunion risk."
+      },
+      {
+        "id": "dnm-ck-9",
+        "imageKey": "wrist:perilunate-dislocation",
+        "marker": {
+          "x": 33,
+          "y": 50
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Perilunate dislocation (disrupted Gilula arcs)",
+          "Scaphoid waist fracture",
+          "Salter-Harris II distal radius",
+          "Triangular fibrocartilage tear"
+        ],
+        "answer": 0,
+        "explanation": "Loss of the lunate's normal alignment breaks the Gilula arcs, indicating perilunate dislocation requiring urgent reduction."
+      },
+      {
+        "id": "dnm-ck-10",
+        "imageKey": "hip:femoral-neck-stress-fracture",
+        "marker": {
+          "x": 53,
+          "y": 70
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Slipped capital femoral epiphysis",
+          "Femoral neck stress fracture",
+          "Cam morphology (FAI)",
+          "Avascular necrosis of the femoral head"
+        ],
+        "answer": 1,
+        "explanation": "A subtle line along the inferomedial femoral neck in a runner is a stress fracture that can complete catastrophically."
+      },
+      {
+        "id": "dnm-ck-11",
+        "imageKey": "ankle:talar-dome-ocd",
+        "marker": {
+          "x": 30,
+          "y": 53
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Mortise widening from deltoid tear",
+          "Lateral malleolus fracture",
+          "Os trigonum",
+          "Talar dome osteochondral lesion"
+        ],
+        "answer": 3,
+        "explanation": "A lucent osteochondral defect of the medial talar dome explains persistent pain after an ankle sprain."
+      },
+      {
+        "id": "dnm-ck-12",
+        "imageKey": "pediatric:salter-harris-ii-distal-radius",
+        "marker": {
+          "x": 40,
+          "y": 51
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Torus (buckle) fracture",
+          "Salter-Harris II distal radius (Thurston-Holland fragment)",
+          "Scaphoid waist fracture",
+          "Galeazzi fracture-dislocation"
+        ],
+        "answer": 1,
+        "explanation": "A physeal fracture exiting through a triangular metaphyseal corner (Thurston-Holland fragment) defines Salter-Harris type II."
+      }
+    ]
+  },
+  "xray-foundations": {
+    "tour": [
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Orient: Normal knee — lateral",
+        "note": "This is a true lateral knee. Before assessing anything, name the film and run the systematic read in a fixed order on every study: Confirm (adequacy) → Alignment → Bone → Cartilage → Soft Tissues. The lateral view is your best look at the patella, the suprapatellar pouch (effusion), and the posterior cortices.",
+        "markers": []
+      },
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Confirm — adequacy & framing",
+        "note": "Confirm step: verify the whole bone-and-joint of interest is captured with diagnostic exposure. On a lateral knee, the distal femur, patella, and proximal tibia/fibula must all be included and the femoral condyles should overlap (true lateral).",
+        "markers": [
+          {
+            "x": 50,
+            "y": 48,
+            "label": "Confirm/adequacy — distal femur, patella, and proximal tibia all included on a well-exposed true lateral"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Alignment — trace the joint relationship",
+        "note": "Alignment step: assess joint congruity and the long-bone axis. Trace the smooth arc of the femoral condyle onto the tibial plateau and confirm the patella sits anterior to the trochlea without dislocation.",
+        "markers": [
+          {
+            "x": 54,
+            "y": 50,
+            "label": "Alignment — congruent femorotibial joint; patella anterior, no subluxation"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Bone — scan every cortex",
+        "note": "Bone step: follow the unbroken white cortical line around each bone and inspect the trabeculae for a step-off, buckle, lucent line, or avulsion. Scan the patella, distal femur, and proximal tibia in turn.",
+        "markers": [
+          {
+            "x": 18,
+            "y": 40,
+            "label": "Bone/cortex — trace the continuous patellar and femoral cortices for step-off or buckle"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Cartilage — the tibiofemoral joint space",
+        "note": "Cartilage & joint space step: the lucent gap between femoral condyle and tibial plateau reflects articular cartilage. Check it is preserved and symmetric, with no narrowing, osteophytes, or subchondral sclerosis.",
+        "markers": [
+          {
+            "x": 52,
+            "y": 52,
+            "label": "Cartilage/joint space — tibiofemoral gap preserved, no narrowing or osteophytes"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-lateral",
+        "title": "Soft Tissues — suprapatellar effusion zone",
+        "note": "Soft Tissues step: look behind the quadriceps tendon, above the patella, for the suprapatellar recess. A water-density stripe wider than ~5 mm here is a knee effusion — often the only clue to an occult fracture.",
+        "markers": [
+          {
+            "x": 30,
+            "y": 27,
+            "label": "Soft tissues — suprapatellar pouch: check for effusion / displaced fat planes"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Orient: Normal knee — AP",
+        "note": "This AP knee is the orthogonal partner to the lateral — pathology hides on a single projection. Run the same fixed order: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The AP is best for comparing medial vs lateral joint spaces and the tibial plateau.",
+        "markers": []
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Confirm — adequacy & rotation",
+        "note": "Confirm step: ensure the distal femur, both condyles, the tibial plateau, and the proximal fibula are all included, with the fibular head only slightly overlapped by the tibia (proper AP rotation).",
+        "markers": [
+          {
+            "x": 50,
+            "y": 55,
+            "label": "Confirm/adequacy — femur, plateau, and proximal fibula included; correct AP rotation"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Alignment — femorotibial axis",
+        "note": "Alignment step: confirm the femoral and tibial shaft axes line up and the condyles sit squarely on the plateau, with no varus/valgus shift or subluxation.",
+        "markers": [
+          {
+            "x": 50,
+            "y": 50,
+            "label": "Alignment — condyles centered on the plateau, normal femorotibial axis"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Bone — tibial plateau & condyles",
+        "note": "Bone step: trace the cortices of the femoral condyles, the dense subchondral line of the tibial plateau, and the metaphyseal trabeculae for any depression, lucency, or fracture line.",
+        "markers": [
+          {
+            "x": 40,
+            "y": 62,
+            "label": "Bone/cortex — scan tibial plateau and condylar cortices for depression or fracture line"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Cartilage — medial & lateral joint spaces",
+        "note": "Cartilage & joint space step: compare the medial and lateral femorotibial compartments. They should be roughly symmetric; asymmetric narrowing suggests cartilage loss (best confirmed on weightbearing views).",
+        "markers": [
+          {
+            "x": 62,
+            "y": 58,
+            "label": "Cartilage/joint space — compare lateral vs medial compartment width for asymmetric narrowing"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:knee-ap",
+        "title": "Soft Tissues — peri-articular margins",
+        "note": "Soft Tissues step: scan the soft-tissue planes flanking the joint for focal swelling, calcification, or a radiodense foreign body that distorts the normal fat-muscle interface.",
+        "markers": [
+          {
+            "x": 22,
+            "y": 50,
+            "label": "Soft tissues — medial peri-articular planes: check for focal swelling or calcification"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Orient: Normal ankle — AP",
+        "note": "This AP ankle shows the distal tibia, fibula, and talus forming the mortise. Apply the same systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The medial clear space and mortise symmetry are the high-yield targets here.",
+        "markers": []
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Confirm — adequacy & coverage",
+        "note": "Confirm step: the distal tibia and fibula, both malleoli, the talar dome, and the proximal foot should all be captured with diagnostic exposure before you assess pathology.",
+        "markers": [
+          {
+            "x": 48,
+            "y": 62,
+            "label": "Confirm/adequacy — distal tibia, fibula, both malleoli, and talar dome all included"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Alignment — the mortise",
+        "note": "Alignment step: confirm the talus sits squarely under the tibial plafond with a congruent, uniform mortise and no talar shift or syndesmotic widening.",
+        "markers": [
+          {
+            "x": 48,
+            "y": 72,
+            "label": "Alignment — talus congruent under the plafond; symmetric mortise, no talar shift"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Bone — lateral malleolus & distal tibia",
+        "note": "Bone step: trace the cortex of the fibula down to the tip of the lateral malleolus, then the distal tibia and medial malleolus, looking for any break — a classic site of ankle fracture.",
+        "markers": [
+          {
+            "x": 72,
+            "y": 72,
+            "label": "Bone/cortex — follow the fibular cortex to the lateral malleolus tip for a fracture"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Cartilage — joint space & medial clear space",
+        "note": "Cartilage & joint space step: the lucent gap over the talar dome and the medial clear space (between medial malleolus and talus) should be uniform; widening suggests ligamentous injury or cartilage loss.",
+        "markers": [
+          {
+            "x": 40,
+            "y": 74,
+            "label": "Cartilage/joint space — uniform talar dome space and medial clear space"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:ankle-ap",
+        "title": "Soft Tissues — peri-malleolar swelling",
+        "note": "Soft Tissues step: check the soft-tissue shadow around the malleoli for focal swelling, which after trauma localizes injury and can be the only clue to an occult fracture.",
+        "markers": [
+          {
+            "x": 80,
+            "y": 78,
+            "label": "Soft tissues — peri-malleolar planes: look for focal swelling over the injured side"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Orient: Normal wrist — lateral",
+        "note": "Use the LEFT panel (lateral wrist). It shows the radius, carpus, and metacarpal bases in profile. Run the systematic read: Confirm → Alignment → Bone → Cartilage → Soft Tissues. The lateral is your key view for carpal alignment (the radius–lunate–capitate line).",
+        "markers": []
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Confirm — adequacy & view",
+        "note": "Confirm step: verify this is a true lateral with the distal radius, the full carpus, and the metacarpal bases all included before assessing alignment.",
+        "markers": [
+          {
+            "x": 25,
+            "y": 45,
+            "label": "Confirm/adequacy — distal radius, carpus, and metacarpal bases included on a true lateral"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Alignment — radiolunate-capitate line",
+        "note": "Alignment step: on the lateral, the radius, lunate, and capitate should stack in a colinear arc. Loss of this line indicates DISI/VISI or a perilunate dislocation.",
+        "markers": [
+          {
+            "x": 26,
+            "y": 42,
+            "label": "Alignment — radius–lunate–capitate should be colinear; the dotted line marks this axis"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Bone — distal radius & carpal cortices",
+        "note": "Bone step: trace the cortex of the distal radius and each carpal bone, hunting for the subtle cortical break of a distal radius or scaphoid fracture.",
+        "markers": [
+          {
+            "x": 22,
+            "y": 60,
+            "label": "Bone/cortex — trace distal radius and carpal cortices for a fracture line"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Cartilage — radiocarpal joint space",
+        "note": "Cartilage & joint space step: the radiocarpal joint space between the distal radius and the proximal carpal row should be smooth and uniform, without narrowing or sclerosis.",
+        "markers": [
+          {
+            "x": 24,
+            "y": 51,
+            "label": "Cartilage/joint space — uniform radiocarpal space, no narrowing"
+          }
+        ]
+      },
+      {
+        "imageKey": "normal:wrist",
+        "title": "Soft Tissues — volar wrist planes",
+        "note": "Soft Tissues step: inspect the soft-tissue stripes along the volar (palmar) and dorsal radius; bulging or obliteration of these fat planes can signal an occult fracture or effusion.",
+        "markers": [
+          {
+            "x": 15,
+            "y": 60,
+            "label": "Soft tissues — volar wrist fat planes: check for swelling that hints at occult fracture"
+          }
+        ]
+      }
+    ],
+    "check": [
+      {
+        "id": "fnd-ck-1",
+        "imageKey": "normal:knee-lateral",
+        "marker": {
+          "x": 30,
+          "y": 27
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Confirm",
+          "Alignment",
+          "Cartilage",
+          "Soft Tissues"
+        ],
+        "answer": 3,
+        "explanation": "This is the suprapatellar pouch above the patella, where you look for a joint effusion — part of the Soft Tissues step."
+      },
+      {
+        "id": "fnd-ck-2",
+        "imageKey": "normal:knee-lateral",
+        "marker": {
+          "x": 52,
+          "y": 52
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Bone",
+          "Cartilage",
+          "Soft Tissues",
+          "Confirm"
+        ],
+        "answer": 1,
+        "explanation": "The lucent gap between femoral condyle and tibial plateau is the joint space, assessed in the Cartilage step."
+      },
+      {
+        "id": "fnd-ck-3",
+        "imageKey": "normal:knee-ap",
+        "marker": {
+          "x": 40,
+          "y": 62
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Alignment",
+          "Soft Tissues",
+          "Bone",
+          "Cartilage"
+        ],
+        "answer": 2,
+        "explanation": "Tracing the cortex and subchondral line of the tibial plateau for a fracture or depression is the Bone step."
+      },
+      {
+        "id": "fnd-ck-4",
+        "imageKey": "normal:knee-ap",
+        "marker": {
+          "x": 62,
+          "y": 58
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Cartilage",
+          "Confirm",
+          "Bone",
+          "Soft Tissues"
+        ],
+        "answer": 0,
+        "explanation": "Comparing the medial and lateral femorotibial joint-space widths for narrowing is the Cartilage step."
+      },
+      {
+        "id": "fnd-ck-5",
+        "imageKey": "normal:ankle-ap",
+        "marker": {
+          "x": 48,
+          "y": 72
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Bone",
+          "Alignment",
+          "Soft Tissues",
+          "Cartilage"
+        ],
+        "answer": 1,
+        "explanation": "Checking that the talus sits congruently within a symmetric mortise under the plafond is the Alignment step."
+      },
+      {
+        "id": "fnd-ck-6",
+        "imageKey": "normal:ankle-ap",
+        "marker": {
+          "x": 72,
+          "y": 72
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Cartilage",
+          "Soft Tissues",
+          "Confirm",
+          "Bone"
+        ],
+        "answer": 3,
+        "explanation": "Following the fibular cortex to the lateral malleolus tip for a break is the Bone step."
+      },
+      {
+        "id": "fnd-ck-7",
+        "imageKey": "normal:ankle-ap",
+        "marker": {
+          "x": 40,
+          "y": 74
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Cartilage",
+          "Alignment",
+          "Bone",
+          "Confirm"
+        ],
+        "answer": 0,
+        "explanation": "Assessing the talar-dome joint space and the medial clear space for uniform width is the Cartilage step."
+      },
+      {
+        "id": "fnd-ck-8",
+        "imageKey": "normal:wrist",
+        "marker": {
+          "x": 26,
+          "y": 42
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Soft Tissues",
+          "Alignment",
+          "Bone",
+          "Cartilage"
+        ],
+        "answer": 1,
+        "explanation": "Confirming the radius–lunate–capitate line is colinear (the dotted axis) is the Alignment step."
+      },
+      {
+        "id": "fnd-ck-9",
+        "imageKey": "normal:wrist",
+        "marker": {
+          "x": 15,
+          "y": 60
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Bone",
+          "Cartilage",
+          "Soft Tissues",
+          "Confirm"
+        ],
+        "answer": 2,
+        "explanation": "Inspecting the volar wrist fat planes for swelling that hints at an occult fracture is the Soft Tissues step."
+      },
+      {
+        "id": "fnd-ck-10",
+        "imageKey": "normal:knee-ap",
+        "marker": {
+          "x": 50,
+          "y": 15
+        },
+        "prompt": "Which systematic-read step are you performing at this marker?",
+        "options": [
+          "Confirm",
+          "Cartilage",
+          "Soft Tissues",
+          "Bone"
+        ],
+        "answer": 0,
+        "explanation": "Verifying the distal femur is fully included with diagnostic exposure before assessing pathology is the Confirm (adequacy) step."
+      }
+    ]
   }
 };

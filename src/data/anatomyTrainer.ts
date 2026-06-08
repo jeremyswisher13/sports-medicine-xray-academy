@@ -198,3 +198,49 @@ export const moduleTrainers: Record<string, ModuleTrainerData> = {
 export function getTrainerForModule(moduleId: string): ModuleTrainerData | undefined {
   return moduleTrainers[moduleId];
 }
+
+export type TrainerKind = 'anatomy' | 'finding' | 'systematic';
+
+export function trainerKind(moduleId: string): TrainerKind {
+  if (moduleId === 'do-not-miss') return 'finding';
+  if (moduleId === 'xray-foundations') return 'systematic';
+  return 'anatomy';
+}
+
+export interface TrainerLabels {
+  section: string;
+  learnTab: string;
+  learnIntro: string;
+  testIntro: string;
+}
+
+// Most modules teach normal anatomy; do-not-miss teaches finding recognition and
+// foundations teaches the systematic read, so the trainer's framing adapts.
+export function trainerLabels(moduleId: string): TrainerLabels {
+  switch (trainerKind(moduleId)) {
+    case 'finding':
+      return {
+        section: "Spot the can't-miss findings",
+        learnTab: 'Learn the findings',
+        learnIntro:
+          "Walk each can't-miss finding on a real abnormal film — what it is, why it's missed, and the next step.",
+        testIntro: 'A marker lands on an abnormal film — name the finding. No labels this time.',
+      };
+    case 'systematic':
+      return {
+        section: 'The systematic read',
+        learnTab: 'Learn the read',
+        learnIntro:
+          'Walk the systematic search pattern on real films — where you check each step, every time.',
+        testIntro: "A marker lands on a film — name which read step you're performing there.",
+      };
+    default:
+      return {
+        section: 'Master the normal anatomy',
+        learnTab: 'Learn the normal',
+        learnIntro:
+          'Walk each labeled structure on the normal film. Master normal first — pathology is just a deviation from what you see here.',
+        testIntro: 'A marker lands on the film — name the structure. No labels this time.',
+      };
+  }
+}
