@@ -3416,6 +3416,18 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
             "label": "Thurston-Holland metaphyseal fragment (SH II)"
           }
         ]
+      },
+      {
+        "imageKey": "ankle:mortise-widening",
+        "title": "Disrupted ankle mortise — trimalleolar fracture",
+        "note": "Always check the ankle mortise for symmetric clear spaces — the medial, superior, and lateral tibiotalar gaps should be roughly equal (~3-4 mm). Here both malleoli are fractured and the mortise is disrupted with an asymmetric/widened medial clear space and talar shift. Asymmetric clear spaces or talar shift mean an unstable ankle (deltoid/syndesmotic disruption) even when the fracture looks subtle — splint, keep non-weightbearing, and refer.",
+        "markers": [
+          {
+            "x": 33,
+            "y": 64,
+            "label": "Widened/asymmetric medial clear space"
+          }
+        ]
       }
     ],
     "check": [
@@ -3622,6 +3634,23 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
         ],
         "answer": 1,
         "explanation": "A physeal fracture exiting through a triangular metaphyseal corner (Thurston-Holland fragment) defines Salter-Harris type II."
+      },
+      {
+        "id": "dnm-ck-13",
+        "imageKey": "ankle:mortise-widening",
+        "marker": {
+          "x": 33,
+          "y": 64
+        },
+        "prompt": "What is the marked finding?",
+        "options": [
+          "Disrupted ankle mortise (widened medial clear space)",
+          "Normal symmetric ankle mortise",
+          "Os trigonum",
+          "Isolated calcaneal fracture"
+        ],
+        "answer": 0,
+        "explanation": "Loss of the normal symmetric tibiotalar clear spaces — a widened medial clear space with talar shift — signals an unstable mortise from deltoid/syndesmotic disruption or malleolar fracture."
       }
     ]
   },

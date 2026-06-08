@@ -366,6 +366,20 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     moduleId: 'ankle-foot',
   },
 
+  'ankle:mortise-widening': {
+    id: 'ankle-mortise-widening',
+    src: '/uploads/ankle-mortise-widening.jpg',
+    alt:
+      'AP ankle radiograph showing a trimalleolar fracture with a disrupted ankle mortise — medial and lateral malleolar fractures and loss of the normal symmetric clear spaces',
+    view: 'AP',
+    caption: 'Disrupted ankle mortise — trimalleolar fracture (assess the clear spaces)',
+    source: 'Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Trimalleolar_Ankle_Fracture.jpg',
+    license: 'CC BY-SA 4.0',
+    attribution: 'Chaim Mintz, via Wikimedia Commons (cropped to the pre-operative AP)',
+    moduleId: 'ankle-foot',
+  },
+
   'hip:femoral-neck-stress-fracture': {
     id: 'hip-femoral-neck-stress-fracture',
     src: '/uploads/hip-femoral-neck-stress-fracture.jpg',
