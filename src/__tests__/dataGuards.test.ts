@@ -8,6 +8,7 @@ import { postCourseQuiz, preCourseQuiz } from '../data/quizzes';
 import { videoQuestions } from '../data/videoQuestions';
 import { videoResources } from '../data/videoResources';
 import { flashcards } from '../data/flashcards';
+import { moduleTrainers } from '../data/anatomyTrainer';
 import { hasCourseAssessment } from '../utils/progress';
 import { nextDueAt } from '../utils/flashcardSchedule';
 import type { ConfidenceRating, QuizQuestionData } from '../types';
@@ -122,6 +123,24 @@ describe('curriculum data guards', () => {
     expect(flashcards.length).toBeGreaterThan(0);
     for (const card of flashcards) {
       expect(moduleIdSet.has(card.moduleId), card.id).toBe(true);
+    }
+  });
+
+  it('keeps every anatomy-trainer marker on a real image with a valid answer', () => {
+    const entries = Object.entries(moduleTrainers);
+    expect(entries.length).toBeGreaterThan(0);
+    for (const [moduleId, data] of entries) {
+      expect(moduleIdSet.has(moduleId), moduleId).toBe(true);
+      expect(data.tour.length, `${moduleId} tour`).toBeGreaterThan(0);
+      expect(data.check.length, `${moduleId} check`).toBeGreaterThan(0);
+      for (const step of data.tour) {
+        expect(getImage(step.imageKey), `${moduleId} tour image ${step.imageKey}`).toBeDefined();
+      }
+      for (const q of data.check) {
+        expect(getImage(q.imageKey), `${moduleId} check image ${q.imageKey}`).toBeDefined();
+        expect(q.answer, q.id).toBeGreaterThanOrEqual(0);
+        expect(q.answer, q.id).toBeLessThan(q.options.length);
+      }
     }
   });
 
