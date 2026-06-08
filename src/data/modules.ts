@@ -550,7 +550,7 @@ const shoulder: ModuleContent = {
       amssmVideoId: 'amssm-shoulder-radiology',
       imagePanels: [
         { view: 'Special', imageKey: 'shoulder:posterior-dislocation' },
-        { view: 'Special', imageKey: 'shoulder:posterior-dislocation-y-view' },
+        { view: 'Special', imageKey: 'shoulder:posterior-dislocation-axillary' },
       ],
     },
   ],
@@ -2087,7 +2087,7 @@ const doNotMiss: ModuleContent = {
       amssmVideoId: 'amssm-shoulder-radiology',
       imagePanels: [
         { view: 'Special', imageKey: 'shoulder:posterior-dislocation' },
-        { view: 'Special', imageKey: 'shoulder:posterior-dislocation-y-view' },
+        { view: 'Special', imageKey: 'shoulder:posterior-dislocation-axillary' },
       ],
     },
     {

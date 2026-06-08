@@ -382,18 +382,18 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     moduleId: 'pelvis-hip',
   },
 
-  'shoulder:posterior-dislocation-y-view': {
-    id: 'shoulder-posterior-dislocation-y-view',
-    src: '/uploads/shoulder-posterior-dislocation-y-view.jpg',
+  'shoulder:posterior-dislocation-axillary': {
+    id: 'shoulder-posterior-dislocation-axillary',
+    src: '/uploads/shoulder-posterior-dislocation-axillary.jpg',
     alt:
-      'Two-view shoulder radiograph series including an orthogonal projection showing posterior shoulder dislocation',
+      'Axillary view of the shoulder showing the humeral head displaced posterior to the glenoid in posterior dislocation',
     view: 'Special',
-    caption: 'Posterior shoulder dislocation — orthogonal companion view',
+    caption: 'Posterior shoulder dislocation — axillary view (orthogonal confirmation)',
     source: 'Wikimedia Commons',
     sourceUrl:
-      'https://commons.wikimedia.org/wiki/File:Typische_hintere_Schulterluxation_43M_-_CR_-_001.jpg',
+      'https://commons.wikimedia.org/wiki/File:AxillaryViewPostDislocation.jpg',
     license: 'CC BY-SA 4.0',
-    attribution: 'Hellerhoff, via Wikimedia Commons',
+    attribution: 'James Heilman, MD (Doc James), via Wikimedia Commons',
     moduleId: 'shoulder',
   },
 
@@ -888,21 +888,6 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
   },
 
   // ── Pathology: ankle mortise widening (deltoid tear) ────────────────────
-  'ankle:mortise-widening': {
-    id: 'ankle-mortise-widening',
-    src: '/uploads/ankle-mortise-widening-deltoid-tear.jpg',
-    alt:
-      'Stress view of the ankle showing widened medial clear space consistent with deltoid ligament tear',
-    view: 'Special',
-    caption: 'Mortise widening — stress view, deltoid ligament tear',
-    source: 'Wikimedia Commons (originally Radiopaedia)',
-    sourceUrl:
-      'https://commons.wikimedia.org/wiki/File:Stress-view-of-ankle-with-deltoid-ligament-tear.jpg',
-    license: 'CC BY-SA 4.0',
-    attribution:
-      'Case courtesy of Dr Maulik S Patel, Radiopaedia.org, rID: 16344, via Wikimedia Commons',
-    moduleId: 'ankle-foot',
-  },
 };
 
 export function getImage(key: string): XRayImageEntry | undefined {
