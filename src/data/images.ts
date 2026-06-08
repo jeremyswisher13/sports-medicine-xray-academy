@@ -555,6 +555,20 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     moduleId: 'pelvis-hip',
     isNormal: true,
   },
+  'normal:pelvis-ap': {
+    id: 'normal-pelvis-ap',
+    src: '/uploads/normal-pelvis-ap.jpg',
+    alt: 'Normal anteroposterior pelvis radiograph of a young adult, both hips and pelvic ring',
+    view: 'AP',
+    caption: 'Normal AP pelvis (young adult)',
+    source: 'Wikimedia Commons',
+    sourceUrl:
+      'https://commons.wikimedia.org/wiki/File:X-ray_of_the_pelvis_of_an_18_year_old_male_-_case_1_-_anteroposterior.jpg',
+    license: 'Public domain',
+    attribution: 'UC San Diego Department of Radiology, via Wikimedia Commons',
+    moduleId: 'pelvis-hip',
+    isNormal: true,
+  },
   'normal:knee-ap': {
     id: 'normal-knee-ap',
     src: '/uploads/normal-knee-ap.jpg',

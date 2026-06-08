@@ -14,6 +14,8 @@
  * nudged onto the films by the course director via the in-app Adjust tool.
  */
 
+import { generatedTrainers } from './anatomyTrainerGenerated';
+
 export interface AnatomyMarker {
   x: number; // % from left
   y: number; // % from top
@@ -186,8 +188,11 @@ const shoulder: ModuleTrainerData = {
   ],
 };
 
+// Shoulder is hand-authored above; the remaining regions are authored + verified
+// by the trainer workflow and live in anatomyTrainerGenerated.ts.
 export const moduleTrainers: Record<string, ModuleTrainerData> = {
   shoulder,
+  ...generatedTrainers,
 };
 
 export function getTrainerForModule(moduleId: string): ModuleTrainerData | undefined {
