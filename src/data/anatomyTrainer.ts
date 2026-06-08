@@ -68,7 +68,7 @@ const shoulder: ModuleTrainerData = {
     },
     {
       imageKey: 'normal:shoulder-grashey',
-      markers: [{ x: 60, y: 30, label: 'Glenohumeral joint space' }],
+      markers: [{ x: 65, y: 32, label: 'Glenohumeral joint space' }],
       title: 'Glenohumeral joint space',
       note: 'The clear, concentric lucency between the humeral head and glenoid — the whole point of the Grashey. It should be uniform; overlap or asymmetry means dislocation or a non-true AP.',
     },
@@ -92,7 +92,7 @@ const shoulder: ModuleTrainerData = {
     },
     {
       imageKey: 'normal:shoulder-grashey',
-      markers: [{ x: 52, y: 18, label: 'Coracoid process' }],
+      markers: [{ x: 62, y: 22, label: 'Coracoid process' }],
       title: 'Coracoid process',
       note: 'The anterior "hook" of the scapula, the anchor for the conjoint tendon and coracoclavicular ligaments. A useful landmark for grading AC injuries and the donor in a Latarjet.',
     },
@@ -116,7 +116,7 @@ const shoulder: ModuleTrainerData = {
     },
     {
       imageKey: 'normal:shoulder-y',
-      markers: [{ x: 42, y: 42, label: 'Humeral head over glenoid' }],
+      markers: [{ x: 48, y: 35, label: 'Humeral head over glenoid' }],
       title: 'Humeral head over the glenoid',
       note: 'Normal: the head is centered over the convergence of the Y (the glenoid). This is the single most useful check on the Y view for dislocation.',
     },
@@ -143,7 +143,7 @@ const shoulder: ModuleTrainerData = {
     {
       id: 'sh-ck-joint',
       imageKey: 'normal:shoulder-grashey',
-      marker: { x: 60, y: 30 },
+      marker: { x: 65, y: 32 },
       prompt: WHAT,
       options: ['Glenohumeral joint space', 'AC joint', 'Subacromial space', 'Scapular notch'],
       answer: 0,
@@ -161,7 +161,7 @@ const shoulder: ModuleTrainerData = {
     {
       id: 'sh-ck-coracoid',
       imageKey: 'normal:shoulder-grashey',
-      marker: { x: 52, y: 18 },
+      marker: { x: 62, y: 22 },
       prompt: WHAT,
       options: ['Coracoid process', 'Acromion', 'Glenoid', 'Humeral head'],
       answer: 0,
@@ -170,7 +170,7 @@ const shoulder: ModuleTrainerData = {
     {
       id: 'sh-ck-y-head',
       imageKey: 'normal:shoulder-y',
-      marker: { x: 42, y: 42 },
+      marker: { x: 48, y: 35 },
       prompt: WHAT,
       options: ['Humeral head', 'Coracoid process', 'Acromion', 'Scapular body'],
       answer: 0,
