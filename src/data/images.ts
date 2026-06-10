@@ -930,8 +930,3 @@ export function getAllRealImages(): XRayImageEntry[] {
   return Object.values(imageRegistry).filter((img) => !img.isDiagram);
 }
 
-export function getDiagramsForModule(moduleId: string): XRayImageEntry[] {
-  return Object.values(imageRegistry).filter(
-    (img) => img.moduleId === moduleId && img.isDiagram,
-  );
-}

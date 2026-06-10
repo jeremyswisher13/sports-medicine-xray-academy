@@ -9,6 +9,7 @@ import { videoQuestions } from '../data/videoQuestions';
 import { videoResources } from '../data/videoResources';
 import { flashcards } from '../data/flashcards';
 import { moduleTrainers } from '../data/anatomyTrainer';
+import { quickChecks } from '../data/quickChecks';
 import { hasCourseAssessment } from '../utils/progress';
 import { nextDueAt } from '../utils/flashcardSchedule';
 import type { ConfidenceRating, QuizQuestionData } from '../types';
@@ -140,6 +141,22 @@ describe('curriculum data guards', () => {
         expect(getImage(q.imageKey), `${moduleId} check image ${q.imageKey}`).toBeDefined();
         expect(q.answer, q.id).toBeGreaterThanOrEqual(0);
         expect(q.answer, q.id).toBeLessThan(q.options.length);
+      }
+    }
+  });
+
+  it('keeps every inline quick-check well-formed (4 options, valid answer, unique id)', () => {
+    const seenIds = new Set<string>();
+    for (const [moduleId, questions] of Object.entries(quickChecks)) {
+      expect(moduleIdSet.has(moduleId), moduleId).toBe(true);
+      for (const q of questions) {
+        expect(q.options.length, q.id).toBe(4);
+        expect(q.answer, q.id).toBeGreaterThanOrEqual(0);
+        expect(q.answer, q.id).toBeLessThan(q.options.length);
+        expect(q.question.length, q.id).toBeGreaterThan(0);
+        expect(q.explanation.length, q.id).toBeGreaterThan(0);
+        expect(seenIds.has(q.id), `duplicate quick-check id ${q.id}`).toBe(false);
+        seenIds.add(q.id);
       }
     }
   });

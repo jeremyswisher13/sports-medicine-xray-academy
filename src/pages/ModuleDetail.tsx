@@ -19,15 +19,16 @@ import { CheatSheetPromo } from '../components/CheatSheetPromo';
 import { ImageFlashcardStrip } from '../components/ImageFlashcardStrip';
 import { ModuleSectionRail } from '../components/ModuleSectionRail';
 import { ModuleTrainer } from '../components/trainer/ModuleTrainer';
+import { InlineQuickCheck } from '../components/InlineQuickCheck';
 import { ModuleResourceMenu } from '../components/ModuleResourceMenu';
 import { ModuleCompletionReward } from '../components/ModuleCompletionReward';
 import { Disclosure } from '../components/ui/Disclosure';
 import { modulePhases } from '../data/learningFlow';
 import { getModule } from '../data/modules';
 import { getTrainerForModule, trainerKind, trainerLabels } from '../data/anatomyTrainer';
+import { getQuickChecks } from '../data/quickChecks';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import {
-  getDiagramsForModule,
   getImage,
   getNormalImagesForModule,
   getPathologyImagesForModule,
@@ -140,10 +141,7 @@ export function ModuleDetailPage() {
     () => (module ? getPathologyImagesForModule(module.id) : []),
     [module],
   );
-  const conceptDiagrams = useMemo(
-    () => (module ? getDiagramsForModule(module.id) : []),
-    [module],
-  );
+  const quickCheckQs = useMemo(() => (module ? getQuickChecks(module.id) : []), [module]);
   const systematicPracticeImage = normalImages[0] ?? realImages.find((img) => !img.isDiagram);
   const imageFlashcards = useMemo(
     () => [...normalImages, ...pathologyImages],
@@ -437,6 +435,8 @@ export function ModuleDetailPage() {
               </aside>
             </section>
 
+            {quickCheckQs[0] && <InlineQuickCheck q={quickCheckQs[0]} />}
+
             {/* 2 — Views */}
             <section id="views" className="scroll-mt-[132px] space-y-4">
               <SectionHeading n={trainer ? 3 : 2} title="Views you order" />
@@ -459,27 +459,6 @@ export function ModuleDetailPage() {
                 title="Call the image first"
                 description="Decide the view and normal-versus-pathology before the caption appears."
               />
-
-              {conceptDiagrams.length > 0 && (
-                <section>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <div>
-                      <div className="section-title">Concept diagrams</div>
-                      <p className="mt-1 text-sm text-slate-500">
-                        Original labeled schematics for the high-yield read habits in this module.
-                      </p>
-                    </div>
-                    <span className="text-xs text-slate-500">
-                      {conceptDiagrams.length} diagram{conceptDiagrams.length === 1 ? '' : 's'}
-                    </span>
-                  </div>
-                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                    {conceptDiagrams.map((img) => (
-                      <XRayImage key={img.id} entry={img} />
-                    ))}
-                  </div>
-                </section>
-              )}
 
               <section>
                 <div className="flex items-baseline justify-between gap-3">
@@ -598,6 +577,8 @@ export function ModuleDetailPage() {
                 </Disclosure>
               )}
             </section>
+
+            {quickCheckQs[1] && <InlineQuickCheck q={quickCheckQs[1]} />}
 
             {/* 4 — Practice: cases, videos, quick quiz */}
             <section id="practice" className="scroll-mt-[132px] space-y-4">
