@@ -294,3 +294,15 @@ export const videoResources: VideoResource[] = [
 export function getVideosForModule(moduleId: string): VideoResource[] {
   return videoResources.filter((v) => v.moduleId === moduleId);
 }
+
+// The single "watch first" overview for a module, featured at the top alongside
+// the anatomy trainer. Prefer the resident-level region video from the AMSSM
+// "MSK Radiology" series; otherwise fall back to the first available video.
+export function getPrimaryVideoForModule(moduleId: string): VideoResource | undefined {
+  const list = getVideosForModule(moduleId);
+  return (
+    list.find((v) => v.learnerLevel === 'Resident' && /MSK Radiology/i.test(v.title)) ??
+    list.find((v) => /MSK Radiology/i.test(v.title)) ??
+    list[0]
+  );
+}

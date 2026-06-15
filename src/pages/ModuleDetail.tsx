@@ -34,7 +34,7 @@ import {
   getPathologyImagesForModule,
   getRealImagesForModule,
 } from '../data/images';
-import { getVideosForModule } from '../data/videoResources';
+import { getPrimaryVideoForModule, getVideosForModule } from '../data/videoResources';
 import { useAuth } from '../context/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
@@ -125,6 +125,16 @@ export function ModuleDetailPage() {
   const videos = useMemo(
     () => (module ? getVideosForModule(module.id) : []),
     [module],
+  );
+  // The region overview video is featured at the top with the trainer; the rest
+  // surface lower down under "More AMSSM videos" so nothing is duplicated.
+  const primaryVideo = useMemo(
+    () => (module ? getPrimaryVideoForModule(module.id) : undefined),
+    [module],
+  );
+  const relatedVideos = useMemo(
+    () => videos.filter((v) => v.id !== primaryVideo?.id),
+    [videos, primaryVideo],
   );
 
   const preCheckQs = useMemo(() => (module ? getPreCheck(module) : []), [module]);
@@ -384,6 +394,21 @@ export function ModuleDetailPage() {
             {trainer && (
               <section id="trainer" className="scroll-mt-[132px] space-y-4">
                 <SectionHeading n={1} title={trainerLabels(module.id).section} />
+                {primaryVideo && (
+                  <div className="space-y-2">
+                    <p className="text-sm leading-relaxed text-slate-600">
+                      Start with this short AMSSM overview of the region, then work
+                      through the films below.
+                    </p>
+                    <VideoResourceCard
+                      video={primaryVideo}
+                      initialProgress={
+                        snapshot.videos.find((vp) => vp.videoId === primaryVideo.id) ?? null
+                      }
+                      onProgressChange={() => void refresh()}
+                    />
+                  </div>
+                )}
                 <ModuleTrainer
                   moduleId={module.id}
                   data={trainer}
@@ -628,15 +653,15 @@ export function ModuleDetailPage() {
                 </>
               )}
 
-              {videos.length > 0 && (
+              {relatedVideos.length > 0 && (
                 <Disclosure
-                  summary="Related AMSSM videos"
-                  description={`${videos.length} supplemental video${
-                    videos.length === 1 ? '' : 's'
+                  summary="More AMSSM videos"
+                  description={`${relatedVideos.length} more supplemental video${
+                    relatedVideos.length === 1 ? '' : 's'
                   } for this region.`}
                 >
                   <div className="grid gap-4 lg:grid-cols-2">
-                    {videos.map((v) => {
+                    {relatedVideos.map((v) => {
                       const initial = snapshot.videos.find((vp) => vp.videoId === v.id) ?? null;
                       return (
                         <VideoResourceCard
