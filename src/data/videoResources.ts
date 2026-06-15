@@ -34,6 +34,21 @@ export const videoResources: VideoResource[] = [
       'Which radiographic term do you most want to become more precise with in clinic?',
   },
   {
+    id: 'amssm-common-fracture-terms',
+    moduleId: 'xray-foundations',
+    title:
+      'Common Fracture Terms | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: 'nswdYAyXRMk',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of how to describe a fracture — location, pattern, displacement, angulation, and comminution.',
+    clinicalWhy:
+      'Lets residents describe a fracture precisely enough for an accurate orthopedics consult and clear documentation.',
+    reflectionPrompt:
+      'Which fracture descriptor (displacement, angulation, comminution) do you most often leave out when describing a film?',
+  },
+  {
     id: 'amssm-high-yield-shoulder-clavicle-elbow',
     moduleId: 'shoulder',
     title: 'High-Yield X-Ray Series: Shoulder, Clavicle and Elbow',
@@ -159,6 +174,66 @@ export const videoResources: VideoResource[] = [
       'What ankle mortise finding would make you worry about instability?',
   },
   {
+    id: 'amssm-tibia-fibula-radiology',
+    moduleId: 'ankle-foot',
+    title:
+      'Tibia and Fibula | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: '2P_OU_I_mMM',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of tibia and fibula radiographs, including shaft fractures and stress injuries of the lower leg.',
+    clinicalWhy:
+      'Helpful for lower-leg pain — tib-fib fractures, tibial stress injuries, and clearing the proximal fibula in a Maisonneuve pattern.',
+    reflectionPrompt:
+      'When you image an ankle injury, do you remember to clear the proximal fibula for a Maisonneuve fracture?',
+  },
+  {
+    id: 'amssm-cervical-spine-radiology',
+    moduleId: 'spine',
+    title:
+      'Cervical Spine | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: 'q1SvLaC4Me8',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of the cervical spine radiograph, including what makes a lateral film adequate down to the C7-T1 junction.',
+    clinicalWhy:
+      'Helps residents clear the cervical spine confidently and recognize an inadequate film or alignment abnormality before reassuring an athlete.',
+    reflectionPrompt:
+      'On your last neck film, did you confirm the C7-T1 junction was visible before clearing the lower cervical spine?',
+  },
+  {
+    id: 'amssm-thoracic-spine-radiology',
+    moduleId: 'spine',
+    title:
+      'Thoracic Spine | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: 'IA66Gdv82Rc',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of thoracic spine radiograph interpretation, including vertebral body height and alignment.',
+    clinicalWhy:
+      'Useful for recognizing compression fractures and alignment problems on thoracic films after trauma or in the older athlete.',
+    reflectionPrompt:
+      'What thoracic film finding would make you compare vertebral body heights across several levels?',
+  },
+  {
+    id: 'amssm-lumbar-spine-radiology',
+    moduleId: 'spine',
+    title:
+      'Lumbar Spine | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: 'z2RfSADXb0w',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of lumbar spine radiograph interpretation, including the pars interarticularis and alignment.',
+    clinicalWhy:
+      'Helpful for low back pain in athletes and for recognizing spondylolysis and spondylolisthesis on plain films.',
+    reflectionPrompt:
+      'In an adolescent with extension-related back pain, what would make you scrutinize the pars or escalate imaging?',
+  },
+  {
     id: 'amssm-growth-plate-injuries',
     moduleId: 'pediatric-adolescent',
     title: 'Growth Plate Injuries | Fellow Online Lecture Series',
@@ -198,6 +273,21 @@ export const videoResources: VideoResource[] = [
       'Useful for understanding why early stress injuries can be radiographically occult and require advanced imaging when suspicion remains high.',
     reflectionPrompt:
       'What clinical scenario would make you order MRI even with normal x-rays?',
+  },
+  {
+    id: 'amssm-stress-fractures-xray',
+    moduleId: 'do-not-miss',
+    title:
+      'Stress Fractures | MSK Radiology: X-Ray Educational Modules for Primary Care Residents',
+    source: 'AMSSM YouTube',
+    youtubeId: '-lW5yDGNgP8',
+    learnerLevel: 'Resident',
+    summary:
+      'Supplemental review of how stress fractures appear — and how often they hide — on plain radiographs.',
+    clinicalWhy:
+      'Reinforces why early stress fractures are frequently radiographically occult and when a normal film should not reassure you.',
+    reflectionPrompt:
+      'What history or exam finding would make you treat a normal x-ray as a presumed stress fracture and protect the limb?',
   },
 ];
 
