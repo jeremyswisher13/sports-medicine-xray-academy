@@ -52,7 +52,15 @@ export function AnnotatedXray({
             />
             <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold-400" />
             {showLabels && m.label && (
-              <span className="absolute left-1/2 top-[150%] -translate-x-1/2 whitespace-nowrap rounded bg-black/80 px-2 py-0.5 text-[11px] font-semibold text-white">
+              <span
+                className={[
+                  // Anchor the label toward the image interior so markers near an
+                  // edge don't clip; allow wrapping (within a max width) instead of
+                  // overflowing off the film.
+                  'absolute top-[150%] z-10 w-max max-w-[170px] rounded bg-black/80 px-2 py-0.5 text-[11px] font-semibold leading-tight text-white',
+                  m.x >= 70 ? 'right-0' : m.x <= 30 ? 'left-0' : 'left-1/2 -translate-x-1/2',
+                ].join(' ')}
+              >
                 {m.label}
               </span>
             )}

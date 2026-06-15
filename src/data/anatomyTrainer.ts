@@ -58,7 +58,7 @@ const shoulder: ModuleTrainerData = {
       imageKey: 'normal:shoulder-grashey',
       markers: [{ x: 47, y: 28, label: 'Humeral head' }],
       title: 'Humeral head',
-      note: 'The rounded proximal humerus with a smooth cortical margin and even trabecular bone. Its articular surface faces the glenoid. Loss of the normal round contour (a "light bulb") suggests posterior dislocation.',
+      note: 'The rounded proximal humerus with a smooth cortical margin and even trabecular bone. Its articular surface faces the glenoid. A head that becomes abnormally symmetric and rounded — a "light bulb," because it is locked in internal rotation and the greater tuberosity rotates out of profile — suggests posterior dislocation.',
     },
     {
       imageKey: 'normal:shoulder-grashey',

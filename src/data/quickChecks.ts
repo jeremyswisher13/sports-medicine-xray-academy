@@ -50,7 +50,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "AP internal rotation view",
         "Axillary view (or an adequate scapular Y)",
         "AC joint view",
-        "AP external rotation (Grashey) view"
+        "AP external rotation view"
       ],
       "answer": 1,
       "explanation": "The AP can look deceptively normal in posterior dislocation, so a true axillary view (or adequate scapular Y) is required to assess glenohumeral alignment."

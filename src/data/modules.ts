@@ -886,7 +886,7 @@ const wristHand: ModuleContent = {
     },
     {
       title: 'Perilunate dislocation',
-      why: 'Lateral view shows disrupted Gilula arcs.',
+      why: 'Lateral shows the capitate dislocated dorsally off the lunate (loss of the radius–lunate–capitate column); the PA shows disrupted Gilula arcs.',
       imagingNext: 'Urgent reduction and hand surgery referral.',
     },
   ],
@@ -1920,7 +1920,7 @@ const pediatricAdolescent: ModuleContent = {
       teachingPearl:
         'In pediatrics, the exam often decides whether a normal-looking growth plate is clinically injured.',
       nextStep: 'Immobilize/protect, arrange follow-up, and reassess pain/function rather than clearing immediately.',
-      imagePanels: [{ view: 'AP', imageKey: 'pediatric:salter-harris-ii-distal-radius' }],
+      imagePanels: [{ view: 'AP', imageKey: 'normal:ankle-pediatric' }],
     },
   ],
   quiz: [
@@ -2047,7 +2047,7 @@ const doNotMiss: ModuleContent = {
   doNotMiss: [
     { title: 'Posterior shoulder dislocation', why: 'Easy to miss without axillary view.', imagingNext: 'Axillary or Velpeau; CT if unclear.' },
     { title: 'Scaphoid fracture', why: 'Risk of nonunion and AVN.', imagingNext: 'Thumb spica + repeat films or MRI.' },
-    { title: 'Perilunate dislocation', why: 'Disrupted Gilula arcs on lateral.', imagingNext: 'Urgent reduction and hand surgery.' },
+    { title: 'Perilunate dislocation', why: 'Capitate dislocated dorsally off the lunate on lateral; disrupted Gilula arcs on PA.', imagingNext: 'Urgent reduction and hand surgery.' },
     { title: 'Segond fracture', why: 'Implies ACL injury.', imagingNext: 'MRI knee.' },
     { title: 'Tibial plateau fracture', why: 'Subtle depression matters.', imagingNext: 'CT for surgical planning.' },
     { title: 'Lisfranc injury', why: 'NWB films can look normal.', imagingNext: 'Weightbearing or CT.' },
@@ -2289,7 +2289,7 @@ const doNotMiss: ModuleContent = {
       mechanism: 'High-energy FOOSH',
       symptoms: 'Severe wrist pain, paresthesias in median distribution',
       viewsObtained: ['PA wrist', 'Lateral wrist'],
-      initialPrompt: 'Lateral shows disrupted Gilula arcs. Most likely diagnosis?',
+      initialPrompt: 'The PA shows disrupted Gilula arcs and the lateral shows the capitate dislocated dorsally off the lunate. Most likely diagnosis?',
       diagnosisOptions: [
         { id: 'a', label: 'Distal radius fracture' },
         { id: 'b', label: 'Perilunate dislocation' },

@@ -3419,13 +3419,13 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
       },
       {
         "imageKey": "ankle:mortise-widening",
-        "title": "Disrupted ankle mortise — trimalleolar fracture",
-        "note": "Always check the ankle mortise (the U-shaped socket the talus sits in) for symmetric clear spaces — the medial, superior, and lateral tibiotalar gaps should be roughly equal (~3-4 mm). Here both malleoli are fractured and the mortise is disrupted with an asymmetric/widened medial clear space and talar shift. Asymmetric clear spaces or talar shift mean an unstable ankle (deltoid/syndesmotic disruption — torn medial ligament/the tibia-fibula joint) even when the fracture looks subtle — splint, keep non-weightbearing, and refer.",
+        "title": "Bimalleolar fracture — disrupted ankle mortise",
+        "note": "Always check the ankle mortise (the U-shaped socket the talus sits in): the medial, superior, and lateral tibiotalar clear spaces should be roughly equal (~3-4 mm). Here both malleoli are fractured — the lateral malleolus (distal fibula) and the medial malleolus — so the mortise is disrupted. Asymmetric clear spaces or talar shift mean an unstable ankle (deltoid/syndesmotic disruption — a torn medial ligament or the tibia-fibula joint), so even a subtle-looking malleolar fracture should make you splint, keep the patient non-weightbearing, and refer.",
         "markers": [
           {
-            "x": 33,
-            "y": 64,
-            "label": "Widened/asymmetric medial clear space"
+            "x": 76,
+            "y": 55,
+            "label": "Lateral malleolus fracture"
           }
         ]
       }
@@ -3639,18 +3639,18 @@ export const generatedTrainers: Record<string, ModuleTrainerData> = {
         "id": "dnm-ck-13",
         "imageKey": "ankle:mortise-widening",
         "marker": {
-          "x": 33,
-          "y": 64
+          "x": 76,
+          "y": 55
         },
         "prompt": "What is the marked finding?",
         "options": [
-          "Disrupted ankle mortise (widened medial clear space)",
-          "Normal symmetric ankle mortise",
+          "Lateral malleolus (distal fibula) fracture",
+          "Normal distal fibula",
           "Os trigonum",
           "Isolated calcaneal fracture"
         ],
         "answer": 0,
-        "explanation": "Loss of the normal symmetric tibiotalar clear spaces — a widened medial clear space with talar shift — signals an unstable mortise from deltoid/syndesmotic disruption or malleolar fracture."
+        "explanation": "A displaced fracture of the distal fibula (lateral malleolus). With the medial malleolus also fractured this is a bimalleolar injury — the mortise is disrupted and the ankle is unstable, so splint, keep non-weightbearing, and refer."
       }
     ]
   },

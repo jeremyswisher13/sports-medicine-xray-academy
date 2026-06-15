@@ -166,9 +166,9 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     id: 'shoulder-posterior-dislocation',
     src: '/uploads/shoulder-posterior-dislocation-lightbulb.jpg',
     alt:
-      'AP shoulder radiograph showing the "light bulb sign" — posterior shoulder dislocation with humeral head fixed in internal rotation',
+      'Before/after AP shoulder composite: the left panel shows the "light bulb sign" of posterior shoulder dislocation (humeral head locked in internal rotation, greater tuberosity rotated out of profile); the right panel is the post-reduction film with the greater tuberosity restored to profile',
     view: 'Special',
-    caption: 'Posterior shoulder dislocation — "light bulb sign" on AP',
+    caption: 'Posterior shoulder dislocation — "light bulb sign" on AP (left); post-reduction film (right)',
     source: 'Wikimedia Commons',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:Lightbulb_sign_-_posterior_shoulder_dislocation_-_Roe_vor_und_nach_Reposition_001.jpg',
@@ -239,9 +239,9 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
   'wrist:perilunate-dislocation': {
     id: 'wrist-perilunate-dislocation',
     src: '/uploads/wrist-perilunate-dislocation.jpg',
-    alt: 'Lateral wrist radiograph showing a perilunate dislocation with disrupted carpal alignment',
-    view: 'Lateral',
-    caption: 'Perilunate dislocation — disrupted Gilula arcs',
+    alt: 'PA and lateral wrist radiographs of a perilunate dislocation; the lunate is outlined in red on both views',
+    view: 'Special',
+    caption: 'Perilunate dislocation (PA + lateral) — disrupted Gilula arcs on PA, capitate displaced off the lunate on lateral',
     source: 'Wikimedia Commons',
     sourceUrl: 'https://commons.wikimedia.org/wiki/File:Perilunaere_Luxation.jpg',
     license: 'CC BY-SA 3.0',
@@ -368,15 +368,15 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
 
   'ankle:mortise-widening': {
     id: 'ankle-mortise-widening',
-    src: '/uploads/ankle-mortise-widening.jpg',
+    src: '/uploads/ankle-bimalleolar-fracture.jpg',
     alt:
-      'AP ankle radiograph showing a trimalleolar fracture with a disrupted ankle mortise — medial and lateral malleolar fractures and loss of the normal symmetric clear spaces',
+      'AP ankle radiograph of a bimalleolar fracture — displaced fractures of both the lateral malleolus (distal fibula) and the medial malleolus with a disrupted ankle mortise',
     view: 'AP',
-    caption: 'Disrupted ankle mortise — trimalleolar fracture (assess the clear spaces)',
+    caption: 'Bimalleolar fracture — disrupted ankle mortise (assess the clear spaces)',
     source: 'Wikimedia Commons',
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Trimalleolar_Ankle_Fracture.jpg',
-    license: 'CC BY-SA 4.0',
-    attribution: 'Chaim Mintz, via Wikimedia Commons (cropped to the pre-operative AP)',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:X-ray_of_bimalleolar_fracture.jpg',
+    license: 'CC BY 4.0',
+    attribution: 'Tellisi N, Abdulkareem IS, Giannoudis PG (OA Case Reports, 2012), via Wikimedia Commons',
     moduleId: 'ankle-foot',
   },
 
@@ -517,9 +517,9 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
   'normal:wrist': {
     id: 'normal-wrist',
     src: '/uploads/normal-wrist.jpg',
-    alt: 'Normal wrist radiograph (left panel) with carpal alignment intact',
-    view: 'AP',
-    caption: 'Normal wrist — carpal alignment intact',
+    alt: 'Normal lateral wrist radiograph (left panel) with the carpal column aligned; the right panel shows a dorsally tilted (DISI) lunate for comparison',
+    view: 'Lateral',
+    caption: 'Normal lateral wrist — carpal column aligned',
     source: 'Wikimedia Commons',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:X-ray_of_normal_wrist_and_wrist_with_dorsally_tilted_wrist_joint.jpg',
@@ -531,7 +531,7 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
   'normal:hand-pa': {
     id: 'normal-hand-pa',
     src: '/uploads/normal-hand-pa.jpg',
-    alt: 'Normal posteroanterior (dorsoplantar) hand radiograph',
+    alt: 'Normal posteroanterior (PA) hand radiograph',
     view: 'AP',
     caption: 'Normal hand — PA',
     source: 'Wikimedia Commons',
