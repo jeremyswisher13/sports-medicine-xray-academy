@@ -158,7 +158,7 @@ const kneeDeck: Flashcard[] = [
     id: 'fc-knee-7',
     moduleId: 'knee',
     front: 'When are weightbearing PA flexion (Rosenberg) views useful?',
-    back: 'Adult OA evaluation — they reveal posterior compartment narrowing missed on standard AP.',
+    back: 'Adult OA evaluation — they load the posterior weightbearing zone of the femoral condyles, revealing tibiofemoral joint-space narrowing missed on a standard extended AP.',
   },
   {
     id: 'fc-knee-8',

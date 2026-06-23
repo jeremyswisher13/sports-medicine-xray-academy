@@ -1202,7 +1202,7 @@ const knee: ModuleContent = {
     },
     {
       name: 'Weightbearing PA flexion (Rosenberg)',
-      why: 'Reveals posterior compartment OA invisible on standard AP.',
+      why: 'Loads the posterior weightbearing zone of the femoral condyles, revealing medial/lateral tibiofemoral joint-space narrowing missed on a standard extended AP.',
       whenToOrder: 'OA evaluation in adults > 40.',
     },
   ],

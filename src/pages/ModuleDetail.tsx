@@ -460,7 +460,9 @@ export function ModuleDetailPage() {
               </aside>
             </section>
 
-            {quickCheckQs[0] && <InlineQuickCheck q={quickCheckQs[0]} />}
+            {quickCheckQs[0] && (
+              <InlineQuickCheck key={quickCheckQs[0].id} q={quickCheckQs[0]} />
+            )}
 
             {/* 2 — Views */}
             <section id="views" className="scroll-mt-[132px] space-y-4">
@@ -603,7 +605,9 @@ export function ModuleDetailPage() {
               )}
             </section>
 
-            {quickCheckQs[1] && <InlineQuickCheck q={quickCheckQs[1]} />}
+            {quickCheckQs[1] && (
+              <InlineQuickCheck key={quickCheckQs[1].id} q={quickCheckQs[1]} />
+            )}
 
             {/* 4 — Practice: cases, videos, quick quiz */}
             <section id="practice" className="scroll-mt-[132px] space-y-4">
