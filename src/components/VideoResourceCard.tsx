@@ -42,7 +42,9 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
     moduleId: video.moduleId,
     title: video.title,
     source: video.source,
-    watched: true,
+    watched: Boolean(
+      initialProgress?.watched || initialProgress?.markedComplete || watchStarted || completed,
+    ),
     markedComplete: completed,
     reflectionText: reflection,
     createdAt: initialProgress?.createdAt ?? Date.now(),

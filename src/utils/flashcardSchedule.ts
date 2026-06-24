@@ -38,7 +38,7 @@ export function saveFlashcardState(state: PersistedFlashcardState): void {
 
 export function dueFlashcardCount(cardIds: string[], now = Date.now()): number {
   const state = loadFlashcardState();
-  return cardIds.filter((id) => (state.dueById[id] ?? Number.POSITIVE_INFINITY) <= now).length;
+  return cardIds.filter((id) => (state.dueById[id] ?? 0) <= now).length;
 }
 
 export function nextDueAt(outcome: 'got-it' | 'review', now = Date.now()): number {

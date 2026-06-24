@@ -23,6 +23,11 @@ import type {
 
 // Local-storage helpers used as fallback when Firestore isn't configured.
 const LS_PREFIX = 'sxra:';
+const isLocalOnlyUser = (userId: string) =>
+  userId === 'local-demo-user' || userId.startsWith('guest-');
+
+const canUseFirestore = (userId: string) =>
+  Boolean(firestore) && !isLocalOnlyUser(userId);
 
 function lsGet<T>(key: string, fallback: T): T {
   try {
@@ -61,9 +66,9 @@ export async function logAuditEvent(input: {
     ...(input.refId !== undefined ? { refId: input.refId } : {}),
     ...(input.details !== undefined ? { details: input.details } : {}),
   };
-  if (firestore) {
+  if (canUseFirestore(input.userId)) {
     try {
-      await addDoc(collection(firestore, COLLECTIONS.auditLogs), {
+      await addDoc(collection(firestore!, COLLECTIONS.auditLogs), {
         ...event,
         createdAt: serverTimestamp(),
       });
@@ -78,10 +83,10 @@ export async function logAuditEvent(input: {
 }
 
 export async function listAuditEvents(userId: string): Promise<AuditEvent[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.auditLogs),
+        collection(firestore!, COLLECTIONS.auditLogs),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -96,9 +101,9 @@ export async function listAuditEvents(userId: string): Promise<AuditEvent[]> {
 // ---- Module progress ------------------------------------------------------
 
 export async function saveModuleProgress(p: ModuleProgress): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(p.userId)) {
     try {
-      const ref = doc(firestore, COLLECTIONS.moduleProgress, `${p.userId}_${p.moduleId}`);
+      const ref = doc(firestore!, COLLECTIONS.moduleProgress, `${p.userId}_${p.moduleId}`);
       await setDoc(ref, p, { merge: true });
       return;
     } catch (err) {
@@ -121,10 +126,10 @@ export async function markModuleVisited(input: {
     visited: true,
     lastViewedAt: input.lastViewedAt,
   };
-  if (firestore) {
+  if (canUseFirestore(input.userId)) {
     try {
       const ref = doc(
-        firestore,
+        firestore!,
         COLLECTIONS.moduleProgress,
         `${input.userId}_${input.moduleId}`,
       );
@@ -155,10 +160,10 @@ export async function markModuleVisited(input: {
 }
 
 export async function listModuleProgress(userId: string): Promise<ModuleProgress[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.moduleProgress),
+        collection(firestore!, COLLECTIONS.moduleProgress),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -174,9 +179,9 @@ export async function listModuleProgress(userId: string): Promise<ModuleProgress
 // ---- Quiz attempts --------------------------------------------------------
 
 export async function saveQuizAttempt(attempt: QuizAttempt): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(attempt.userId)) {
     try {
-      await setDoc(doc(firestore, COLLECTIONS.quizAttempts, attempt.id), attempt);
+      await setDoc(doc(firestore!, COLLECTIONS.quizAttempts, attempt.id), attempt);
       return;
     } catch (err) {
       console.warn('[quizAttempt] firestore write failed', err);
@@ -188,10 +193,10 @@ export async function saveQuizAttempt(attempt: QuizAttempt): Promise<void> {
 }
 
 export async function listQuizAttempts(userId: string): Promise<QuizAttempt[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.quizAttempts),
+        collection(firestore!, COLLECTIONS.quizAttempts),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -206,9 +211,9 @@ export async function listQuizAttempts(userId: string): Promise<QuizAttempt[]> {
 // ---- Confidence ratings ---------------------------------------------------
 
 export async function saveConfidenceRating(rating: ConfidenceRating): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(rating.userId)) {
     try {
-      await setDoc(doc(firestore, COLLECTIONS.confidenceRatings, rating.id), rating);
+      await setDoc(doc(firestore!, COLLECTIONS.confidenceRatings, rating.id), rating);
       return;
     } catch (err) {
       console.warn('[confidence] firestore write failed', err);
@@ -220,10 +225,10 @@ export async function saveConfidenceRating(rating: ConfidenceRating): Promise<vo
 }
 
 export async function listConfidenceRatings(userId: string): Promise<ConfidenceRating[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.confidenceRatings),
+        collection(firestore!, COLLECTIONS.confidenceRatings),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -238,9 +243,9 @@ export async function listConfidenceRatings(userId: string): Promise<ConfidenceR
 // ---- Case attempts --------------------------------------------------------
 
 export async function saveCaseAttempt(attempt: CaseAttempt): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(attempt.userId)) {
     try {
-      await setDoc(doc(firestore, COLLECTIONS.caseAttempts, attempt.id), attempt);
+      await setDoc(doc(firestore!, COLLECTIONS.caseAttempts, attempt.id), attempt);
       return;
     } catch (err) {
       console.warn('[case] firestore write failed', err);
@@ -252,10 +257,10 @@ export async function saveCaseAttempt(attempt: CaseAttempt): Promise<void> {
 }
 
 export async function listCaseAttempts(userId: string): Promise<CaseAttempt[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.caseAttempts),
+        collection(firestore!, COLLECTIONS.caseAttempts),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -270,10 +275,10 @@ export async function listCaseAttempts(userId: string): Promise<CaseAttempt[]> {
 // ---- Video progress -------------------------------------------------------
 
 export async function saveVideoProgress(progress: VideoProgress): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(progress.userId)) {
     try {
       const ref = doc(
-        firestore,
+        firestore!,
         COLLECTIONS.videoProgress,
         `${progress.userId}_${progress.videoId}`,
       );
@@ -289,10 +294,10 @@ export async function saveVideoProgress(progress: VideoProgress): Promise<void> 
 }
 
 export async function listVideoProgress(userId: string): Promise<VideoProgress[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.videoProgress),
+        collection(firestore!, COLLECTIONS.videoProgress),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);
@@ -308,9 +313,9 @@ export async function listVideoProgress(userId: string): Promise<VideoProgress[]
 // ---- Bookmarks ------------------------------------------------------------
 
 export async function saveBookmark(bookmark: Bookmark): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(bookmark.userId)) {
     try {
-      await setDoc(doc(firestore, COLLECTIONS.bookmarks, bookmark.id), bookmark);
+      await setDoc(doc(firestore!, COLLECTIONS.bookmarks, bookmark.id), bookmark);
       return;
     } catch (err) {
       console.warn('[bookmark] firestore write failed', err);
@@ -325,9 +330,9 @@ export async function deleteBookmark(input: {
   userId: string;
   bookmarkId: string;
 }): Promise<void> {
-  if (firestore) {
+  if (canUseFirestore(input.userId)) {
     try {
-      await deleteDoc(doc(firestore, COLLECTIONS.bookmarks, input.bookmarkId));
+      await deleteDoc(doc(firestore!, COLLECTIONS.bookmarks, input.bookmarkId));
       return;
     } catch (err) {
       console.warn('[bookmark] firestore delete failed', err);
@@ -339,10 +344,10 @@ export async function deleteBookmark(input: {
 }
 
 export async function listBookmarks(userId: string): Promise<Bookmark[]> {
-  if (firestore) {
+  if (canUseFirestore(userId)) {
     try {
       const q = query(
-        collection(firestore, COLLECTIONS.bookmarks),
+        collection(firestore!, COLLECTIONS.bookmarks),
         where('userId', '==', userId),
       );
       const snap = await getDocs(q);

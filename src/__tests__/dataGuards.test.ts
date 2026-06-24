@@ -11,7 +11,11 @@ import { flashcards } from '../data/flashcards';
 import { moduleTrainers } from '../data/anatomyTrainer';
 import { quickChecks } from '../data/quickChecks';
 import { hasCourseAssessment } from '../utils/progress';
-import { nextDueAt } from '../utils/flashcardSchedule';
+import {
+  FLASHCARD_STORAGE_KEY,
+  dueFlashcardCount,
+  nextDueAt,
+} from '../utils/flashcardSchedule';
 import type { ConfidenceRating, QuizQuestionData } from '../types';
 
 const moduleIdSet = new Set(moduleSummaries.map((m) => m.id));
@@ -175,6 +179,28 @@ describe('curriculum data guards', () => {
 });
 
 describe('flashcard schedule', () => {
+  it('counts never-reviewed cards as due', () => {
+    const originalLocalStorage = globalThis.localStorage;
+    const store = new Map<string, string>();
+    Object.defineProperty(globalThis, 'localStorage', {
+      configurable: true,
+      value: {
+        getItem: (key: string) => store.get(key) ?? null,
+        setItem: (key: string, value: string) => store.set(key, value),
+        removeItem: (key: string) => store.delete(key),
+      },
+    });
+    try {
+      globalThis.localStorage.removeItem(FLASHCARD_STORAGE_KEY);
+      expect(dueFlashcardCount(['card-1', 'card-2'])).toBe(2);
+    } finally {
+      Object.defineProperty(globalThis, 'localStorage', {
+        configurable: true,
+        value: originalLocalStorage,
+      });
+    }
+  });
+
   it('schedules "got it" further out than "review"', () => {
     const now = 1_000_000_000_000;
     const gotIt = nextDueAt('got-it', now);

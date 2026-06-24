@@ -519,7 +519,7 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     src: '/uploads/normal-wrist.jpg',
     alt: 'Normal lateral wrist radiograph (left panel) with the carpal column aligned; the right panel shows a dorsally tilted (DISI) lunate for comparison',
     view: 'Lateral',
-    caption: 'Normal lateral wrist — carpal column aligned',
+    caption: 'Lateral wrist comparison — normal carpal column (left) vs DISI tilt (right)',
     source: 'Wikimedia Commons',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:X-ray_of_normal_wrist_and_wrist_with_dorsally_tilted_wrist_joint.jpg',
@@ -929,4 +929,3 @@ export function getPathologyImagesForModule(moduleId: string): XRayImageEntry[] 
 export function getAllRealImages(): XRayImageEntry[] {
   return Object.values(imageRegistry).filter((img) => !img.isDiagram);
 }
-
