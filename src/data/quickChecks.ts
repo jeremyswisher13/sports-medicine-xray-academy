@@ -83,7 +83,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
     },
     {
       "id": "elbow-qc-2",
-      "question": "On a lateral elbow after trauma, you should never normally see a posterior fat pad. What does a visible posterior fat pad most often indicate?",
+      "question": "On a lateral elbow after trauma, what does a visible posterior fat pad most often indicate?",
       "options": [
         "A normal anatomic variant",
         "An occult intra-articular fracture (radial head in adults)",
@@ -91,7 +91,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "Medial epicondylitis (golfer's elbow)"
       ],
       "answer": 1,
-      "explanation": "A posterior fat pad is never normal after trauma and should be treated as an occult intra-articular fracture, most commonly a radial head fracture in adults."
+      "explanation": "A posterior fat pad after trauma is abnormal and strongly suggests an occult intra-articular injury, most commonly a radial head fracture in adults. Manage it as a possible fracture even when no fracture line is visible."
     }
   ],
   "wrist-hand": [
@@ -131,14 +131,14 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "Bisect the obturator foramen"
       ],
       "answer": 0,
-      "explanation": "A normal Klein line along the superior femoral neck intersects the lateral femoral epiphysis; failure to do so is a classic clue to a slipped capital femoral epiphysis (SCFE)."
+      "explanation": "Klein line normally intersects the lateral femoral epiphysis; failure to do so is a classic SCFE clue. A normal line does not exclude an early slip, so compare both hips and the full clinical picture."
     },
     {
       "id": "pelvis-hip-qc-2",
       "question": "A 28-year-old distance runner has progressive groin pain with impact, and the AP pelvis looks normal. Why must a femoral neck stress fracture not be dismissed on a normal film?",
       "options": [
         "A tension-side femoral neck stress fracture can complete catastrophically, so a normal x-ray does not rule it out",
-        "Stress fractures of the femoral neck always heal without restriction, so no follow-up is needed",
+        "Femoral neck stress injuries are low risk, so activity can continue as tolerated",
         "Groin pain in runners is almost always referred from the lumbar spine",
         "A normal radiograph reliably excludes a femoral neck stress fracture"
       ],
@@ -169,7 +169,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "Simple bone bruise with no ligament injury"
       ],
       "answer": 0,
-      "explanation": "A Segond fracture is highly associated with an ACL tear, so this small avulsion should prompt an MRI rather than being dismissed as a minor finding."
+      "explanation": "A Segond fracture is strongly associated with ACL injury, so this small avulsion should trigger evaluation for associated internal derangement; MRI is usually appropriate when it will guide management."
     }
   ],
   "ankle-foot": [
@@ -183,7 +183,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "Weightbearing oblique foot view"
       ],
       "answer": 0,
-      "explanation": "The mortise view (15 degrees of internal rotation) is the answer view for acute ankle injuries because it profiles the talar dome, syndesmosis, and joint-space symmetry better than the standard AP or lateral."
+      "explanation": "The mortise view (about 15 degrees of internal rotation) is essential for talar-dome, syndesmotic, and joint-space assessment, but it should be interpreted with the AP and lateral views."
     },
     {
       "id": "ankle-foot-qc-2",
@@ -227,7 +227,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
   "pediatric-adolescent": [
     {
       "id": "pediatric-adolescent-qc-1",
-      "question": "In an adolescent with hip, thigh, or knee pain and a limp, which extra view best improves detection of a slipped capital femoral epiphysis (SCFE, the growth plate of the femoral head slipping off the neck)?",
+      "question": "In a stable, ambulatory adolescent with hip, thigh, or knee pain and a limp, which extra view best improves detection of a slipped capital femoral epiphysis (SCFE)?",
       "options": [
         "A frog-leg lateral of the pelvis/hips",
         "A standing AP of both knees",
@@ -235,7 +235,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "A comparison view of the contralateral elbow"
       ],
       "answer": 0,
-      "explanation": "The frog-leg lateral profiles the proximal femoral physis and improves detection of SCFE, whose Klein-line abnormality on the plain AP can be subtle."
+      "explanation": "In stable SCFE, the frog-leg lateral profiles the proximal femoral physis and can reveal a subtle slip. In an unstable or acutely nonambulatory presentation, avoid frog-leg positioning and use an AP plus cross-table lateral strategy with urgent orthopedic involvement."
     },
     {
       "id": "pediatric-adolescent-qc-2",
@@ -247,7 +247,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "An accessory ossification center that mimics a fracture"
       ],
       "answer": 0,
-      "explanation": "Salter-Harris I injuries can be radiographically occult, so focal tenderness over an open physis should be treated as a possible growth-plate fracture with immobilization and follow-up rather than cleared."
+      "explanation": "Salter-Harris I injuries can be radiographically occult, so a compatible mechanism and focal physeal tenderness keep injury in the differential. Tenderness alone is not diagnostic; use the site-specific pathway and follow the clinical course rather than clearing solely from the x-ray."
     }
   ],
   "do-not-miss": [
@@ -273,7 +273,7 @@ export const quickChecks: Record<string, QuickCheckQ[]> = {
         "Isolated calf muscle strain"
       ],
       "answer": 0,
-      "explanation": "A Segond fracture is strongly associated with an ACL tear, so it should prompt a knee MRI even though the bony fragment itself is small."
+      "explanation": "A Segond fracture is strongly associated with ACL injury and should trigger evaluation for associated internal derangement; MRI is usually appropriate when it will guide management."
     }
   ]
 };

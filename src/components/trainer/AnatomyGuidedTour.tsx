@@ -53,55 +53,54 @@ export function AnatomyGuidedTour({ steps, onDone }: Props) {
           <p className="mt-2 text-sm leading-relaxed text-slate-600">{step.note}</p>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center gap-2 pt-6">
-          <button
-            type="button"
-            className="btn-secondary"
-            disabled={i === 0}
-            onClick={() => go(Math.max(0, i - 1))}
-          >
-            <Icon name="chevron-left" size={14} />
-            Back
-          </button>
-          {!atEnd ? (
-            <button type="button" className="btn-primary" onClick={() => go(i + 1)}>
-              Next
-              <Icon name="arrow-right" size={14} />
+        <div className="mt-auto flex flex-col gap-3 pt-6 sm:flex-row sm:items-center">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              className="btn-secondary"
+              disabled={i === 0}
+              onClick={() => go(Math.max(0, i - 1))}
+            >
+              <Icon name="chevron-left" size={14} />
+              Back
             </button>
-          ) : onDone ? (
-            <button type="button" className="btn-primary" onClick={onDone}>
-              Test yourself
-              <Icon name="arrow-right" size={14} />
-            </button>
-          ) : (
-            <button type="button" className="btn-secondary" onClick={() => go(0)}>
-              Restart tour
-            </button>
-          )}
-          {atEnd && onDone && (
-            <button type="button" className="btn-secondary" onClick={() => go(0)}>
-              Restart
-            </button>
-          )}
-          <span className="ml-auto flex flex-wrap">
-            {steps.map((_, n) => (
-              <button
-                key={n}
-                type="button"
-                aria-label={`Go to step ${n + 1}`}
-                aria-current={n === i ? 'step' : undefined}
-                onClick={() => go(n)}
-                className="grid h-9 w-5 place-items-center"
-              >
-                <span
-                  className={[
-                    'h-2 w-2 rounded-full transition-colors',
-                    n === i ? 'bg-ucla-600' : 'bg-slate-300 hover:bg-slate-400',
-                  ].join(' ')}
-                />
+            {!atEnd ? (
+              <button type="button" className="btn-primary" onClick={() => go(i + 1)}>
+                Next
+                <Icon name="arrow-right" size={14} />
               </button>
-            ))}
-          </span>
+            ) : onDone ? (
+              <button type="button" className="btn-primary" onClick={onDone}>
+                Test yourself
+                <Icon name="arrow-right" size={14} />
+              </button>
+            ) : (
+              <button type="button" className="btn-secondary" onClick={() => go(0)}>
+                Restart tour
+              </button>
+            )}
+            {atEnd && onDone && (
+              <button type="button" className="btn-secondary" onClick={() => go(0)}>
+                Restart
+              </button>
+            )}
+          </div>
+
+          <label className="min-w-0 flex-1 sm:ml-auto sm:max-w-[16rem]">
+            <span className="sr-only">Jump to a tour step</span>
+            <select
+              aria-label="Jump to a tour step"
+              value={i}
+              onChange={(event) => go(Number(event.target.value))}
+              className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium text-slate-700 shadow-sm focus:border-ucla-500 focus:outline-none focus:ring-2 focus:ring-ucla-200"
+            >
+              {steps.map((candidate, n) => (
+                <option key={`${candidate.imageKey}-${candidate.title}-${n}`} value={n}>
+                  {n + 1}. {candidate.title}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
     </div>

@@ -8,9 +8,51 @@
       "rewrites": [{ "source": "**", "destination": "/index.html" }],
       "headers": [
         {
-          "source": "**/*.@(js|css|svg|png|jpg|jpeg|gif|webp|woff|woff2|ttf|eot|ico)",
+          "source": "**",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/sw.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/site.webmanifest",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/assets/**",
           "headers": [
             { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+          ]
+        },
+        {
+          "source": "/fonts/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+          ]
+        },
+        {
+          "source": "/brand/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+          ]
+        },
+        {
+          "source": "/diagrams/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+          ]
+        },
+        {
+          "source": "/uploads/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
           ]
         },
         {
@@ -26,7 +68,63 @@
       "public": "dist",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "cleanUrls": true,
-      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+      "rewrites": [{ "source": "**", "destination": "/index.html" }],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/sw.js",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/site.webmanifest",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        },
+        {
+          "source": "/assets/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+          ]
+        },
+        {
+          "source": "/fonts/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+          ]
+        },
+        {
+          "source": "/brand/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+          ]
+        },
+        {
+          "source": "/diagrams/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+          ]
+        },
+        {
+          "source": "/uploads/**",
+          "headers": [
+            { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+          ]
+        },
+        {
+          "source": "/index.html",
+          "headers": [
+            { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+          ]
+        }
+      ]
     }
   ],
   "firestore": {

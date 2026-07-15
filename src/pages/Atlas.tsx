@@ -5,7 +5,12 @@ import { getAllRealImages } from '../data/images';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveQuizAttempt } from '../services/firestore';
+import {
+  applyAtlasPracticeOutcome,
+  type AtlasPracticeStats,
+} from '../utils/atlasPractice';
 import type { XRayImageEntry } from '../types';
+import { imagePreviewSrc } from '../utils/imagePreview';
 
 type AtlasKind = 'all' | 'normal' | 'pathology';
 type PracticeMode = 'normal-pathology' | 'view' | 'key-clue';
@@ -20,13 +25,12 @@ interface PracticeChoice {
   label: string;
 }
 
-interface PracticeStats {
-  answered: number;
-  correct: number;
-  streak: number;
-}
-
-const emptyPracticeStats: PracticeStats = { answered: 0, correct: 0, streak: 0 };
+const emptyPracticeStats: AtlasPracticeStats = {
+  answered: 0,
+  correct: 0,
+  streak: 0,
+  revealed: 0,
+};
 
 function isPracticeImage(entry: XRayImageEntry): entry is PracticeImageEntry {
   return practiceViews.some((view) => view === entry.view);
@@ -143,7 +147,7 @@ export function AtlasPage() {
   const [practiceIndex, setPracticeIndex] = useState(0);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [showPracticeAnswer, setShowPracticeAnswer] = useState(false);
-  const [practiceStats, setPracticeStats] = useState<Record<PracticeMode, PracticeStats>>({
+  const [practiceStats, setPracticeStats] = useState<Record<PracticeMode, AtlasPracticeStats>>({
     'normal-pathology': emptyPracticeStats,
     view: emptyPracticeStats,
     'key-clue': emptyPracticeStats,
@@ -286,11 +290,10 @@ export function AtlasPage() {
       const current = prev[practiceMode];
       return {
         ...prev,
-        [practiceMode]: {
-          answered: current.answered + 1,
-          correct: current.correct + (correct ? 1 : 0),
-          streak: correct ? current.streak + 1 : 0,
-        },
+        [practiceMode]: applyAtlasPracticeOutcome(
+          current,
+          correct ? 'correct' : 'incorrect',
+        ),
       };
     });
     if (correctChoiceId) {
@@ -305,14 +308,22 @@ export function AtlasPage() {
       const current = prev[practiceMode];
       return {
         ...prev,
-        [practiceMode]: {
-          answered: current.answered + 1,
-          correct: current.correct + 1,
-          streak: current.streak + 1,
-        },
+        [practiceMode]: applyAtlasPracticeOutcome(current, 'revealed'),
       };
     });
-    saveAtlasPractice('revealed-key-clue', true);
+    if (user && !learnerPreview && practiceImage) {
+      void logAuditEvent({
+        userId: user.uid,
+        type: 'atlas_practice_answered',
+        ...(practiceImage.moduleId ? { moduleId: practiceImage.moduleId } : {}),
+        refId: practiceImage.id,
+        details: {
+          mode: practiceMode,
+          scored: false,
+          revealed: true,
+        },
+      });
+    }
   };
 
   return (
@@ -327,7 +338,7 @@ export function AtlasPage() {
           </p>
         </div>
         <div className="card flex items-center gap-3 px-4 py-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
             <Icon name="image" size={16} />
           </span>
           <div>
@@ -357,7 +368,7 @@ export function AtlasPage() {
               type="button"
               onClick={() => setKindFilter(k)}
               className={[
-                'rounded-full border px-3.5 py-1.5 text-xs font-semibold capitalize',
+                'min-h-11 rounded-full border px-3.5 py-1.5 text-xs font-semibold capitalize',
                 active
                   ? k === 'normal'
                     ? 'border-emerald-200 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-100'
@@ -397,7 +408,7 @@ export function AtlasPage() {
         </select>
       </div>
 
-      <section className="mt-5 overflow-hidden rounded-2xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/70 to-white shadow-soft">
+      <section className="mt-5 overflow-hidden rounded-lg border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/70 to-white shadow-soft">
         <div className="grid gap-4 p-4 lg:grid-cols-[0.95fr_1.05fr] lg:p-5">
           <div className="flex flex-col justify-between gap-4">
             <div>
@@ -425,7 +436,7 @@ export function AtlasPage() {
                     type="button"
                     onClick={() => setPracticeMode(mode.id)}
                     className={[
-                      'flex min-h-12 items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition',
+                      'flex min-h-12 items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition',
                       active
                         ? 'border-ucla-200 bg-white text-ucla-900 ring-1 ring-ucla-100'
                         : 'border-white bg-white/70 text-slate-700 hover:border-ucla-100 hover:bg-white',
@@ -444,7 +455,7 @@ export function AtlasPage() {
               })}
             </div>
 
-            <div className="rounded-xl border border-ucla-100 bg-white/80 p-3">
+            <div className="rounded-lg border border-ucla-100 bg-white/80 p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
@@ -455,8 +466,8 @@ export function AtlasPage() {
                     {practiceImages.length > 0 ? ` · ${practiceScopeLabel}` : ''}
                   </div>
                   <div className="mt-0.5 text-xs text-slate-500">
-                    {activePracticeStats.correct}/{activePracticeStats.answered} correct · streak{' '}
-                    {activePracticeStats.streak}
+                    {activePracticeStats.correct}/{activePracticeStats.answered} correct ·{' '}
+                    {activePracticeStats.revealed} revealed · streak {activePracticeStats.streak}
                   </div>
                   {practiceImages.length > 0 && (
                     <div className="mt-1 text-xs leading-relaxed text-slate-500">
@@ -471,7 +482,7 @@ export function AtlasPage() {
                   <button
                     type="button"
                     onClick={handleRandomPractice}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-full border border-ucla-100 bg-white px-3 text-xs font-semibold text-ucla-800 hover:bg-ucla-50"
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-ucla-100 bg-white px-3 text-xs font-semibold text-ucla-800 hover:bg-ucla-50"
                   >
                     <Icon name="sparkles" size={13} />
                     Random
@@ -479,7 +490,7 @@ export function AtlasPage() {
                   <button
                     type="button"
                     onClick={handleNextPractice}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800"
+                    className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800"
                   >
                     Next
                     <Icon name="arrow-right" size={13} />
@@ -489,7 +500,7 @@ export function AtlasPage() {
             </div>
 
             {practiceImage && (
-              <div className="rounded-xl border border-ucla-100 bg-white/85 p-3">
+              <div className="rounded-lg border border-ucla-100 bg-white/85 p-3">
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ucla-800">
                   <Icon
                     name={
@@ -526,7 +537,7 @@ export function AtlasPage() {
                           type="button"
                           onClick={() => handlePracticeChoice(choice.id)}
                           className={[
-                            'rounded-xl border px-3 py-2 text-left text-sm font-semibold transition',
+                            'min-h-11 rounded-lg border px-3 py-2 text-left text-sm font-semibold transition',
                             showPracticeAnswer && correct
                               ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
                               : showPracticeAnswer && selected
@@ -546,7 +557,7 @@ export function AtlasPage() {
                     type="button"
                     onClick={handleRevealKeyClue}
                     disabled={showPracticeAnswer}
-                    className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800 disabled:cursor-default disabled:bg-ucla-200"
+                    className="mt-3 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-ucla-700 px-3 text-xs font-semibold text-white hover:bg-ucla-800 disabled:cursor-default disabled:bg-ucla-200"
                   >
                     {showPracticeAnswer ? 'Clue revealed' : 'Reveal clue'}
                     <Icon name="chevron-right" size={13} />
@@ -554,7 +565,7 @@ export function AtlasPage() {
                 )}
 
                 {showPracticeAnswer && (
-                  <div className="mt-3 rounded-xl border border-ucla-100 bg-ucla-50/80 p-3">
+                  <div className="mt-3 rounded-lg border border-ucla-100 bg-ucla-50/80 p-3">
                     <div className="text-xs font-semibold uppercase tracking-wide text-ucla-800">
                       Answer
                     </div>
@@ -569,20 +580,21 @@ export function AtlasPage() {
 
           <div className="relative min-h-[280px]">
             {practiceImage ? (
-              <div className="relative overflow-hidden rounded-xl border border-ucla-100 bg-white p-2">
+              <div className="relative overflow-hidden rounded-lg border border-ucla-100 bg-white p-2">
                 {showPracticeAnswer ? (
                   <XRayImage entry={practiceImage} />
                 ) : (
                   <>
-                    <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-soft">
+                    <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-slate-800 bg-slate-950 shadow-soft">
                       <img
-                        src={practiceImage.src}
+                        src={imagePreviewSrc(practiceImage.src)}
                         alt="Atlas practice radiograph"
                         loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 h-full w-full object-contain"
                       />
                     </figure>
-                    <div className="absolute left-2 right-12 top-2 z-10 inline-flex min-h-8 items-center gap-1.5 rounded-xl border border-ucla-100 bg-white/95 px-3 py-1 text-xs font-semibold text-ucla-900 shadow-soft">
+                    <div className="absolute left-2 right-12 top-2 z-10 inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-ucla-100 bg-white/95 px-3 py-1 text-xs font-semibold text-ucla-900 shadow-soft">
                       <Icon name="eye" size={12} />
                       Make the call first
                     </div>
@@ -593,7 +605,7 @@ export function AtlasPage() {
                 )}
               </div>
             ) : (
-              <div className="flex h-full min-h-[280px] items-center justify-center rounded-xl border border-ucla-100 bg-white text-sm text-slate-500">
+              <div className="flex h-full min-h-[280px] items-center justify-center rounded-lg border border-ucla-100 bg-white text-sm text-slate-500">
                 No practice images match those filters.
               </div>
             )}
@@ -602,9 +614,9 @@ export function AtlasPage() {
       </section>
 
       {kindFilter === 'normal' && (
-        <div className="mt-5 rounded-xl border border-ucla-100 bg-white p-4 shadow-soft">
+        <div className="mt-5 rounded-lg border border-ucla-100 bg-white p-4 shadow-soft">
           <div className="flex items-start gap-3">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
               <Icon name="check-circle" size={16} />
             </span>
             <div>

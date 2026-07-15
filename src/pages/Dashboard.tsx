@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { ModuleCard } from '../components/ModuleCard';
@@ -10,8 +9,9 @@ import { useAuth } from '../context/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useProgress } from '../hooks/useProgress';
 import { hasCourseAssessment, hasPreviewCourseAssessment } from '../utils/progress';
-import { nextRecommendedModule } from '../utils/moduleReward';
+import { nextDashboardModule } from '../utils/moduleReward';
 import { dueFlashcardCount } from '../utils/flashcardSchedule';
+import { latestCaseAttempts } from '../utils/assessment';
 
 const quickAccess = [
   { id: 'foundations', label: 'X-Ray Basics', to: '/modules/xray-foundations', icon: 'graduation' as const },
@@ -29,7 +29,6 @@ export function DashboardPage() {
   const { user, learnerPreview, isAdminAccount } = useAuth();
   const { snapshot } = useProgress();
   const { bookmarks, isModuleSaved, toggleModuleBookmark } = useBookmarks();
-  const [query, setQuery] = useState('');
   const learnerModules = learnerPreview ? [] : snapshot.modules;
   const learnerCases = learnerPreview ? [] : snapshot.cases;
   const learnerVideos = learnerPreview ? [] : snapshot.videos;
@@ -37,7 +36,9 @@ export function DashboardPage() {
   const learnerConfidence = learnerPreview ? [] : snapshot.confidence;
   const coreModules = moduleSummaries.filter((module) => module.status === 'full');
   const coreModuleIds = new Set(coreModules.map((module) => module.id));
-  const cardsDue = dueFlashcardCount(flashcards.map((flashcard) => flashcard.id));
+  const cardsDue = learnerPreview || !user
+    ? flashcards.length
+    : dueFlashcardCount(flashcards.map((flashcard) => flashcard.id), user.uid);
 
   function progressFor(moduleId: string): number {
     const p = learnerModules.find((m) => m.moduleId === moduleId);
@@ -54,24 +55,12 @@ export function DashboardPage() {
     return p?.postCheckConfidence ?? p?.preCheckConfidence ?? null;
   }
 
-  const filteredModules = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    const matches = q
-      ? moduleSummaries.filter((m) =>
-          [m.title, m.shortTitle, m.description, ...m.emphasis, m.region]
-            .join(' ')
-            .toLowerCase()
-            .includes(q),
-        )
-      : moduleSummaries;
-    return matches;
-  }, [query]);
-
   const completedCount = learnerModules.filter(
     (m) => coreModuleIds.has(m.moduleId) && m.completed,
   ).length;
   const totalCount = coreModules.length;
   const overallPct = (completedCount / Math.max(totalCount, 1)) * 100;
+  const allCoreComplete = totalCount > 0 && completedCount === totalCount;
   const hasCourseBaseline =
     hasCourseAssessment(learnerQuizzes, learnerConfidence, 'pre') ||
     (learnerPreview && hasPreviewCourseAssessment('pre'));
@@ -79,18 +68,8 @@ export function DashboardPage() {
     hasCourseAssessment(learnerQuizzes, learnerConfidence, 'post') ||
     (learnerPreview && hasPreviewCourseAssessment('post'));
   const canOpenModules = hasCourseBaseline || (isAdminAccount && !learnerPreview);
-  const nextModule =
-    nextRecommendedModule(learnerModules) ?? coreModules[0] ?? moduleSummaries[0];
+  const nextModule = nextDashboardModule(learnerModules) ?? coreModules[0] ?? moduleSummaries[0];
   const nextModuleProgress = learnerModules.find((m) => m.moduleId === nextModule.id);
-  const heroPrimary = canOpenModules
-    ? {
-        label: `Continue ${nextModule.shortTitle}`,
-        to: `/modules/${nextModule.id}`,
-      }
-    : {
-        label: 'Start pre-course baseline',
-        to: '/quiz/pre',
-      };
   const savedModuleIds = new Set(bookmarks.map((bookmark) => bookmark.moduleId));
   const savedModules = moduleSummaries.filter((module) => savedModuleIds.has(module.id));
   const weakModules = coreModules
@@ -109,7 +88,7 @@ export function DashboardPage() {
         cta: 'Start baseline',
         icon: 'lightning' as const,
       }
-    : nextModuleProgress?.completed && !hasCoursePost
+    : allCoreComplete && !hasCoursePost
       ? {
           eyebrow: 'Required next',
           title: 'Take the post-course assessment',
@@ -118,6 +97,15 @@ export function DashboardPage() {
           cta: 'Start post-course check',
           icon: 'flag' as const,
         }
+      : allCoreComplete && hasCoursePost
+        ? {
+            eyebrow: 'Course complete',
+            title: 'Your course outcomes are ready',
+            body: 'Review your score and confidence changes, then revisit any region that needs another pass.',
+            to: '/progress',
+            cta: 'View outcomes',
+            icon: 'check-circle' as const,
+          }
       : {
           eyebrow: nextModuleProgress?.visited ? 'Continue learning' : 'Start next module',
           title: nextModuleProgress?.visited
@@ -126,143 +114,154 @@ export function DashboardPage() {
           body: nextModuleProgress?.visited
             ? 'Pick up with the next active drill, then finish the post-check when ready.'
             : 'Begin with the module quick check, then work through the guided read.',
-          to: `/modules/${nextModule.id}`,
+          to: `/modules/${nextModule.id}${
+            nextModuleProgress?.lastSectionId ? `#${nextModuleProgress.lastSectionId}` : ''
+          }`,
           cta: nextModuleProgress?.visited ? 'Resume module' : 'Open module',
           icon: 'book-open' as const,
         };
+  const dashboardStats = [
+    { label: 'Cases', value: latestCaseAttempts(learnerCases).length },
+    { label: 'Videos', value: learnerVideos.filter((v) => v.markedComplete).length },
+    { label: 'Cards due', value: cardsDue },
+  ];
+  const supportLinks =
+    weakModules.length > 0
+      ? weakModules.map((module) => ({
+          label: module.shortTitle,
+          meta: `confidence ${confidenceFor(module.id)}/5`,
+          to: `/modules/${module.id}`,
+          icon: 'star' as const,
+        }))
+      : [
+          {
+            label: 'Image atlas',
+            meta: 'normal anatomy reps',
+            to: '/atlas',
+            icon: 'image' as const,
+          },
+          {
+            label: 'Flashcards',
+            meta: `${cardsDue} due today`,
+            to: '/flashcards',
+            icon: 'sparkles' as const,
+          },
+          {
+            label: 'Cases',
+            meta: 'read-and-call practice',
+            to: '/cases',
+            icon: 'shield' as const,
+          },
+        ];
 
   return (
-    <div className="container-page py-8 sm:py-12">
-      <section className="card-premium">
-        <div className="card-premium-bar" />
-        <div className="p-6 sm:p-8">
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-end">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
-              UCLA Sports Medicine • Jeremy Swisher, MD
+    <div className="container-page py-6 sm:py-10">
+      <section className="learning-hero p-5 sm:p-7">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] lg:items-center">
+          <div className="min-w-0">
+            <div className="mb-5 border-b border-slate-200 pb-4">
+              <div className="section-title">UCLA Sports Medicine · Jeremy Swisher, MD</div>
+              <h1 className="mt-1 text-xl text-balance text-ucla-950 sm:text-2xl">
+                Sports Medicine MSK X-Ray Academy
+              </h1>
             </div>
-            <h1 className="mt-2 text-balance text-ucla-950">Sports Medicine X-Ray Academy</h1>
+            <div className="section-title">{nextRequiredTask.eyebrow}</div>
+            <h2 className="mt-2 max-w-3xl text-2xl text-balance text-ucla-950 sm:text-3xl">
+              {nextRequiredTask.title}
+            </h2>
             <p className="mt-3 max-w-prose leading-relaxed text-slate-600">
-              A high-yield radiograph interpretation platform for UCLA family medicine residents
-              and sports medicine fellows.
+              {nextRequiredTask.body}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
-              <Link to={heroPrimary.to} className="btn-gold">
-                {heroPrimary.label}
+              <Link to={nextRequiredTask.to} className="btn-primary">
+                {nextRequiredTask.cta}
                 <Icon name="arrow-right" size={14} />
               </Link>
+              {canOpenModules && (
+                <Link to="/progress" className="btn-secondary">
+                  View progress
+                  <Icon name="bar-chart" size={14} />
+                </Link>
+              )}
             </div>
           </div>
-          <div className="rounded-xl border border-ucla-100 bg-white/90 p-5 shadow-soft">
-            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Your progress
+
+          <aside className="rounded-lg border border-slate-200 bg-slate-50/70 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  Course progress
+                </div>
+                <div className="mt-1 text-sm text-slate-600">
+                  <span className="font-semibold tabular-nums text-ucla-900">
+                    {completedCount}
+                  </span>{' '}
+                  of {totalCount} modules
+                </div>
+              </div>
+              <div className="text-2xl font-bold tabular-nums text-ucla-900">
+                {Math.round(overallPct)}%
+              </div>
             </div>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-bold tabular-nums text-ucla-900">
-                {completedCount}
-              </span>
-              <span className="text-sm text-slate-500">of {totalCount} modules</span>
-            </div>
-            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white ring-1 ring-slate-200">
               <div
                 className="h-full rounded-full bg-ucla-700"
                 style={{ width: `${overallPct}%` }}
               />
             </div>
-            <div className="mt-3 grid grid-cols-3 gap-2 text-xs text-slate-500">
-              <div>
-                <div className="font-semibold text-ucla-900 tabular-nums">
-                  {learnerCases.length}
+            <dl className="mt-4 grid grid-cols-3 gap-2 text-xs text-slate-500">
+              {dashboardStats.map((stat) => (
+                <div key={stat.label}>
+                  <dt>{stat.label}</dt>
+                  <dd className="mt-0.5 font-semibold tabular-nums text-ucla-900">
+                    {stat.value}
+                  </dd>
                 </div>
-                Cases attempted
-              </div>
-              <div>
-                <div className="font-semibold text-ucla-900 tabular-nums">
-                  {learnerVideos.filter((v) => v.markedComplete).length}
-                </div>
-                Videos completed
-              </div>
-              <div>
-                <div className="font-semibold text-ucla-900 tabular-nums">
-                  {cardsDue}
-                </div>
-                Cards due
-              </div>
-            </div>
+              ))}
+            </dl>
             {user && (
-              <p className="mt-3 text-[11px] text-slate-500">
-                Signed in as {user.email || user.displayName} (
-                {learnerPreview ? 'learner preview' : user.role}).
+              <p className="mt-4 hidden truncate text-[11px] text-slate-500 sm:block">
+                {user.email || user.displayName} · {learnerPreview ? 'learner preview' : user.role}
               </p>
             )}
-          </div>
-        </div>
+          </aside>
         </div>
       </section>
 
-      <section className="mt-5 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <article className="rounded-2xl border border-ucla-100 bg-white/95 p-5 shadow-soft sm:p-6">
-          <div className="flex items-start gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-ucla-600 text-white shadow-soft">
-              <Icon name={nextRequiredTask.icon} size={18} />
-            </span>
-            <div className="min-w-0">
-              <div className="section-title">{nextRequiredTask.eyebrow}</div>
-              <h2 className="mt-1 text-2xl text-ucla-950">{nextRequiredTask.title}</h2>
-              <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
-                {nextRequiredTask.body}
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link to={nextRequiredTask.to} className="btn-primary">
-                  {nextRequiredTask.cta}
-                  <Icon name="arrow-right" size={14} />
-                </Link>
-                <Link to="/flashcards" className="btn-secondary">
-                  Warm up with cards
-                  <Icon name="sparkles" size={14} />
-                </Link>
-              </div>
+      {canOpenModules && (
+        <section className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <article className="calm-panel p-5 sm:p-6">
+            <div className="section-title">
+              {weakModules.length > 0 ? 'Needs another look' : 'Quiet review'}
             </div>
-          </div>
-        </article>
-
-        <article className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-5 shadow-soft sm:p-6">
-          <div className="section-title">Review tools</div>
-          <h2 className="mt-1 text-2xl text-ucla-950">Fast support when you get stuck.</h2>
-          {weakModules.length > 0 ? (
-            <div className="mt-3 space-y-2">
-              {weakModules.map((module) => (
+            <h2 className="mt-1 text-xl text-ucla-950">Support tools stay one click away.</h2>
+            <div className="mt-4 grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+              {supportLinks.map((item) => (
                 <Link
-                  key={module.id}
-                  to={`/modules/${module.id}`}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-ucla-100 bg-white px-3 py-2 text-sm font-semibold text-ucla-900 no-underline shadow-soft hover:bg-ucla-50"
+                  key={item.to}
+                  to={item.to}
+                  className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm no-underline transition-colors hover:bg-slate-50"
                 >
-                  <span>{module.title}</span>
-                  <span className="text-xs text-slate-500">confidence {confidenceFor(module.id)}/5</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-ucla-50 text-ucla-800">
+                    <Icon name={item.icon} size={15} />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold text-slate-800">
+                      {item.label}
+                    </span>
+                    <span className="block truncate text-xs text-slate-500">{item.meta}</span>
+                  </span>
                 </Link>
               ))}
             </div>
-          ) : (
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Use atlas reps for normal anatomy, flashcards for quick retrieval practice, and the
-              cheat-sheet panel below for clinic thresholds.
-            </p>
-          )}
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Link to="/atlas" className="btn-secondary">
-              Image atlas
-              <Icon name="image" size={14} />
-            </Link>
-          </div>
-        </article>
-      </section>
+          </article>
 
-      <div className="mt-5">
-        <CheatSheetPromo />
-      </div>
+          <CheatSheetPromo compact />
+        </section>
+      )}
 
       {canOpenModules && savedModules.length > 0 && (
-        <section className="mt-10">
+        <section className="mt-8">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
               <h2>Saved for review</h2>
@@ -290,49 +289,69 @@ export function DashboardPage() {
         </section>
       )}
 
-      <section className="mt-10">
+      <section className="mt-8">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2>Continue modules</h2>
+            <h2>
+              {canOpenModules
+                ? allCoreComplete
+                  ? 'Course review'
+                  : 'Next in course'
+                : 'Continue modules'}
+            </h2>
             <p className="mt-1 text-sm text-slate-500">
               {canOpenModules
-                ? 'Follow the guided path one module at a time, then return to saved areas for extra practice.'
+                ? allCoreComplete
+                  ? 'Your core path is complete. Review outcomes or revisit a region as needed.'
+                  : 'Keep the dashboard focused on the next best module. Use the full catalog when you want to browse.'
                 : 'Complete the course baseline first so your knowledge and confidence shift can be measured.'}
             </p>
           </div>
           {canOpenModules && (
-            <div className="relative w-full sm:max-w-xs">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                <Icon name="search" size={14} />
-              </span>
-              <input
-                className="input pl-9"
-                placeholder="Search modules…"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                aria-label="Search modules"
-              />
-            </div>
+            <Link to="/modules" className="btn-secondary">
+              Browse modules
+              <Icon name="book-open" size={14} />
+            </Link>
           )}
         </div>
-        {canOpenModules ? (
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredModules.map((m) => (
-              <ModuleCard
-                key={m.id}
-                module={m}
-                progressPercent={progressFor(m.id)}
-                completed={learnerModules.find((x) => x.moduleId === m.id)?.completed}
-                confidence={confidenceFor(m.id)}
-                saved={isModuleSaved(m.id)}
-                onToggleSaved={(module) => void toggleModuleBookmark(module)}
-              />
-            ))}
+        {canOpenModules && !allCoreComplete ? (
+          <div className="mt-4 max-w-lg">
+            <ModuleCard
+              module={nextModule}
+              progressPercent={progressFor(nextModule.id)}
+              completed={learnerModules.find((x) => x.moduleId === nextModule.id)?.completed}
+              confidence={confidenceFor(nextModule.id)}
+              saved={isModuleSaved(nextModule.id)}
+              onToggleSaved={(module) => void toggleModuleBookmark(module)}
+            />
+          </div>
+        ) : canOpenModules ? (
+          <div className="calm-panel mt-4 max-w-2xl p-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                <Icon name="check-circle" size={17} />
+              </span>
+              <div>
+                <h3 className="text-lg text-ucla-900">Core modules complete</h3>
+                <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                  {hasCoursePost
+                    ? 'Your course score and confidence changes are available now.'
+                    : 'Finish the post-course assessment to capture your outcome.'}
+                </p>
+                <Link
+                  to={hasCoursePost ? '/progress' : '/quiz/post'}
+                  className="btn-primary mt-4"
+                >
+                  {hasCoursePost ? 'Review outcomes' : 'Take post-course check'}
+                  <Icon name="arrow-right" size={14} />
+                </Link>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="mt-4 rounded-2xl border border-gold-200 bg-gold-50/70 p-5 shadow-soft">
+          <div className="mt-4 rounded-lg border border-gold-200 bg-gold-50/70 p-5 shadow-soft">
             <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gold-100 text-gold-900">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-100 text-gold-900">
                 <Icon name="lock" size={16} />
               </span>
               <div>
@@ -351,30 +370,33 @@ export function DashboardPage() {
         )}
       </section>
 
-      <section className="mt-10">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2>Resource library</h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Jump into cases, videos, flashcards, atlas images, or assessments when you need them.
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+      {canOpenModules && <details className="calm-panel mt-8 overflow-hidden">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 [&::-webkit-details-marker]:hidden">
+          <span>
+            <span className="block text-base font-semibold text-ucla-950">
+              Browse resource library
+            </span>
+            <span className="mt-0.5 block text-sm text-slate-500">
+              Cases, videos, flashcards, atlas images, and assessments.
+            </span>
+          </span>
+          <Icon name="chevron-down" size={16} className="shrink-0 text-slate-500" />
+        </summary>
+        <div className="grid grid-cols-1 gap-2 border-t border-slate-200 bg-slate-50/60 p-3 sm:grid-cols-2 lg:grid-cols-3">
           {quickAccess.map((q) => (
             <Link
               key={q.id}
               to={q.to}
-              className="group flex items-center gap-2.5 rounded-2xl border border-slate-200/80 bg-white px-3.5 py-3 no-underline shadow-soft transition-shadow hover:shadow-card"
+              className="group flex items-center gap-2.5 rounded-lg bg-white px-3.5 py-3 no-underline ring-1 ring-slate-200 transition-colors hover:bg-ucla-50"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800 transition-colors group-hover:bg-ucla-100">
+              <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ucla-50 text-ucla-800 transition-colors group-hover:bg-white">
                 <Icon name={q.icon} size={16} />
               </span>
               <span className="text-sm font-semibold text-slate-800">{q.label}</span>
             </Link>
           ))}
         </div>
-      </section>
+      </details>}
     </div>
   );
 }

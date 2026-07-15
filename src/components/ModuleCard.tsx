@@ -11,15 +11,6 @@ interface Props {
   onToggleSaved?: (module: ModuleSummary) => void;
 }
 
-const regionTone: Record<ModuleSummary['region'], string> = {
-  Foundations: 'bg-ucla-50 text-ucla-800 border-ucla-100',
-  'Upper Extremity': 'bg-sky-50 text-sky-800 border-sky-100',
-  'Lower Extremity': 'bg-emerald-50 text-emerald-800 border-emerald-100',
-  Axial: 'bg-violet-50 text-violet-800 border-violet-100',
-  Pediatric: 'bg-rose-50 text-rose-800 border-rose-100',
-  'High-Yield Cases': 'bg-gold-50 text-gold-800 border-gold-100',
-};
-
 export function ModuleCard({
   module,
   progressPercent = 0,
@@ -28,94 +19,83 @@ export function ModuleCard({
   saved = false,
   onToggleSaved,
 }: Props) {
+  const complete = progressPercent >= 100;
+  const started = progressPercent > 0;
+  const status = complete ? 'Complete' : started ? 'In progress' : 'Not started';
+  const fill = complete ? 100 : started ? 50 : 0;
+
   return (
     <article
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-ucla-100/80 bg-gradient-to-b from-white to-ucla-50/70 shadow-soft transition-shadow hover:shadow-card"
+      className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-slate-200 bg-white shadow-soft transition-colors hover:border-ucla-200"
     >
-      <div className="h-1 bg-ucla-400" />
       <Link to={`/modules/${module.id}`} className="flex flex-1 flex-col p-5 no-underline">
-      <div className="flex items-start justify-between gap-3">
-        <span className={['pill border', regionTone[module.region]].join(' ')}>
-          {module.region}
-        </span>
-        {completed ? (
-          <span className="pill-primary">
-            <Icon name="check" size={12} /> Completed
-          </span>
-        ) : saved ? (
-          <span className="pill-primary">
-            <Icon name="star" size={12} /> Saved
-          </span>
-        ) : null}
-      </div>
-      <h3 className="mt-3 text-lg text-balance text-ucla-900 group-hover:text-ucla-700 transition-colors">
-        {module.title}
-      </h3>
-      <p className="mt-1 text-sm text-slate-600 leading-relaxed line-clamp-3">
-        {module.description}
-      </p>
-      <ul className="mt-3 flex flex-wrap gap-1.5">
-        {module.emphasis.slice(0, 3).map((e) => (
-          <li key={e} className="pill">
-            {e}
-          </li>
-        ))}
-      </ul>
-      <div className="mt-4 flex-1" />
-      <div className="mt-4 space-y-2">
-        {(() => {
-          const complete = progressPercent >= 100;
-          const started = progressPercent > 0;
-          const status = complete ? 'Complete' : started ? 'In progress' : 'Not started';
-          const fill = complete ? 100 : started ? 50 : 0;
-          return (
-            <>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span>{module.estimatedMinutes} min</span>
-                <span
-                  className={complete ? 'font-semibold text-emerald-700' : started ? 'font-semibold text-ucla-700' : ''}
-                >
-                  {status}
-                </span>
-              </div>
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className={['h-full rounded-full', complete ? 'bg-emerald-600' : 'bg-ucla-700'].join(' ')}
-                  style={{ width: `${fill}%` }}
-                />
-              </div>
-            </>
-          );
-        })()}
-        {typeof confidence === 'number' && confidence > 0 && (
-          <div className="flex items-center gap-1 text-xs text-slate-500">
-            <Icon name="star" size={12} />
-            Confidence: <span className="font-semibold text-slate-700">{confidence}/5</span>
-          </div>
+        <div className="flex items-start justify-between gap-3 text-xs text-slate-500">
+          <span>{module.region}</span>
+          {completed ? (
+            <span className="font-semibold text-emerald-700">Complete</span>
+          ) : saved ? (
+            <span className="font-semibold text-ucla-700">Saved</span>
+          ) : (
+            <span>{module.estimatedMinutes} min</span>
+          )}
+        </div>
+        <h3 className="mt-2 text-lg text-balance text-ucla-900 transition-colors group-hover:text-ucla-700">
+          {module.title}
+        </h3>
+        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-slate-600">
+          {module.description}
+        </p>
+        {module.emphasis.length > 0 && (
+          <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-slate-500">
+            <span className="font-semibold text-slate-600">Focus:</span>{' '}
+            {module.emphasis.slice(0, 2).join(' · ')}
+          </p>
         )}
-      </div>
+        <div className="mt-4 flex-1" />
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>{status}</span>
+            {typeof confidence === 'number' && confidence > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <Icon name="star" size={12} />
+                {confidence}/5
+              </span>
+            )}
+          </div>
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
+            <div
+              className={['h-full rounded-full', complete ? 'bg-emerald-600' : 'bg-ucla-700'].join(' ')}
+              style={{ width: `${fill}%` }}
+            />
+          </div>
+        </div>
       </Link>
-      <div className="flex flex-wrap items-center gap-2 border-t border-ucla-100/80 bg-ucla-50/75 px-5 py-3">
-        <Link to={`/modules/${module.id}`} className="btn-primary px-3 py-2 text-xs">
+      <div className="flex items-center gap-2 border-t border-slate-200 bg-slate-50/70 px-5 py-3">
+        <Link to={`/modules/${module.id}`} className="btn-primary min-w-0 flex-1 px-3 py-2 text-xs sm:flex-none">
           Open module
           <Icon name="arrow-right" size={13} />
         </Link>
-        <Link to={`/modules/${module.id}/cheatsheet`} className="btn-secondary px-3 py-2 text-xs">
+        <Link
+          to={`/modules/${module.id}/cheatsheet`}
+          className="btn-ghost min-h-11 min-w-11 px-2 py-2 text-xs"
+          title={`${module.shortTitle} cheat sheet`}
+        >
           <Icon name="printer" size={13} />
-          Cheat sheet
+          <span className="sr-only">Cheat sheet</span>
         </Link>
         {onToggleSaved && (
           <button
             type="button"
             className={[
-              'btn-secondary px-3 py-2 text-xs',
-              saved ? 'border-ucla-200 bg-ucla-50 text-ucla-900' : '',
+              'btn-ghost min-h-11 min-w-11 px-2 py-2 text-xs',
+              saved ? 'bg-ucla-50 text-ucla-900' : '',
             ].join(' ')}
             onClick={() => onToggleSaved(module)}
             aria-pressed={saved}
+            title={saved ? 'Remove saved module' : 'Save module'}
           >
             <Icon name="star" size={13} />
-            {saved ? 'Saved' : 'Save'}
+            <span className="sr-only">{saved ? 'Saved' : 'Save'}</span>
           </button>
         )}
       </div>

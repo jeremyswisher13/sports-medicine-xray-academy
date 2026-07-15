@@ -9,7 +9,7 @@ export function WelcomePage() {
 
   return (
     <div className="container-page py-10 sm:py-14">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700">
           {greeting}, {firstName}
         </div>
@@ -31,16 +31,34 @@ export function WelcomePage() {
           </Link>
         </div>
 
-        <section className="mt-8 rounded-2xl border border-ucla-100 bg-white/95 p-5 shadow-soft sm:p-6">
-          <div className="section-title">How to use this</div>
-          <h2 className="mt-1 text-2xl text-ucla-950">One active pass at a time.</h2>
-          <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
-            The dashboard will tell you the next required step. Modules use short checks,
-            image calls, cases, recall cards, and confidence ratings to keep learning active.
-          </p>
+        <section className="calm-panel mt-8 p-5 sm:p-6">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+            <div>
+              <div className="section-title">How to use this</div>
+              <h2 className="mt-1 text-2xl text-ucla-950">One active pass at a time.</h2>
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-slate-600">
+                The dashboard tells you the next required step. Modules use short checks,
+                image calls, cases, recall cards, and confidence ratings to keep learning active.
+              </p>
+            </div>
+            <aside className="rounded-lg bg-ucla-50/70 p-4">
+              <div className="flex items-start gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-white text-ucla-800 ring-1 ring-ucla-100">
+                  <Icon name="download" size={16} />
+                </span>
+                <div>
+                  <h3 className="text-base text-ucla-950">Add it to your home screen.</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-slate-600">
+                    On iPhone, open Safari, tap Share, then Add to Home Screen. It launches
+                    full-screen and keeps your next learning step close.
+                  </p>
+                </div>
+              </div>
+            </aside>
+          </div>
         </section>
 
-        <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+        <ol className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
               title: 'Baseline first',
@@ -60,10 +78,16 @@ export function WelcomePage() {
                 'Finish with post-checks and confidence ratings so weak areas stay visible.',
               icon: 'check-circle' as const,
             },
+            {
+              title: 'Use quick reps',
+              body:
+                'Open cards or cheat sheets between patients without losing your place.',
+              icon: 'sparkles' as const,
+            },
           ].map((step, i) => (
             <li key={step.title} className="card p-4 sm:p-5">
               <div className="flex items-start gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
                   <span className="font-bold text-sm">{i + 1}</span>
                 </span>
                 <div className="min-w-0">

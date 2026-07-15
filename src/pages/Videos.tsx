@@ -70,7 +70,7 @@ export function VideosPage() {
           </p>
         </div>
         <div className="card flex items-center gap-3 px-4 py-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
             <Icon name="youtube" size={16} />
           </span>
           <div>

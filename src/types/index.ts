@@ -74,6 +74,18 @@ export interface SystematicChecklistItem {
   prompts: string[];
 }
 
+export type CaseQuestionType =
+  | 'diagnosis'
+  | 'management'
+  | 'associated-injury'
+  | 'interpretation';
+
+export type CaseManagementChoiceId =
+  | 'symptomatic-follow-up'
+  | 'immobilize-protect'
+  | 'advanced-imaging'
+  | 'urgent-referral';
+
 export interface CaseScenario {
   id: string;
   moduleId: string;
@@ -84,8 +96,10 @@ export interface CaseScenario {
   symptoms: string;
   viewsObtained: string[];
   initialPrompt: string;
+  questionType: CaseQuestionType;
   diagnosisOptions: { id: string; label: string }[];
   correctOptionId: string;
+  recommendedManagementChoiceIds: CaseManagementChoiceId[];
   explanation: string;
   teachingPearl: string;
   nextStep: string;
@@ -94,6 +108,7 @@ export interface CaseScenario {
     view: 'AP' | 'Lateral' | 'Oblique' | 'Special' | 'Annotated' | 'Comparison';
     caption?: string;
     imageKey?: string;
+    revealAfterSubmit?: boolean;
   }[];
 }
 
@@ -249,9 +264,11 @@ export interface CaseAttempt {
   moduleId: string;
   selectedOptionId: string;
   correct: boolean;
+  questionType?: CaseQuestionType;
   checklistChecked: string[];
   freeTextNotes?: string;
   managementChoiceId?: string;
+  managementCorrect?: boolean;
   confidence?: number;
   submittedAt: number;
 }
@@ -264,6 +281,7 @@ export interface ModuleProgress {
   completed: boolean;
   completedAt?: number;
   lastViewedAt: number;
+  lastSectionId?: string;
   preCheckAt?: number;
   postCheckAt?: number;
   preCheckScore?: number;

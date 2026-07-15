@@ -41,6 +41,21 @@ npm run deploy:indexes
 
 The `deploy` scripts invoke `firebase` from `node_modules/.bin`, so no global install is needed.
 
+## Release gate
+
+Do not deploy directly after a curriculum or persistence change. Complete this gate first:
+
+```bash
+npm run check
+npm run build
+npm run preview -- --host 127.0.0.1
+SMOKE_BASE_URL=http://127.0.0.1:4173 SMOKE_EXPECT_PWA=1 npm run smoke:app
+```
+
+`npm run check` includes unit tests, Firestore emulator rules tests, the curriculum audit, and the production/PWA audit. The rules emulator requires JDK 21; this Mac uses Homebrew `openjdk@21`.
+
+Firestore rules are intentionally a separate release decision. Review the emulator results and the `firestore.rules` diff before running `npm run deploy:rules`; do not bundle a rules deploy into a content-only release without that review.
+
 ## Local development with Firebase emulators (optional)
 
 ```bash
@@ -69,3 +84,20 @@ Curriculum content lives in `src/data/`:
 - `quizzes.ts` — pre/post-course bank and confidence domains
 
 After editing, just run `npm run deploy:hosting` (Firestore data is per-learner and isn't in this repo).
+
+## Fellow home-screen QA before release
+
+Run this on a real iPhone in Safari before asking fellows to install the app:
+
+1. Open the primary URL, sign in, and confirm the welcome screen is readable without zoom.
+2. Safari Share → Add to Home Screen → launch from the new icon.
+3. Confirm the app opens full-screen to the dashboard, with the top status area and bottom nav clear of the iPhone safe areas.
+4. Tap Dashboard, Modules, Cards, and Sheets in the bottom nav; each should load without browser chrome or horizontal scrolling.
+5. Start the pre-course assessment and confirm the bottom nav stays hidden during quiz flow.
+6. Open X-Ray Foundations after the course baseline and confirm the module entry check is the first active task.
+7. Turn on Airplane Mode, relaunch the home-screen app, and confirm the dashboard shell and offline banner render.
+8. Turn Airplane Mode off, reload once, and confirm videos/resources that need internet recover normally.
+9. Deploy a new build, reopen the installed app, and confirm the update prompt appears or the new version loads after refresh.
+10. Repeat one quick pass on a small iPhone viewport and one larger iPhone/Plus viewport.
+11. Confirm a second learner on the same device does not inherit the first learner's flashcard or systematic-read state.
+12. Complete a record while offline, reconnect, refresh, and confirm the result remains visible and syncs without duplication.

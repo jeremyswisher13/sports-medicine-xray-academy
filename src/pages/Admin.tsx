@@ -6,7 +6,13 @@ import { moduleContents } from '../data/modules';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { checks } from '../data/moduleChecks';
 import { postCourseQuiz, preCourseQuiz } from '../data/quizzes';
-import { videoResources } from '../data/videoResources';
+import {
+  firstAssessmentAttempts,
+  firstConfidenceAverage,
+  firstQuizAttempt,
+  latestCaseAttempts,
+} from '../utils/assessment';
+import { rowsToCsv } from '../utils/csv';
 import type {
   AuditEvent,
   CaseAttempt,
@@ -19,7 +25,7 @@ import type {
 
 const coreModuleSummaries = moduleSummaries.filter((module) => module.status === 'full');
 const coreModuleIds = new Set(coreModuleSummaries.map((module) => module.id));
-const activeLearningScopes = ['module-coach', 'systematic-read', 'atlas-practice'] as const;
+const activeLearningScopes = ['systematic-read', 'atlas-practice'] as const;
 
 function avg(nums: number[]): number {
   if (!nums.length) return 0;
@@ -52,17 +58,7 @@ function formatDate(ms?: number) {
 }
 
 function downloadCSV(filename: string, rows: (string | number)[][]) {
-  const csv = rows
-    .map((r) =>
-      r
-        .map((c) => {
-          const s = String(c ?? '');
-          if (/[",\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
-          return s;
-        })
-        .join(','),
-    )
-    .join('\n');
+  const csv = rowsToCsv(rows);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -114,29 +110,35 @@ function buildPerLearner(
   const myQuiz = quizzes.filter((x) => x.userId === user.uid);
   const myConf = confidence.filter((x) => x.userId === user.uid);
   const myVid = videos.filter((x) => x.userId === user.uid);
-  const myCases = cases.filter((x) => x.userId === user.uid);
+  const myCases = latestCaseAttempts(cases.filter((x) => x.userId === user.uid));
   const myAudit = audit.filter((x) => x.userId === user.uid);
-
-  const modulePreScores = myMods
-    .map((m) => m.preCheckScore)
-    .filter((n): n is number => typeof n === 'number');
-  const modulePostScores = myMods
-    .map((m) => m.postCheckScore)
-    .filter((n): n is number => typeof n === 'number');
-  const modulePreConf = myMods
-    .map((m) => m.preCheckConfidence)
-    .filter((n): n is number => typeof n === 'number');
-  const modulePostConf = myMods
-    .map((m) => m.postCheckConfidence)
-    .filter((n): n is number => typeof n === 'number');
+  const modulePairs = coreModuleSummaries.map((module) => ({
+    moduleId: module.id,
+    pre: firstQuizAttempt(myQuiz, 'module-pre', module.id),
+    post: firstQuizAttempt(myQuiz, 'module-post', module.id),
+    preConfidence: firstConfidenceAverage(myConf, 'module-pre', module.id),
+    postConfidence: firstConfidenceAverage(myConf, 'module-post', module.id),
+  }));
+  const modulePreScores = modulePairs
+    .map((pair) => pair.pre?.scorePercent)
+    .filter((score): score is number => score !== undefined);
+  const modulePostScores = modulePairs
+    .map((pair) => pair.post?.scorePercent)
+    .filter((score): score is number => score !== undefined);
+  const modulePreConf = modulePairs
+    .map((pair) => pair.preConfidence)
+    .filter((value): value is number => value !== undefined);
+  const modulePostConf = modulePairs
+    .map((pair) => pair.postConfidence)
+    .filter((value): value is number => value !== undefined);
 
   return {
     user,
     modulesCompleted: myMods.filter((m) => coreModuleIds.has(m.moduleId) && m.completed).length,
-    preCourseScore: myQuiz.find((q) => q.scope === 'pre')?.scorePercent,
-    postCourseScore: myQuiz.find((q) => q.scope === 'post')?.scorePercent,
-    preCourseConfidenceAvg: avgOrUndefined(myConf.filter((c) => c.scope === 'pre').map((c) => c.value)),
-    postCourseConfidenceAvg: avgOrUndefined(myConf.filter((c) => c.scope === 'post').map((c) => c.value)),
+    preCourseScore: firstQuizAttempt(myQuiz, 'pre')?.scorePercent,
+    postCourseScore: firstQuizAttempt(myQuiz, 'post')?.scorePercent,
+    preCourseConfidenceAvg: firstConfidenceAverage(myConf, 'pre'),
+    postCourseConfidenceAvg: firstConfidenceAverage(myConf, 'post'),
     videosCompleted: myVid.filter((v) => v.markedComplete).length,
     cases: myCases.length,
     casesCorrect: myCases.filter((c) => c.correct).length,
@@ -144,11 +146,9 @@ function buildPerLearner(
       (a, e) => (a && a > (e.createdAt ?? 0) ? a : e.createdAt),
       undefined,
     ),
-    modulePreChecks: myMods.filter((m) => coreModuleIds.has(m.moduleId) && Boolean(m.preCheckAt)).length,
-    modulePostChecks: myMods.filter((m) => coreModuleIds.has(m.moduleId) && Boolean(m.postCheckAt)).length,
-    moduleOutcomesPending: myMods.filter(
-      (m) => coreModuleIds.has(m.moduleId) && Boolean(m.preCheckAt) && !m.postCheckAt,
-    ).length,
+    modulePreChecks: modulePairs.filter((pair) => Boolean(pair.pre)).length,
+    modulePostChecks: modulePairs.filter((pair) => Boolean(pair.post)).length,
+    moduleOutcomesPending: modulePairs.filter((pair) => pair.pre && !pair.post).length,
     modulePreAvg: avgOrUndefined(modulePreScores),
     modulePostAvg: avgOrUndefined(modulePostScores),
     modulePreConfAvg: avgOrUndefined(modulePreConf),
@@ -164,7 +164,7 @@ export function AdminPage() {
   const [selectedUid, setSelectedUid] = useState<string | null>(null);
 
   const perLearner = useMemo<PerLearner[]>(() => {
-    return data.users.map((u) =>
+    return data.users.filter((user) => user.role !== 'admin').map((u) =>
       buildPerLearner(u, data.modules, data.quizzes, data.confidence, data.videos, data.cases, data.audit),
     );
   }, [data]);
@@ -178,121 +178,162 @@ export function AdminPage() {
   }, [perLearner, search]);
 
   const topMetrics = useMemo(() => {
-    const totalLearners = data.users.length;
-    const totalModuleViews = data.modules.length;
-    const totalCompletions = data.modules.filter((m) => m.completed).length;
-    const totalQuizzes = data.quizzes.length;
-    const totalModulePreChecks = data.modules.filter((m) => Boolean(m.preCheckAt)).length;
-    const totalModulePostChecks = data.modules.filter((m) => Boolean(m.postCheckAt)).length;
-    const courseScoreDeltas = data.users
-      .map((u) => {
-        const pre = data.quizzes.find((q) => q.userId === u.uid && q.scope === 'pre');
-        const post = data.quizzes.find((q) => q.userId === u.uid && q.scope === 'post');
-        if (!pre || !post) return null;
-        return post.scorePercent - pre.scorePercent;
-      })
-      .filter((n): n is number => n !== null);
-    const moduleScoreDeltas = data.modules
+    const learnerIds = new Set(perLearner.map((learner) => learner.user.uid));
+    const learnerModules = data.modules.filter(
+      (module) => learnerIds.has(module.userId) && coreModuleIds.has(module.moduleId),
+    );
+    const learnerQuizzes = data.quizzes.filter((quiz) => learnerIds.has(quiz.userId));
+    const learnerConfidence = data.confidence.filter((rating) => learnerIds.has(rating.userId));
+    const learnerVideos = data.videos.filter((video) => learnerIds.has(video.userId));
+    const totalLearners = perLearner.length;
+    const totalModuleStarts = learnerModules.length;
+    const totalCompletions = learnerModules.filter((module) => module.completed).length;
+    const totalModulePreChecks = learnerModules.filter((module) => Boolean(module.preCheckAt)).length;
+    const totalModulePostChecks = learnerModules.filter((module) => Boolean(module.postCheckAt)).length;
+    const courseScoreDeltas = perLearner
       .filter(
-        (m) =>
-          typeof m.preCheckScore === 'number' && typeof m.postCheckScore === 'number',
+        (learner) =>
+          learner.preCourseScore !== undefined && learner.postCourseScore !== undefined,
       )
-      .map((m) => (m.postCheckScore as number) - (m.preCheckScore as number));
-    const moduleConfDeltas = data.modules
-      .filter(
-        (m) =>
-          typeof m.preCheckConfidence === 'number' &&
-          typeof m.postCheckConfidence === 'number',
-      )
-      .map((m) => (m.postCheckConfidence as number) - (m.preCheckConfidence as number));
+      .map(
+        (learner) =>
+          (learner.postCourseScore as number) - (learner.preCourseScore as number),
+      );
+    const moduleScoreDeltas: number[] = [];
+    const moduleConfDeltas: number[] = [];
+    for (const learnerId of learnerIds) {
+      const myQuiz = learnerQuizzes.filter((quiz) => quiz.userId === learnerId);
+      const myConfidence = learnerConfidence.filter((rating) => rating.userId === learnerId);
+      for (const module of coreModuleSummaries) {
+        const pre = firstQuizAttempt(myQuiz, 'module-pre', module.id);
+        const post = firstQuizAttempt(myQuiz, 'module-post', module.id);
+        if (pre && post) moduleScoreDeltas.push(post.scorePercent - pre.scorePercent);
+        const preConfidence = firstConfidenceAverage(myConfidence, 'module-pre', module.id);
+        const postConfidence = firstConfidenceAverage(myConfidence, 'module-post', module.id);
+        if (preConfidence !== undefined && postConfidence !== undefined) {
+          moduleConfDeltas.push(postConfidence - preConfidence);
+        }
+      }
+    }
+    const completedVideoRecords = learnerVideos.filter((video) => video.markedComplete).length;
     return {
       totalLearners,
-      totalModuleViews,
+      totalModuleStarts,
       totalCompletions,
-      totalQuizzes,
       totalModulePreChecks,
       totalModulePostChecks,
       moduleOutcomeRate:
         totalModulePreChecks === 0 ? 0 : (totalModulePostChecks / totalModulePreChecks) * 100,
       avgCourseDelta: avgOrUndefined(courseScoreDeltas),
+      courseDeltaN: courseScoreDeltas.length,
       avgModuleDelta: avgOrUndefined(moduleScoreDeltas),
+      moduleDeltaN: moduleScoreDeltas.length,
       avgModuleConfDelta: avgOrUndefined(moduleConfDeltas),
+      moduleConfDeltaN: moduleConfDeltas.length,
       videoCompletionRate:
-        videoResources.length === 0
+        learnerVideos.length === 0
           ? 0
-          : (data.videos.filter((v) => v.markedComplete).length /
-              (videoResources.length * Math.max(1, data.users.length))) *
-            100,
+          : (completedVideoRecords / learnerVideos.length) * 100,
+      videoStartedN: learnerVideos.length,
     };
-  }, [data]);
+  }, [data, perLearner]);
 
   const activeLearningMetrics = useMemo(() => {
-    const coachAttempts = data.quizzes.filter((q) => q.scope === 'module-coach');
-    const systematicAttempts = data.quizzes.filter((q) => q.scope === 'systematic-read');
-    const atlasAttempts = data.quizzes.filter((q) => q.scope === 'atlas-practice');
-    const flashcardEvents = data.audit.filter((event) => event.type === 'flashcard_reviewed');
+    const learnerIds = new Set(perLearner.map((learner) => learner.user.uid));
+    const systematicAttempts = data.quizzes.filter(
+      (quiz) => learnerIds.has(quiz.userId) && quiz.scope === 'systematic-read',
+    );
+    const atlasAttempts = data.quizzes.filter(
+      (quiz) =>
+        learnerIds.has(quiz.userId) &&
+        quiz.scope === 'atlas-practice' &&
+        quiz.answers.every((answer) => answer.selectedOptionId !== 'revealed-key-clue'),
+    );
+    const flashcardEvents = data.audit.filter(
+      (event) => learnerIds.has(event.userId) && event.type === 'flashcard_reviewed',
+    );
+    const caseAttempts = data.cases.filter((attempt) => learnerIds.has(attempt.userId));
     const flashcardsNeedReview = flashcardEvents.filter(
       (event) => event.details?.outcome === 'review',
     ).length;
-    const activeAttempts = [...coachAttempts, ...systematicAttempts, ...atlasAttempts];
+    const activeAttempts = [...systematicAttempts, ...atlasAttempts];
     const correctAttempts = activeAttempts.filter((attempt) =>
       attempt.answers.every((answer) => answer.correct),
     ).length;
-    const highConfidenceIncorrect = coachAttempts.filter((attempt) => {
-      const answer = attempt.answers[0];
-      const phaseId = answer?.questionId.split(':')[1];
-      if (!answer || answer.correct || !phaseId) return false;
-      return data.confidence.some(
-        (rating) =>
-          rating.userId === attempt.userId &&
-          rating.scope === 'module-coach' &&
-          rating.moduleId === attempt.moduleId &&
-          rating.domain === phaseId &&
-          rating.value >= 4,
-      );
-    }).length;
     return {
-      total: activeAttempts.length,
-      coach: coachAttempts.length,
+      total: activeAttempts.length + flashcardEvents.length + caseAttempts.length,
+      scoredTotal: activeAttempts.length,
       systematic: systematicAttempts.length,
       atlas: atlasAttempts.length,
       flashcards: flashcardEvents.length,
+      cases: caseAttempts.length,
       flashcardsNeedReview,
       correctRate: activeAttempts.length === 0 ? 0 : (correctAttempts / activeAttempts.length) * 100,
-      highConfidenceIncorrect,
     };
-  }, [data.audit, data.confidence, data.quizzes]);
+  }, [data.audit, data.cases, data.quizzes, perLearner]);
 
   const moduleAnalytics = useMemo(() => {
+    const learnerIds = new Set(perLearner.map((learner) => learner.user.uid));
     return moduleSummaries.map((m) => {
-      const progress = data.modules.filter((p) => p.moduleId === m.id);
+      const progress = data.modules.filter(
+        (item) => item.moduleId === m.id && learnerIds.has(item.userId),
+      );
+      const moduleQuizzes = data.quizzes.filter(
+        (attempt) => attempt.moduleId === m.id && learnerIds.has(attempt.userId),
+      );
+      const preAttempts = perLearner
+        .map((learner) =>
+          firstQuizAttempt(
+            moduleQuizzes.filter((attempt) => attempt.userId === learner.user.uid),
+            'module-pre',
+            m.id,
+          ),
+        )
+        .filter((attempt): attempt is QuizAttempt => Boolean(attempt));
+      const postAttempts = perLearner
+        .map((learner) =>
+          firstQuizAttempt(
+            moduleQuizzes.filter((attempt) => attempt.userId === learner.user.uid),
+            'module-post',
+            m.id,
+          ),
+        )
+        .filter((attempt): attempt is QuizAttempt => Boolean(attempt));
       const activeAttempts = data.quizzes.filter(
         (attempt) =>
+          learnerIds.has(attempt.userId) &&
           attempt.moduleId === m.id &&
-          activeLearningScopes.some((scope) => scope === attempt.scope),
+          activeLearningScopes.some((scope) => scope === attempt.scope) &&
+          attempt.answers.every((answer) => answer.selectedOptionId !== 'revealed-key-clue'),
       );
-      const views = progress.length;
+      const starts = progress.length;
       const completions = progress.filter((p) => p.completed).length;
-      const preCheckCount = progress.filter((p) => Boolean(p.preCheckAt)).length;
-      const postCheckCount = progress.filter((p) => Boolean(p.postCheckAt)).length;
-      const preScores = progress
-        .map((p) => p.preCheckScore)
-        .filter((n): n is number => typeof n === 'number');
-      const postScores = progress
-        .map((p) => p.postCheckScore)
-        .filter((n): n is number => typeof n === 'number');
-      const preConf = progress
-        .map((p) => p.preCheckConfidence)
-        .filter((n): n is number => typeof n === 'number');
-      const postConf = progress
-        .map((p) => p.postCheckConfidence)
-        .filter((n): n is number => typeof n === 'number');
+      const preScores = preAttempts.map((attempt) => attempt.scorePercent);
+      const postScores = postAttempts.map((attempt) => attempt.scorePercent);
+      const preConf = perLearner
+        .map((learner) =>
+          firstConfidenceAverage(
+            data.confidence.filter((rating) => rating.userId === learner.user.uid),
+            'module-pre',
+            m.id,
+          ),
+        )
+        .filter((value): value is number => value !== undefined);
+      const postConf = perLearner
+        .map((learner) =>
+          firstConfidenceAverage(
+            data.confidence.filter((rating) => rating.userId === learner.user.uid),
+            'module-post',
+            m.id,
+          ),
+        )
+        .filter((value): value is number => value !== undefined);
       return {
         module: m,
-        views,
+        starts,
         completions,
-        preCheckCount,
-        postCheckCount,
+        preCheckCount: preAttempts.length,
+        postCheckCount: postAttempts.length,
         preAvg: avgOrUndefined(preScores),
         postAvg: avgOrUndefined(postScores),
         preConfAvg: avgOrUndefined(preConf),
@@ -306,7 +347,7 @@ export function AdminPage() {
               100,
       };
     });
-  }, [data.modules, data.quizzes]);
+  }, [data.confidence, data.modules, data.quizzes, perLearner]);
 
   const questionBank = useMemo(() => {
     const bank = new Map<string, { prompt: string; moduleId?: string; domain?: string }>();
@@ -331,8 +372,11 @@ export function AdminPage() {
 
   const questionAnalytics = useMemo<QuestionStat[]>(() => {
     const stats = new Map<string, QuestionStat>();
-    for (const attempt of data.quizzes) {
+    const learnerIds = new Set(perLearner.map((learner) => learner.user.uid));
+    const learnerAttempts = data.quizzes.filter((attempt) => learnerIds.has(attempt.userId));
+    for (const attempt of firstAssessmentAttempts(learnerAttempts)) {
       for (const answer of attempt.answers) {
+        if (answer.selectedOptionId === 'revealed-key-clue') continue;
         const meta = questionBank.get(answer.questionId);
         const existing =
           stats.get(answer.questionId) ??
@@ -353,7 +397,7 @@ export function AdminPage() {
       .filter((q) => q.attempts > 0)
       .sort((a, b) => b.misses / b.attempts - a.misses / a.attempts || b.misses - a.misses)
       .slice(0, 8);
-  }, [data.quizzes, questionBank]);
+  }, [data.quizzes, perLearner, questionBank]);
 
   const followUpLearners = useMemo(() => {
     return perLearner
@@ -459,7 +503,7 @@ export function AdminPage() {
 
   function exportAuditCSV() {
     const header = ['When', 'User ID', 'Type', 'Module', 'Ref', 'Details'];
-    const rows = data.audit
+    const rows = [...data.audit]
       .sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0))
       .map((e) => [
         formatDate(e.createdAt),
@@ -479,7 +523,7 @@ export function AdminPage() {
           <div className="section-title">Course administration</div>
           <h1 className="mt-1 text-balance">Admin dashboard</h1>
           <p className="mt-1 max-w-prose text-slate-600 leading-relaxed">
-            Aggregate learner progress, pre/post deltas, video completion, and audit log.
+            Aggregate learner progress, descriptive pre/post changes, video activity, and audit log.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -497,7 +541,7 @@ export function AdminPage() {
       </div>
 
       {error && (
-        <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50/60 p-3 text-sm text-rose-800">
+        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50/60 p-3 text-sm text-rose-800">
           {error.includes('PERMISSION_DENIED')
             ? 'Permission denied — confirm Firestore rules deployed and your account is in the admin email allowlist.'
             : error}
@@ -519,30 +563,30 @@ export function AdminPage() {
         />
         <Stat
           label="Module completions"
-          value={`${topMetrics.totalCompletions} / ${topMetrics.totalModuleViews}`}
-          sub="Completed / module visits"
+          value={`${topMetrics.totalCompletions} / ${topMetrics.totalModuleStarts}`}
+          sub="Completed / learner-module starts"
         />
         <Stat
-          label="Course score Δ"
+          label="Course score change"
           value={formatDeltaPercent(topMetrics.avgCourseDelta)}
-          sub="Avg post − pre"
+          sub={`Descriptive post − pre · n=${topMetrics.courseDeltaN}`}
         />
         <Stat
-          label="Module score Δ"
+          label="Module score change"
           value={formatDeltaPercent(topMetrics.avgModuleDelta)}
-          sub="Per-module pre→post"
+          sub={`Descriptive pre→post · n=${topMetrics.moduleDeltaN}`}
         />
         <Stat
-          label="Active drills"
+          label="Recorded active reps"
           value={activeLearningMetrics.total.toString()}
-          sub={`${activeLearningMetrics.correctRate.toFixed(0)}% correct`}
+          sub={`${activeLearningMetrics.correctRate.toFixed(0)}% correct across ${activeLearningMetrics.scoredTotal} scored reps`}
         />
       </div>
 
       <div className="mt-6 flex flex-wrap gap-1.5">
         {[
           { id: 'overview', label: 'Overview' },
-          { id: 'learners', label: `Learners (${data.users.length})` },
+          { id: 'learners', label: `Learners (${perLearner.length})` },
           { id: 'modules', label: 'Module analytics' },
           { id: 'audit', label: 'Audit log' },
         ].map((t) => (
@@ -551,7 +595,7 @@ export function AdminPage() {
             type="button"
             onClick={() => setTab(t.id as typeof tab)}
             className={[
-              'rounded-full border px-3.5 py-1.5 text-xs font-semibold',
+              'min-h-11 rounded-full border px-3.5 py-1.5 text-xs font-semibold',
               tab === t.id
                 ? 'border-ucla-600 bg-ucla-600 text-white'
                 : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
@@ -568,17 +612,17 @@ export function AdminPage() {
             <h3 className="text-base text-ucla-900">Most engaged modules</h3>
             <ul className="mt-3 space-y-2">
               {[...moduleAnalytics]
-                .sort((a, b) => b.views - a.views)
+                .sort((a, b) => b.starts - a.starts)
                 .slice(0, 6)
                 .map((m) => (
                   <li
                     key={m.module.id}
-                    className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 px-3 py-2"
+                    className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 px-3 py-2"
                   >
                     <span className="flex-1 truncate text-sm font-medium text-slate-800">
                       {m.module.title}
                     </span>
-                    <span className="pill">{m.views} views</span>
+                    <span className="pill">{m.starts} started</span>
                     <span className="pill">{m.preCheckCount} pre</span>
                     <span className="pill">{m.postCheckCount} post</span>
                     <span className="pill-primary">{m.completions} done</span>
@@ -593,14 +637,14 @@ export function AdminPage() {
             </ul>
           </article>
           <article className="card p-5">
-            <h3 className="text-base text-ucla-900">Confidence growth</h3>
+            <h3 className="text-base text-ucla-900">Confidence change</h3>
             <p className="mt-1 text-sm text-slate-500">
               Average per-module pre/post confidence delta.
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <Mini label="Module Δ" value={formatDeltaNumber(topMetrics.avgModuleConfDelta)} />
+              <Mini label={`Module change · n=${topMetrics.moduleConfDeltaN}`} value={formatDeltaNumber(topMetrics.avgModuleConfDelta)} />
               <Mini label="Outcome capture" value={`${topMetrics.moduleOutcomeRate.toFixed(0)}%`} />
-              <Mini label="Video completion" value={`${topMetrics.videoCompletionRate.toFixed(0)}%`} />
+              <Mini label={`Video completion · ${topMetrics.videoStartedN} started`} value={`${topMetrics.videoCompletionRate.toFixed(0)}%`} />
             </div>
             <p className="mt-3 text-xs text-slate-500">
               Confidence and score deltas come from the per-module pre/post quick checks.
@@ -609,21 +653,20 @@ export function AdminPage() {
           <article className="card p-5">
             <h3 className="text-base text-ucla-900">Active learning signal</h3>
             <p className="mt-1 text-sm text-slate-500">
-              Coach, systematic-read, and atlas-practice reps that happen inside the learning flow.
+              Recorded guided reads, scored atlas calls, case attempts, and flashcard reviews.
             </p>
             <div className="mt-3 grid grid-cols-2 gap-3">
-              <Mini label="Coach commits" value={activeLearningMetrics.coach.toString()} />
               <Mini label="Read steps" value={activeLearningMetrics.systematic.toString()} />
               <Mini label="Atlas reps" value={activeLearningMetrics.atlas.toString()} />
+              <Mini label="Case attempts" value={activeLearningMetrics.cases.toString()} />
               <Mini label="Flashcard reps" value={activeLearningMetrics.flashcards.toString()} />
               <Mini
                 label="Need review"
                 value={activeLearningMetrics.flashcardsNeedReview.toString()}
               />
-              <Mini label="Overconfident misses" value={activeLearningMetrics.highConfidenceIncorrect.toString()} />
             </div>
             <p className="mt-3 text-xs text-slate-500">
-              Overconfident misses are module-coach questions missed with confidence rated 4 or 5.
+              Correctness is calculated only across guided-read and scored atlas attempts; clue reveals are excluded.
             </p>
           </article>
           <article className="card p-5">
@@ -638,7 +681,7 @@ export function AdminPage() {
               {followUpLearners.map((l) => (
                 <li
                   key={l.user.uid}
-                  className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 px-3 py-2"
+                  className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 px-3 py-2"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium text-slate-800">
@@ -655,7 +698,7 @@ export function AdminPage() {
                 </li>
               ))}
               {followUpLearners.length === 0 && (
-                <li className="rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-500">
+                <li className="rounded-lg border border-slate-200 px-3 py-3 text-sm text-slate-500">
                   No follow-up flags yet.
                 </li>
               )}
@@ -671,7 +714,7 @@ export function AdminPage() {
                 const missRate = q.attempts === 0 ? 0 : (q.misses / q.attempts) * 100;
                 const moduleTitle = moduleSummaries.find((m) => m.id === q.moduleId)?.shortTitle;
                 return (
-                  <li key={q.questionId} className="rounded-xl border border-slate-200 px-3 py-2">
+                  <li key={q.questionId} className="rounded-lg border border-slate-200 px-3 py-2">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="pill bg-rose-50 text-rose-800 border-rose-100">
                         {Math.round(missRate)}% missed
@@ -687,7 +730,7 @@ export function AdminPage() {
                 );
               })}
               {questionAnalytics.length === 0 && (
-                <li className="rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-500">
+                <li className="rounded-lg border border-slate-200 px-3 py-3 text-sm text-slate-500">
                   No question attempts yet.
                 </li>
               )}
@@ -712,7 +755,7 @@ export function AdminPage() {
                 />
               </div>
               <span className="text-xs text-slate-500">
-                {filteredLearners.length} / {data.users.length}
+                {filteredLearners.length} / {perLearner.length}
               </span>
             </div>
             <div className="overflow-x-auto">
@@ -723,7 +766,7 @@ export function AdminPage() {
                     <th className="px-4 py-2">Role</th>
                     <th className="px-4 py-2">Mods</th>
                     <th className="px-4 py-2">Checks</th>
-                    <th className="px-4 py-2">Course Δ</th>
+                    <th className="px-4 py-2">Course change</th>
                     <th className="px-4 py-2">Last active</th>
                   </tr>
                 </thead>
@@ -840,7 +883,7 @@ export function AdminPage() {
                   </dd>
                   <dt className="text-slate-500">Videos done</dt>
                   <dd className="font-semibold tabular-nums">
-                    {selectedLearner.videosCompleted}/{videoResources.length}
+                    {selectedLearner.videosCompleted}
                   </dd>
                 </dl>
 
@@ -900,13 +943,13 @@ export function AdminPage() {
                   <th className="px-4 py-2">Module</th>
                   <th className="px-4 py-2">Region</th>
                   <th className="px-4 py-2">Time</th>
-                  <th className="px-4 py-2">Views</th>
+                  <th className="px-4 py-2">Started</th>
                   <th className="px-4 py-2">Pre</th>
                   <th className="px-4 py-2">Post</th>
                   <th className="px-4 py-2">Completions</th>
                   <th className="px-4 py-2">Active reps</th>
-                  <th className="px-4 py-2">Score Δ</th>
-                  <th className="px-4 py-2">Conf Δ</th>
+                  <th className="px-4 py-2">Score change</th>
+                  <th className="px-4 py-2">Confidence change</th>
                 </tr>
               </thead>
               <tbody>
@@ -926,7 +969,7 @@ export function AdminPage() {
                       </td>
                       <td className="px-4 py-2 text-slate-600">{m.module.region}</td>
                       <td className="px-4 py-2 text-slate-600">{m.module.estimatedMinutes} min</td>
-                      <td className="px-4 py-2 tabular-nums">{m.views}</td>
+                      <td className="px-4 py-2 tabular-nums">{m.starts}</td>
                       <td className="px-4 py-2 tabular-nums">{m.preCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.postCheckCount}</td>
                       <td className="px-4 py-2 tabular-nums">{m.completions}</td>
@@ -1038,7 +1081,7 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 
 function Mini({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 px-3 py-2">
+    <div className="rounded-lg border border-slate-200 px-3 py-2">
       <div className="text-[11px] uppercase tracking-wide text-slate-500">{label}</div>
       <div className="text-base font-semibold tabular-nums text-ucla-900">{value}</div>
     </div>

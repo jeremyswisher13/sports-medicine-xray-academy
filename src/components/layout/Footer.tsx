@@ -1,13 +1,23 @@
 import { Link } from 'react-router-dom';
 import { Wordmark } from '../ui/Logo';
+import { APP_VERSION, CURRICULUM_UPDATED_AT } from '../../config/appVersion';
 
 export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="mt-12 border-t border-ucla-900/20 bg-ucla-800 text-slate-200">
+    <footer className="mt-10 border-t border-ucla-900/20 bg-ucla-800 text-slate-200 lg:mt-12">
       <div className="h-[2px] gold-divider" aria-hidden />
-      <div className="container-page py-8 lg:py-10">
+      <div className="container-page py-5 pb-[calc(5.75rem+env(safe-area-inset-bottom))] lg:hidden">
+        <p className="text-xs leading-relaxed text-slate-300">
+          Clinician education only. This does not replace formal radiology interpretation,
+          clinical judgment, or institutional protocols.
+        </p>
+        <div className="mt-2 text-[11px] text-slate-400">
+          Curriculum {CURRICULUM_UPDATED_AT} · App {APP_VERSION}
+        </div>
+      </div>
+      <div className="container-page hidden py-10 lg:block">
         <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
           <div>
             <div>
@@ -87,6 +97,9 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-5 text-[12px] text-slate-300 sm:flex-row sm:items-center">
           <div>© {year} Jeremy Swisher, MD · Original UCLA Sports Medicine curriculum.</div>
+          <div>
+            Curriculum updated {CURRICULUM_UPDATED_AT} · App {APP_VERSION}
+          </div>
           <div>AMSSM YouTube videos linked as supplemental external resources.</div>
         </div>
       </div>

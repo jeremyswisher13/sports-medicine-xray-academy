@@ -137,3 +137,23 @@ export function nextRecommendedModule(
     (summary) => summary.status === 'full' && !completedIds.has(summary.id),
   );
 }
+
+/**
+ * Dashboard behavior is slightly different from completion rewards: if a
+ * learner has an unfinished module they touched recently, resume that before
+ * sending them back to the first incomplete module in curriculum order.
+ */
+export function nextDashboardModule(progress: ModuleProgress[]): ModuleSummary | undefined {
+  const fullModuleIds = new Set(
+    moduleSummaries.filter((summary) => summary.status === 'full').map((summary) => summary.id),
+  );
+  const active = progress
+    .filter((item) => fullModuleIds.has(item.moduleId) && item.visited && !item.completed)
+    .sort((a, b) => (b.lastViewedAt ?? 0) - (a.lastViewedAt ?? 0))[0];
+
+  if (active) {
+    return moduleSummaries.find((summary) => summary.id === active.moduleId);
+  }
+
+  return nextRecommendedModule(progress);
+}

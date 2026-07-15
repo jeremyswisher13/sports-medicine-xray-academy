@@ -82,7 +82,7 @@ export function ModulesPage() {
         </div>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className="mt-4 flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-white p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {allRegions.map((r) => {
           const active = region === r;
           return (
@@ -91,10 +91,10 @@ export function ModulesPage() {
               type="button"
               onClick={() => setRegion(r)}
               className={[
-                'rounded-full border px-3 py-1.5 text-xs font-semibold',
+                'min-h-11 min-w-11 shrink-0 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors',
                 active
-                  ? 'border-ucla-200 bg-ucla-50 text-ucla-900 ring-1 ring-ucla-100'
-                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
+                  ? 'bg-ucla-700 text-white'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
               ].join(' ')}
             >
               {r}
@@ -112,8 +112,8 @@ export function ModulesPage() {
                 Complete active-learning lessons that count toward course completion.
               </p>
             </div>
-            <span className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
-              Start here
+            <span className="text-xs font-semibold text-slate-500">
+              {readyModules.length} modules
             </span>
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

@@ -48,7 +48,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     pitfalls: [
       'Accepting an inadequate series.',
       'Stopping after the first abnormality.',
-      'Assuming normal early x-ray excludes stress, scaphoid, femoral neck, pars, or physeal injury.',
+      'Treating early normal x-rays as reassuring when stress, scaphoid, femoral neck, pars, or physeal injury remains clinically plausible.',
     ],
     pearl:
       'The easiest way to miss a fracture is to accept an inadequate series or stop after the first abnormality.',
@@ -67,6 +67,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     ],
     addOnViews: [
       'Zanca view for AC joint injury.',
+      'Grashey (true AP glenoid) when the glenohumeral joint space or glenoid rim is the question.',
       'CT when glenoid bone loss, fracture planes, or complex proximal humerus injury need definition.',
       'MRI for persistent weakness/pain with suspected cuff, labral, or occult fracture injury.',
     ],
@@ -80,7 +81,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     signs: [
       'Humeral head centered on glenoid.',
       'Light-bulb, trough line, or abnormal overlap suggests posterior dislocation but does not prove it.',
-      'Acromiohumeral interval <7 mm suggests chronic rotator cuff insufficiency.',
+      'On an adequately positioned upright AP, an acromiohumeral interval below about 7 mm supports chronic superior migration or large chronic cuff dysfunction; a normal interval does not exclude a tear.',
       'Zanca positioning uses 10-15 degrees cephalic tilt.',
     ],
     patterns: [
@@ -123,13 +124,13 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     viewAdequacyWarning:
       'Fat pads and alignment lines are only trustworthy on a true lateral.',
     negativeXrayEscalation: [
-      'Treat posterior fat pad as occult fracture until proven otherwise.',
+      'A posterior fat pad after trauma strongly suggests occult intra-articular injury; manage as a possible fracture.',
       'Repeat films in 10-14 days or CT when occult fracture remains likely.',
       'MRI for capitellar OCD or instability concern.',
     ],
     signs: [
-      'Anterior humeral line should bisect the capitellum on lateral.',
-      'Radiocapitellar line should intersect the capitellum on every view.',
+      'Anterior humeral line should intersect the capitellum on a true lateral; the middle third is typical at age 5 and older, while younger children may intersect anteriorly.',
+      'Radiocapitellar line should intersect the capitellum on adequately positioned views; confirm a suspected miss across views.',
       'Posterior fat pad is abnormal.',
       'CRITOE helps distinguish ossification centers from fragments.',
     ],
@@ -269,7 +270,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
       'Standing weightbearing views for chronic OA/joint-space questions.',
     ],
     addOnViews: [
-      'Sunrise/Merchant for patellar fracture, subluxation, or dislocation.',
+      'Sunrise/Merchant for patellofemoral alignment when tolerated; avoid forced flexion when an acute patellar fracture is suspected.',
       'Tunnel/notch when OCD or intercondylar pathology is suspected.',
       'CT for tibial plateau or intra-articular fracture characterization.',
     ],
@@ -278,7 +279,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     negativeXrayEscalation: [
       'CT for suspected tibial plateau or intra-articular fracture.',
       'MRI for ACL-associated avulsion, OCD, extensor mechanism injury, or occult internal derangement.',
-      'Treat lipohemarthrosis as intra-articular fracture until proven otherwise.',
+      'Lipohemarthrosis strongly indicates an intra-articular fracture and warrants fracture-directed evaluation.',
     ],
     signs: [
       'Suprapatellar effusion on lateral.',
@@ -319,10 +320,11 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     requiredViews: [
       'Ankle AP, mortise, and lateral.',
       'Foot AP, oblique, and lateral.',
-      'Apply Ottawa rules before ordering when appropriate.',
+      'Apply Ottawa rules in eligible acute injuries when appropriate; clinical judgment still applies.',
     ],
     addOnViews: [
       'Weightbearing foot films for suspected Lisfranc injury when tolerated.',
+      'CT or MRI when Lisfranc suspicion remains high and weightbearing is not possible or radiographs are equivocal.',
       'Full-length tibia/fibula or proximal fibula views when syndesmosis/Maisonneuve is suspected.',
       'Harris axial for calcaneus when needed.',
     ],
@@ -335,8 +337,8 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     ],
     signs: [
       'Mortise congruity and medial clear space.',
-      'Medial clear space >4 mm or tibiofibular clear space >6 mm raises syndesmosis concern.',
-      'Tarsometatarsal alignment and >2 mm Lisfranc diastasis are alarms.',
+      'On an adequate mortise, asymmetric medial widening or tibiofibular clear space around 6 mm or greater raises instability concern; rotation, stress, and technique affect thresholds.',
+      'On properly positioned, preferably weightbearing images when tolerated, tarsometatarsal malalignment or diastasis above about 2 mm raises Lisfranc concern.',
       'Fifth metatarsal fracture zone drives management.',
     ],
     patterns: [
@@ -433,16 +435,16 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     viewAdequacyWarning:
       'In growing athletes, the physis is often the weak link; cortical normality can be falsely reassuring.',
     negativeXrayEscalation: [
-      'MRI or CT when physeal injury is suspected but plain films are normal/equivocal.',
+      'MRI when persistent symptoms or a high-risk site keeps occult physeal, stress, infectious, or neoplastic injury in the differential; CT for defined articular fracture characterization.',
       'Urgent referral for SH III-V, SCFE, Tillaux/triplane, sleeve fracture, or septic joint concern.',
       'Escalate persistent focal symptoms even with normal films.',
     ],
     signs: [
       'Salter-Harris I-V framework.',
       'CRITOE order for pediatric elbow.',
-      "Klein's line should intersect the epiphysis in SCFE.",
-      'Tillaux is SH III; triplane is transitional SH IV-type.',
-      'Articular displacement >2 mm often changes surgical planning.',
+      "Klein's line should intersect the lateral epiphysis; failure raises SCFE concern, but a normal line does not exclude an early slip.",
+      'Tillaux is a transitional SH III pattern; a triplane fracture traverses the epiphysis, physis, and metaphysis in three planes.',
+      'For Tillaux and triplane fractures, articular displacement around 2 mm influences orthopedic planning.',
     ],
     patterns: [
       'Little League shoulder/elbow.',
@@ -462,7 +464,7 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     ],
     pitfalls: [
       'Confusing ossification centers with fractures.',
-      'Assuming normal films exclude SH I or overuse physeal injury.',
+      'Either dismissing a concerning clinical course because films are normal or diagnosing Salter-Harris I from tenderness alone.',
       'Forgetting hip disease can present as knee pain.',
     ],
     pearl:
@@ -479,12 +481,12 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
       'Use the special view that prevents the miss.',
       'Axillary/Velpeau for painful shoulder.',
       'True lateral elbow and wrist.',
-      'Weightbearing foot films for Lisfranc.',
+      'Weightbearing comparison foot films for Lisfranc when safe and tolerated; CT/MRI when not.',
       'Mortise ankle plus proximal fibula view for syndesmosis/Maisonneuve.',
     ],
     addOnViews: [
       'Scaphoid or clenched-fist views for wrist concerns.',
-      'Bilateral AP plus lateral hip for SCFE pathway.',
+      'Stable SCFE: bilateral AP plus frog-leg lateral hips; unstable SCFE: AP plus cross-table lateral without forced frog-leg positioning.',
       'Horizontal-beam lateral knee for lipohemarthrosis.',
       'Complete cervical visualization to C7-T1.',
     ],
@@ -497,11 +499,11 @@ const specs: Record<string, ClinicCheatSheetSpec> = {
     ],
     signs: [
       'Posterior shoulder: axillary view best.',
-      'Posterior fat pad = occult elbow fracture.',
-      'SL gap >3 mm or broken Gilula arcs = carpal instability.',
-      "Klein's line failure = SCFE.",
-      'Segond = ACL/internal derangement.',
-      'Lisfranc >2 mm diastasis; MCS >4 mm or TFCS >6 mm = ankle alarm.',
+      'Posterior fat pad after trauma strongly suggests occult elbow injury.',
+      'On an adequate PA, an SL gap above about 3 mm or disrupted Gilula arcs raises concern for carpal instability; confirm lateral carpal alignment.',
+      "Klein's-line failure raises SCFE concern; a normal line does not exclude an early slip.",
+      'A Segond fragment strongly raises concern for ACL and associated internal derangement.',
+      'On adequate views, Lisfranc diastasis above about 2 mm or ankle clear-space asymmetry raises concern; weightbearing, stress, and rotation affect interpretation.',
     ],
     patterns: [
       'Posterior shoulder dislocation vs fixed internal rotation.',

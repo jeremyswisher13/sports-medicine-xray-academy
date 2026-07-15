@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Logo, Wordmark } from '../components/ui/Logo';
 import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { firebaseEnabled } from '../services/firebase';
+import { requestedPathFromState } from '../utils/navigation';
 
 export function LoginPage() {
   const { user, signInGoogle, signInGuest, error, loading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const requestedPath = requestedPathFromState(location.state);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
-      navigate('/welcome', { replace: true });
+      navigate(requestedPath ?? '/welcome', { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, requestedPath]);
 
   async function handleGoogle() {
     setSubmitting(true);
@@ -37,8 +40,8 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen gradient-hero">
-      <div className="container-page flex min-h-screen items-center justify-center py-12">
+    <div className="min-h-[100dvh] gradient-hero">
+      <div className="container-page flex min-h-[100dvh] items-center justify-center py-12">
         <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-2 lg:items-center">
           <div className="hidden lg:block">
             <div>
@@ -118,10 +121,8 @@ export function LoginPage() {
             </div>
 
             <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500">
-              By signing in, you agree to use this tool for clinician education.{' '}
-              <Link to="/welcome" className="underline">
-                Learn more
-              </Link>
+              For clinician education only. Follow local protocols and use clinical judgment for
+              patient care.
             </div>
           </div>
         </div>

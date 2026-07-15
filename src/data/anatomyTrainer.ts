@@ -9,9 +9,9 @@
  *
  * Marker coordinates are PERCENTAGES of the displayed image (x = left, y = top).
  *
- * SEED / FIRST PASS: structure NAMES, teaching notes, and answer keys are
- * clinically correct; marker POSITIONS are a first pass to be confirmed and
- * nudged onto the films by the course director via the in-app Adjust tool.
+ * Marker positions are verified against the displayed source images. Keep the
+ * tour and check coordinates synchronized, and run the trainer atlas/audit after
+ * changing an image or marker.
  */
 
 import { generatedTrainers } from './anatomyTrainerGenerated';
@@ -76,17 +76,17 @@ const shoulder: ModuleTrainerData = {
       imageKey: 'normal:shoulder-grashey',
       markers: [{ x: 68, y: 34, label: 'Glenoid' }],
       title: 'Glenoid',
-      note: 'The shallow scapular socket. Trace its rim — an anteroinferior bony fragment is a bony Bankart, and rim bone loss changes the surgical plan after instability.',
+      note: 'The shallow scapular socket. Trace its rim — an anteroinferior bony fragment is a bony Bankart, and the amount and location of rim bone loss inform stabilization planning after instability.',
     },
     {
       imageKey: 'normal:shoulder-grashey',
       markers: [{ x: 33, y: 13, label: 'Acromion' }],
       title: 'Acromion',
-      note: 'The flat lateral projection of the scapular spine forming the roof of the shoulder. The acromiohumeral interval (AHI, the gap between acromion and humeral head) beneath it should be ≥ 7 mm; a high-riding head means chronic cuff insufficiency.',
+      note: 'The flat lateral projection of the scapular spine forming the roof of the shoulder. On an adequately positioned upright AP view, an acromiohumeral interval below about 7 mm supports chronic superior migration or large chronic cuff dysfunction; it is not diagnostic, and a normal interval does not exclude a tear.',
     },
     {
       imageKey: 'normal:shoulder-grashey',
-      markers: [{ x: 72, y: 10, label: 'Distal clavicle / AC joint' }],
+      markers: [{ x: 55, y: 13, label: 'Distal clavicle / AC joint' }],
       title: 'Distal clavicle & AC joint',
       note: 'Where the clavicle meets the acromion. Compare the coracoclavicular distance to the other side to grade AC separation; distal clavicle erosion in a lifter is osteolysis.',
     },

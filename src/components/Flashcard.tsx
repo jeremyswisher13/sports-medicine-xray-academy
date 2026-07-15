@@ -69,7 +69,7 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
         </span>
         <button
           type="button"
-          className="text-slate-500 hover:text-slate-800"
+          className="-mr-2 inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-slate-500 hover:text-slate-800"
           onClick={() => onSkip?.()}
         >
           Skip
@@ -82,8 +82,8 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
           onClick={() => setFlipped((f) => !f)}
           aria-label={flipped ? 'Show prompt' : 'Reveal answer'}
           className={[
-            'relative w-full rounded-2xl text-left transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ucla-600 focus-visible:ring-offset-2',
-            'min-h-[260px] sm:min-h-[280px]',
+            'relative w-full rounded-lg text-left transition-transform duration-500 [transform-style:preserve-3d] focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ucla-600 focus-visible:ring-offset-2',
+            'min-h-[240px] sm:min-h-[280px]',
             flipped ? '[transform:rotateY(180deg)]' : '',
           ].join(' ')}
         >
@@ -113,7 +113,7 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
                 </div>
                 <p className="mt-3 text-base leading-relaxed text-slate-800">{card.back}</p>
                 {card.pearl && (
-                  <div className="mt-4 rounded-xl border border-gold-200 bg-gold-50/70 p-3">
+                  <div className="mt-4 rounded-lg border border-gold-200 bg-gold-50/70 p-3">
                     <div className="text-[11px] font-semibold uppercase tracking-wide text-gold-800">
                       Pearl
                     </div>
@@ -130,10 +130,10 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
         </button>
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-2">
+      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-end">
         <button
           type="button"
-          className="btn-secondary"
+          className="btn-secondary w-full sm:w-auto"
           onClick={() => onResult('review')}
         >
           <Icon name="alert" size={14} />
@@ -141,7 +141,7 @@ export function Flashcard({ card, index, total, onResult, onSkip }: Props) {
         </button>
         <button
           type="button"
-          className="btn-primary"
+          className="btn-primary w-full sm:w-auto"
           onClick={() => onResult('got-it')}
         >
           <Icon name="check" size={14} />

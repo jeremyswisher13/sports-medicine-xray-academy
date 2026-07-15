@@ -14,7 +14,7 @@ export function ProtectedRoute({ children, requireRole }: Props) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[100dvh] items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-slate-500">
           <Logo size={42} />
           <div className="text-sm">Loading…</div>
@@ -24,7 +24,8 @@ export function ProtectedRoute({ children, requireRole }: Props) {
   }
 
   if (!user) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    const requestedPath = `${location.pathname}${location.search}${location.hash}`;
+    return <Navigate to="/login" state={{ from: requestedPath }} replace />;
   }
 
   if (requireRole === 'admin' && !isAdminAccount) {

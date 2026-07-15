@@ -49,9 +49,10 @@ export function CheatSheetPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="text-slate-200 hover:text-white"
+              className="-mx-2 inline-flex min-h-11 items-center gap-1 px-2 text-slate-200 hover:text-white"
             >
-              ← Back
+              <Icon name="chevron-left" size={16} />
+              Back
             </button>
             <span className="text-white/30">/</span>
             <span className="font-medium text-white">

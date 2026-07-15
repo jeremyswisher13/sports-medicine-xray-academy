@@ -32,6 +32,7 @@ function validModuleFilter(moduleId: string | null): string {
 
 export function FlashcardsPage() {
   const { user, learnerPreview } = useAuth();
+  const storageOwner = learnerPreview ? null : user?.uid ?? null;
   const [searchParams, setSearchParams] = useSearchParams();
   const moduleParam = searchParams.get('module');
   const [moduleFilter, setModuleFilter] = useState<string>(() =>
@@ -39,12 +40,26 @@ export function FlashcardsPage() {
   );
   const [mode, setMode] = useState<'all' | 'due-only'>('all');
   const [shuffleSeed, setShuffleSeed] = useState(0);
-  const [persisted, setPersisted] = useState<PersistedFlashcardState>(loadFlashcardState);
+  const [persistedOwner, setPersistedOwner] = useState<string | null>(storageOwner);
+  const [persisted, setPersisted] = useState<PersistedFlashcardState>(() =>
+    storageOwner ? loadFlashcardState(storageOwner) : createEmptyFlashcardState(),
+  );
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    saveFlashcardState(persisted);
-  }, [persisted]);
+    if (persistedOwner === storageOwner) return;
+    setPersistedOwner(storageOwner);
+    setPersisted(
+      storageOwner ? loadFlashcardState(storageOwner) : createEmptyFlashcardState(),
+    );
+    setIndex(0);
+  }, [persistedOwner, storageOwner]);
+
+  useEffect(() => {
+    if (storageOwner && persistedOwner === storageOwner) {
+      saveFlashcardState(storageOwner, persisted);
+    }
+  }, [persisted, persistedOwner, storageOwner]);
 
   useEffect(() => {
     setModuleFilter(validModuleFilter(moduleParam));
@@ -134,7 +149,7 @@ export function FlashcardsPage() {
   const totalCards = flashcards.length;
 
   return (
-    <div className="container-page py-8 sm:py-12">
+    <div className="container-page pt-6 pb-28 sm:pt-12 lg:pb-12">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="section-title">Active recall</div>
@@ -145,7 +160,7 @@ export function FlashcardsPage() {
           </p>
         </div>
         <div className="card flex items-center gap-3 px-4 py-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
             <Icon name="lightning" size={16} />
           </span>
           <div>
@@ -213,8 +228,8 @@ export function FlashcardsPage() {
         )}
       </section>
 
-      <details className="mt-4 rounded-2xl border border-ucla-100 bg-white/95 p-4 shadow-soft">
-        <summary className="cursor-pointer text-sm font-semibold text-ucla-900">
+      <details className="mt-4 mb-4 rounded-lg border border-ucla-100 bg-white/95 p-4 shadow-soft">
+        <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-ucla-900">
           Choose deck and study mode
         </summary>
         <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -262,7 +277,7 @@ export function FlashcardsPage() {
                 setMode('all');
                 changeModuleFilter('all');
               }}
-              className="text-xs font-semibold text-ucla-700 hover:text-ucla-900"
+              className="inline-flex min-h-11 items-center px-2 text-xs font-semibold text-ucla-700 hover:text-ucla-900"
             >
               Study all {totalCards}
             </button>
@@ -282,7 +297,7 @@ export function FlashcardsPage() {
                     changeModuleFilter(deckSummary.module.id);
                   }}
                   className={[
-                    'rounded-2xl border p-3 text-left shadow-soft transition-colors',
+                    'rounded-lg border p-3 text-left shadow-soft transition-colors',
                     selected
                       ? 'border-ucla-300 bg-ucla-700 text-white'
                       : 'border-ucla-100 bg-white/90 text-slate-700 hover:bg-ucla-50',

@@ -8,6 +8,7 @@ import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firest
 import { firebaseAuth, firebaseEnabled, firestore, googleProvider, COLLECTIONS } from './firebase';
 import { logAuditEvent } from './firestore';
 import type { LearnerRole, UserProfile } from '../types';
+import { normalizeTimestampFields } from '../utils/timestamp';
 
 const LOCAL_USER_KEY = 'sxra:user';
 
@@ -71,14 +72,29 @@ export function subscribeToAuth(
     window.addEventListener('storage', handler);
     return () => window.removeEventListener('storage', handler);
   }
-  return onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+
+  let authSequence = 0;
+  let active = true;
+  const unsubscribe = onAuthStateChanged(firebaseAuth, async (firebaseUser) => {
+    const sequence = ++authSequence;
     if (!firebaseUser) {
-      cb(readLocalProfile());
+      if (active) cb(readLocalProfile());
       return;
     }
+
+    const cachedProfile = readLocalProfile();
+    if (active && cachedProfile?.uid === firebaseUser.uid) {
+      cb(cachedProfile);
+    }
+
     const profile = await ensureUserDocOrFallback(firebaseUser);
-    cb(profile);
+    if (active && sequence === authSequence) cb(profile);
   });
+  return () => {
+    active = false;
+    authSequence += 1;
+    unsubscribe();
+  };
 }
 
 function readLocalProfile(): UserProfile | null {
@@ -149,14 +165,17 @@ async function ensureUserDoc(user: FirebaseUser): Promise<UserProfile> {
     });
     return profile;
   }
-  const data = snap.data() as Partial<UserProfile>;
+  const data = normalizeTimestampFields(snap.data() as Partial<UserProfile>, [
+    'createdAt',
+    'lastLogin',
+  ]);
   await updateDoc(ref, { lastLogin: serverTimestamp() });
   return {
     uid: user.uid,
     displayName: data.displayName ?? baseDisplayName,
-    email: data.email ?? user.email ?? '',
+    email: user.email ?? '',
     photoURL: data.photoURL ?? user.photoURL ?? undefined,
-    role: data.role ?? defaultRoleFor(user.email),
+    role: defaultRoleFor(user.email),
     createdAt: data.createdAt ?? Date.now(),
     lastLogin: Date.now(),
   };

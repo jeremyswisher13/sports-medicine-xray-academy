@@ -192,13 +192,19 @@ export function MarkerAdjuster({ moduleId, data }: Props) {
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
         <div
           ref={boxRef}
-          className="relative touch-none select-none overflow-hidden rounded-xl bg-black"
+          className="relative touch-none select-none overflow-hidden rounded-lg bg-black"
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
+          onPointerCancel={onPointerUp}
         >
           {entry ? (
-            <img src={entry.src} alt="" draggable={false} className="block w-full" />
+            <img
+              src={entry.src}
+              alt=""
+              draggable={false}
+              decoding="async"
+              className="block w-full"
+            />
           ) : (
             <div className="grid aspect-[3/4] place-items-center text-sm text-slate-400">
               No image
@@ -212,8 +218,10 @@ export function MarkerAdjuster({ moduleId, data }: Props) {
               type="button"
               onPointerDown={(e) => {
                 e.stopPropagation();
+                e.currentTarget.setPointerCapture(e.pointerId);
                 onPointerDownMarker(i);
               }}
+              onLostPointerCapture={onPointerUp}
               onKeyDown={(e) => onMarkerKeyDown(i, e)}
               className="absolute z-10 -translate-x-1/2 -translate-y-1/2 cursor-grab rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-400 active:cursor-grabbing"
               style={{ left: `${m.x}%`, top: `${m.y}%` }}

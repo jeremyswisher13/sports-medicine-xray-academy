@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
 import { QuizQuestion } from './QuizQuestion';
 import { ConfidenceScale } from './ConfidenceScale';
@@ -10,7 +10,7 @@ import {
   saveModuleProgress,
   saveQuizAttempt,
 } from '../services/firestore';
-import type { ModuleProgress, QuizQuestionData } from '../types';
+import type { ModuleProgress, QuizAttempt, QuizQuestionData } from '../types';
 
 interface Props {
   moduleId: string;
@@ -18,12 +18,16 @@ interface Props {
   phase: 'pre' | 'post';
   questions: QuizQuestionData[];
   existingProgress?: ModuleProgress;
+  existingAttempt?: QuizAttempt;
   // Pre-check shows under a "Start with a quick check" affordance.
   // Post-check is opened from the "Mark module complete" CTA.
   variant?: 'banner' | 'inline';
   required?: boolean;
   completeModuleOnFinish?: boolean;
   completedTabsOnFinish?: string[];
+  completionReady?: boolean;
+  completionBlockedMessage?: string;
+  beforeComplete?: () => Promise<void>;
   onComplete?: (result: { score: number; confidence: number }) => void;
   onSkip?: () => void;
 }
@@ -34,10 +38,14 @@ export function ModuleCheck({
   phase,
   questions,
   existingProgress,
+  existingAttempt,
   variant = 'banner',
   required = false,
   completeModuleOnFinish = false,
   completedTabsOnFinish,
+  completionReady = true,
+  completionBlockedMessage,
+  beforeComplete,
   onComplete,
   onSkip,
 }: Props) {
@@ -56,7 +64,8 @@ export function ModuleCheck({
     () => questions.filter((q) => answers[q.id] === q.correctOptionId).length,
     [questions, answers],
   );
-  const scorePercent = total === 0 ? 0 : (correct / total) * 100;
+  const calculatedScorePercent = total === 0 ? 0 : (correct / total) * 100;
+  const scorePercent = existingAttempt?.scorePercent ?? calculatedScorePercent;
   const allAnswered = Object.keys(answers).length === total;
   const currentAnswered = currentQuestion ? Boolean(answers[currentQuestion.id]) : false;
 
@@ -64,8 +73,21 @@ export function ModuleCheck({
     phase === 'pre'
       ? Boolean(persistedProgress?.preCheckAt)
       : Boolean(persistedProgress?.postCheckAt);
+  const completionBlocked = completeModuleOnFinish && !completionReady;
+
+  useEffect(() => {
+    if (!existingAttempt || alreadyDone) return;
+    setSubmitted(true);
+    setStep('confidence');
+  }, [alreadyDone, existingAttempt]);
 
   function resetCheckFlow() {
+    if (existingAttempt) {
+      setSubmitted(true);
+      setStep('confidence');
+      setOpen(true);
+      return;
+    }
     setAnswers({});
     setSubmitted(false);
     setConfidence(undefined);
@@ -78,7 +100,7 @@ export function ModuleCheck({
     return (
       <div
         className={[
-          'flex flex-wrap items-center justify-between gap-3 rounded-2xl border p-4',
+          'flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4',
           alreadyDone
             ? 'border-emerald-200 bg-emerald-50/60'
             : 'border-gold-200 bg-gold-50/60',
@@ -87,7 +109,7 @@ export function ModuleCheck({
         <div className="flex items-start gap-3">
           <span
             className={[
-              'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl',
+              'mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
               alreadyDone
                 ? 'bg-emerald-100 text-emerald-700'
                 : 'bg-gold-100 text-gold-800',
@@ -110,25 +132,29 @@ export function ModuleCheck({
                 ? phase === 'pre'
                   ? `Baseline captured. Score: ${Math.round(persistedProgress?.preCheckScore ?? 0)}% · Confidence: ${persistedProgress?.preCheckConfidence ?? '—'}/5`
                   : `Outcome captured. Score: ${Math.round(persistedProgress?.postCheckScore ?? 0)}% · Confidence: ${persistedProgress?.postCheckConfidence ?? '—'}/5`
+                : completionBlocked
+                  ? completionBlockedMessage ?? 'Finish the required module activities first.'
                 : `${total} quick questions plus a confidence rating — under a minute.`}
             </div>
           </div>
         </div>
         <div className="flex gap-2">
           {alreadyDone ? (
-            <button className="btn-secondary" onClick={resetCheckFlow}>
-              Retake
-            </button>
+            <span className="pill-primary">Saved</span>
           ) : (
             <>
-              {!required && (
+              {!completionBlocked && !required && onSkip && (
                 <button className="btn-ghost" onClick={onSkip}>
                   Skip
                 </button>
               )}
-              <button className="btn-primary" onClick={resetCheckFlow}>
-                Start
-                <Icon name="arrow-right" size={14} />
+              <button
+                className={completionBlocked ? 'btn-secondary' : 'btn-primary'}
+                onClick={resetCheckFlow}
+                disabled={completionBlocked}
+              >
+                {completionBlocked ? 'Not ready' : 'Start'}
+                {!completionBlocked && <Icon name="arrow-right" size={14} />}
               </button>
             </>
           )}
@@ -138,6 +164,7 @@ export function ModuleCheck({
   }
 
   async function submitQuiz() {
+    if (alreadyDone || completionBlocked) return;
     setSubmitted(true);
     if (!user || learnerPreview) return;
     await saveQuizAttempt({
@@ -166,8 +193,9 @@ export function ModuleCheck({
   }
 
   async function submitConfidence() {
-    if (!confidence) return;
+    if (!confidence || alreadyDone || completionBlocked) return;
     const shouldCompleteModule = phase === 'post' && completeModuleOnFinish;
+    if (shouldCompleteModule) await beforeComplete?.();
     if (user && !learnerPreview) {
       await saveConfidenceRating({
         id: ids.newId(),
@@ -249,7 +277,7 @@ export function ModuleCheck({
           <div className="space-y-3">
             {!submitted && currentQuestion && (
               <>
-                <div className="rounded-2xl border border-ucla-100 bg-ucla-50/60 p-3">
+                <div className="rounded-lg border border-ucla-100 bg-ucla-50/60 p-3">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
                     <span>
                       Question {quizIndex + 1} of {total}
@@ -308,7 +336,7 @@ export function ModuleCheck({
 
             {submitted && (
               <>
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-3 text-sm text-slate-700">
+                <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-3 text-sm text-slate-700">
                   Score:{' '}
                   <span className="font-bold tabular-nums text-ucla-900">
                     {Math.round(scorePercent)}%

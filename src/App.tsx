@@ -1,11 +1,14 @@
-import { lazy, Suspense, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, type ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
+import { MobileAppNav } from './components/layout/MobileAppNav';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
+import { PwaStatus } from './components/PwaStatus';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import { useProgress } from './hooks/useProgress';
+import { ProgressProvider, useProgress } from './hooks/useProgress';
 import { hasCourseAssessment, hasPreviewCourseAssessment } from './utils/progress';
+import { moduleSummaries } from './data/moduleSummaries';
 import { LoginPage } from './pages/Login';
 import { WelcomePage } from './pages/Welcome';
 import { DashboardPage } from './pages/Dashboard';
@@ -54,16 +57,70 @@ function LazyPage({ children }: { children: ReactNode }) {
   return <Suspense fallback={<RouteFallback />}>{children}</Suspense>;
 }
 
+function RouteScrollManager() {
+  const { pathname, search, hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) return;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [pathname, search, hash]);
+
+  return null;
+}
+
 function ProtectedShell({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const hideMobileNav =
+    location.pathname === '/welcome' ||
+    location.pathname.startsWith('/quiz') ||
+    location.pathname.startsWith('/admin');
+
   return (
     <ProtectedRoute>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-[100dvh] flex-col">
         <Header />
-        <main className="flex-1">{children}</main>
+        <main
+          className={[
+            'flex-1',
+            hideMobileNav ? '' : 'pb-[calc(5rem+env(safe-area-inset-bottom))] lg:pb-0',
+          ].join(' ')}
+        >
+          {children}
+        </main>
+        {!hideMobileNav && <MobileAppNav />}
         <Footer />
       </div>
     </ProtectedRoute>
   );
+}
+
+function CourseOutcomeGate({ children }: { children: ReactNode }) {
+  const { learnerPreview, isAdminAccount } = useAuth();
+  const { snapshot, loading } = useProgress();
+
+  if (learnerPreview || isAdminAccount) return <>{children}</>;
+  if (loading) return <RouteFallback />;
+
+  const baselineComplete = hasCourseAssessment(
+    snapshot.quizzes,
+    snapshot.confidence,
+    'pre',
+  );
+  const coreModuleIds = moduleSummaries
+    .filter((module) => module.status === 'full')
+    .map((module) => module.id);
+  const completedModuleIds = new Set(
+    snapshot.modules
+      .filter((module) => module.completed)
+      .map((module) => module.moduleId),
+  );
+  const courseComplete =
+    coreModuleIds.length > 0 && coreModuleIds.every((id) => completedModuleIds.has(id));
+
+  if (!baselineComplete) return <Navigate to="/quiz/pre" replace />;
+  if (!courseComplete) return <Navigate to="/dashboard" replace />;
+
+  return <>{children}</>;
 }
 
 function CourseBaselineGate({ children }: { children: ReactNode }) {
@@ -91,8 +148,11 @@ function CourseBaselineGate({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
-        <Routes>
+      <ProgressProvider>
+        <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
+          <PwaStatus />
+          <RouteScrollManager />
+          <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route
@@ -137,9 +197,11 @@ export default function App() {
             path="/cases"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <CasesPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <CasesPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -147,9 +209,11 @@ export default function App() {
             path="/videos"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <VideosPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <VideosPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -167,9 +231,11 @@ export default function App() {
             path="/quiz/post"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <QuizPage scope="post" />
-                </LazyPage>
+                <CourseOutcomeGate>
+                  <LazyPage>
+                    <QuizPage scope="post" />
+                  </LazyPage>
+                </CourseOutcomeGate>
               </ProtectedShell>
             }
           />
@@ -177,9 +243,11 @@ export default function App() {
             path="/progress"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <ProgressPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <ProgressPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -187,9 +255,11 @@ export default function App() {
             path="/flashcards"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <FlashcardsPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <FlashcardsPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -197,9 +267,11 @@ export default function App() {
             path="/cheatsheets"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <CheatSheetsPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <CheatSheetsPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -207,9 +279,11 @@ export default function App() {
             path="/atlas"
             element={
               <ProtectedShell>
-                <LazyPage>
-                  <AtlasPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <AtlasPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedShell>
             }
           />
@@ -229,9 +303,11 @@ export default function App() {
             path="/progress/summary"
             element={
               <ProtectedRoute>
-                <LazyPage>
-                  <LearnerSummaryPage />
-                </LazyPage>
+                <CourseBaselineGate>
+                  <LazyPage>
+                    <LearnerSummaryPage />
+                  </LazyPage>
+                </CourseBaselineGate>
               </ProtectedRoute>
             }
           />
@@ -239,7 +315,7 @@ export default function App() {
             path="/admin"
             element={
               <ProtectedRoute requireRole="admin">
-                <div className="flex min-h-screen flex-col">
+                <div className="flex min-h-[100dvh] flex-col">
                   <Header />
                   <main className="flex-1">
                     <LazyPage>
@@ -252,8 +328,9 @@ export default function App() {
             }
           />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </ProgressProvider>
     </AuthProvider>
   );
 }

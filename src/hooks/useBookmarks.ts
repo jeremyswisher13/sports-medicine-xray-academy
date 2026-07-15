@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import {
   deleteBookmark,
@@ -22,22 +22,29 @@ export function useBookmarks(): {
   const { user, learnerPreview } = useAuth();
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState(false);
+  const requestIdRef = useRef(0);
 
   const refresh = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     if (!user || learnerPreview) {
       setBookmarks([]);
+      setLoading(false);
       return;
     }
     setLoading(true);
     try {
-      setBookmarks(await listBookmarks(user.uid));
+      const nextBookmarks = await listBookmarks(user.uid);
+      if (requestId === requestIdRef.current) setBookmarks(nextBookmarks);
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) setLoading(false);
     }
   }, [user, learnerPreview]);
 
   useEffect(() => {
     void refresh();
+    return () => {
+      requestIdRef.current += 1;
+    };
   }, [refresh]);
 
   const savedModuleIds = useMemo(() => {

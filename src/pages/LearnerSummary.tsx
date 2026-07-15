@@ -5,8 +5,12 @@ import { Icon } from '../components/ui/Icon';
 import { useAuth } from '../context/AuthContext';
 import { useProgress } from '../hooks/useProgress';
 import { moduleSummaries } from '../data/moduleSummaries';
-import { loadFlashcardState } from '../utils/flashcardSchedule';
-import type { ConfidenceRating, QuizAttempt } from '../types';
+import { createEmptyFlashcardState, loadFlashcardState } from '../utils/flashcardSchedule';
+import {
+  firstConfidenceAverage,
+  firstQuizAttempt,
+  latestCaseAttempts,
+} from '../utils/assessment';
 
 // Printable per-learner progress summary. Read-only over the existing progress
 // snapshot — no Firestore writes. Reuses the cheat-sheet print stylesheet
@@ -29,15 +33,19 @@ export function LearnerSummaryPage() {
     snapshot.modules.some((p) => p.moduleId === m.id && p.completed),
   ).length;
 
-  const preQuiz = quizScore(snapshot.quizzes, 'pre');
-  const postQuiz = quizScore(snapshot.quizzes, 'post');
-  const preConfidence = confidenceAvg(snapshot.confidence, 'pre');
-  const postConfidence = confidenceAvg(snapshot.confidence, 'post');
+  const preQuiz = firstQuizAttempt(snapshot.quizzes, 'pre')?.scorePercent;
+  const postQuiz = firstQuizAttempt(snapshot.quizzes, 'post')?.scorePercent;
+  const preConfidence = firstConfidenceAverage(snapshot.confidence, 'pre');
+  const postConfidence = firstConfidenceAverage(snapshot.confidence, 'post');
 
-  const casesAttempted = snapshot.cases.length;
-  const casesCorrect = snapshot.cases.filter((c) => c.correct).length;
+  const currentCases = latestCaseAttempts(snapshot.cases);
+  const casesAttempted = currentCases.length;
+  const casesCorrect = currentCases.filter((c) => c.correct).length;
   const videosCompleted = snapshot.videos.filter((v) => v.markedComplete).length;
-  const flashcardsReviewed = loadFlashcardState().reviewedIds.length;
+  const flashcardState = learnerPreview || !user
+    ? createEmptyFlashcardState()
+    : loadFlashcardState(user.uid);
+  const flashcardsReviewed = flashcardState.reviewedIds.length;
 
   const generatedOn = new Date().toLocaleDateString(undefined, {
     year: 'numeric',
@@ -53,9 +61,10 @@ export function LearnerSummaryPage() {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="text-slate-200 hover:text-white"
+              className="-mx-2 inline-flex min-h-11 items-center gap-1 px-2 text-slate-200 hover:text-white"
             >
-              ← Back
+              <Icon name="chevron-left" size={16} />
+              Back
             </button>
             <span className="text-white/30">/</span>
             <span className="font-medium text-white">Progress summary</span>
@@ -210,19 +219,6 @@ function SummaryStat({
       {sub && <div className="text-[7.5pt] text-slate-500">{sub}</div>}
     </div>
   );
-}
-
-function quizScore(quizzes: QuizAttempt[], scope: 'pre' | 'post'): number | undefined {
-  return quizzes.find((q) => q.scope === scope)?.scorePercent;
-}
-
-function confidenceAvg(
-  confidence: ConfidenceRating[],
-  scope: 'pre' | 'post',
-): number | undefined {
-  const values = confidence.filter((c) => c.scope === scope).map((c) => c.value);
-  if (values.length === 0) return undefined;
-  return values.reduce((a, b) => a + b, 0) / values.length;
 }
 
 function deltaLabel(

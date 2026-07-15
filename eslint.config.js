@@ -37,7 +37,7 @@ export default tseslint.config(
         'warn',
         {
           allowConstantExport: true,
-          allowExportNames: ['schematicContent', 'useAuth'],
+          allowExportNames: ['schematicContent', 'useAuth', 'useProgress'],
         },
       ],
     },
@@ -47,6 +47,15 @@ export default tseslint.config(
     languageOptions: {
       globals: {
         ...globals.node,
+        ...globals.es2022,
+      },
+    },
+  },
+  {
+    files: ['public/sw.js'],
+    languageOptions: {
+      globals: {
+        ...globals.serviceworker,
         ...globals.es2022,
       },
     },

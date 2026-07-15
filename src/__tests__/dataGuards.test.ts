@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { getImage, imageRegistry } from '../data/images';
-import { schematicContent } from '../components/XRayImage';
 import { getPostCheck, getPreCheck } from '../data/moduleChecks';
 import { moduleContents } from '../data/modules';
 import { moduleSummaries } from '../data/moduleSummaries';
@@ -14,6 +13,7 @@ import { hasCourseAssessment } from '../utils/progress';
 import {
   FLASHCARD_STORAGE_KEY,
   dueFlashcardCount,
+  flashcardStorageKey,
   nextDueAt,
 } from '../utils/flashcardSchedule';
 import type { ConfidenceRating, QuizQuestionData } from '../types';
@@ -50,6 +50,28 @@ describe('curriculum data guards', () => {
       expect(module.cases.length, module.id).toBeGreaterThan(0);
       expect(module.quiz.length, module.id).toBeGreaterThan(0);
       expect(module.keyTakeaways.length, module.id).toBeGreaterThan(0);
+    }
+  });
+
+  it('authors every case question and acceptable management pathway explicitly', () => {
+    const validQuestionTypes = new Set([
+      'diagnosis',
+      'management',
+      'associated-injury',
+      'interpretation',
+    ]);
+    const validManagementChoices = new Set([
+      'symptomatic-follow-up',
+      'immobilize-protect',
+      'advanced-imaging',
+      'urgent-referral',
+    ]);
+    for (const caseItem of moduleContents.flatMap((module) => module.cases)) {
+      expect(validQuestionTypes.has(caseItem.questionType), caseItem.id).toBe(true);
+      expect(caseItem.recommendedManagementChoiceIds.length, caseItem.id).toBeGreaterThan(0);
+      for (const choiceId of caseItem.recommendedManagementChoiceIds) {
+        expect(validManagementChoices.has(choiceId), `${caseItem.id}:${choiceId}`).toBe(true);
+      }
     }
   });
 
@@ -140,12 +162,54 @@ describe('curriculum data guards', () => {
       expect(data.check.length, `${moduleId} check`).toBeGreaterThan(0);
       for (const step of data.tour) {
         expect(getImage(step.imageKey), `${moduleId} tour image ${step.imageKey}`).toBeDefined();
+        for (const marker of step.markers) {
+          expect(marker.x, `${moduleId}:${step.title} x`).toBeGreaterThanOrEqual(0);
+          expect(marker.x, `${moduleId}:${step.title} x`).toBeLessThanOrEqual(100);
+          expect(marker.y, `${moduleId}:${step.title} y`).toBeGreaterThanOrEqual(0);
+          expect(marker.y, `${moduleId}:${step.title} y`).toBeLessThanOrEqual(100);
+        }
       }
       for (const q of data.check) {
         expect(getImage(q.imageKey), `${moduleId} check image ${q.imageKey}`).toBeDefined();
+        expect(q.marker.x, `${q.id} x`).toBeGreaterThanOrEqual(0);
+        expect(q.marker.x, `${q.id} x`).toBeLessThanOrEqual(100);
+        expect(q.marker.y, `${q.id} y`).toBeGreaterThanOrEqual(0);
+        expect(q.marker.y, `${q.id} y`).toBeLessThanOrEqual(100);
         expect(q.answer, q.id).toBeGreaterThanOrEqual(0);
         expect(q.answer, q.id).toBeLessThan(q.options.length);
       }
+    }
+  });
+
+  it('keeps high-risk tour and check markers on their verified targets', () => {
+    const expected = [
+      ['elbow', 'Olecranon', 'elbow-ck-4', 73, 82],
+      ['elbow', 'Coronoid process', 'elbow-ck-5', 54, 74],
+      ['pelvis-hip', 'Lesser trochanter', 'pelvis-hip-ck-3', 46, 49],
+      ['pelvis-hip', 'Femoral neck', 'pelvis-hip-ck-5', 38, 39],
+      ['knee', 'Trochlear groove (sulcus)', 'knee-ck-8', 53, 76],
+      [
+        'do-not-miss',
+        'Lisfranc injury — tarsometatarsal diastasis',
+        'dnm-ck-5',
+        50,
+        65,
+      ],
+      [
+        'do-not-miss',
+        'Jones fracture — 5th metatarsal metaphyseal-diaphyseal junction',
+        'dnm-ck-8',
+        19,
+        72,
+      ],
+    ] as const;
+
+    for (const [moduleId, title, checkId, x, y] of expected) {
+      const trainer = moduleTrainers[moduleId];
+      const tourMarker = trainer.tour.find((step) => step.title === title)?.markers[0];
+      const checkMarker = trainer.check.find((check) => check.id === checkId)?.marker;
+      expect(tourMarker, `${moduleId}:${title}`).toEqual(expect.objectContaining({ x, y }));
+      expect(checkMarker, checkId).toEqual({ x, y });
     }
   });
 
@@ -165,15 +229,12 @@ describe('curriculum data guards', () => {
     }
   });
 
-  it('gives every diagram a curated teaching-card schematic (no generic fallback)', () => {
-    const diagramIds = Object.values(imageRegistry)
-      .filter((img) => img.isDiagram)
-      .map((img) => img.id);
-    expect(diagramIds.length).toBeGreaterThan(0);
-    for (const id of diagramIds) {
-      // Without an entry here, XRayImage's TeachingSchematic renders a generic
-      // fallback (view / moduleId / source) instead of real teaching content.
-      expect(schematicContent[id], `missing schematicContent for diagram '${id}'`).toBeDefined();
+  it('maps every teaching diagram to its real SVG asset', () => {
+    const diagrams = Object.values(imageRegistry).filter((image) => image.isDiagram);
+    expect(diagrams.length).toBeGreaterThan(0);
+    for (const diagram of diagrams) {
+      expect(diagram.src, diagram.id).toMatch(/^\/diagrams\/.+\.svg$/);
+      expect(diagram.alt.trim().length, diagram.id).toBeGreaterThan(0);
     }
   });
 });
@@ -192,7 +253,8 @@ describe('flashcard schedule', () => {
     });
     try {
       globalThis.localStorage.removeItem(FLASHCARD_STORAGE_KEY);
-      expect(dueFlashcardCount(['card-1', 'card-2'])).toBe(2);
+      globalThis.localStorage.removeItem(flashcardStorageKey('learner-1'));
+      expect(dueFlashcardCount(['card-1', 'card-2'], 'learner-1')).toBe(2);
     } finally {
       Object.defineProperty(globalThis, 'localStorage', {
         configurable: true,

@@ -5,7 +5,7 @@ import { moduleSummaries } from '../data/moduleSummaries';
 export function CheatSheetsPage() {
   return (
     <div className="container-page py-8 sm:py-12">
-      <header className="overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
+      <header className="overflow-hidden rounded-lg border border-ucla-100 bg-ucla-50/70 p-6 shadow-soft sm:p-8">
         <div className="-mx-6 -mt-6 mb-6 h-1 bg-ucla-400 sm:-mx-8 sm:-mt-8" />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
@@ -19,7 +19,7 @@ export function CheatSheetsPage() {
               when the x-ray is negative but suspicion stays high.
             </p>
           </div>
-          <div className="rounded-xl border border-ucla-100 bg-ucla-50/80 px-4 py-3 text-sm text-slate-600">
+          <div className="rounded-lg border border-ucla-100 bg-ucla-50/80 px-4 py-3 text-sm text-slate-600">
             <div className="font-semibold text-ucla-900">Print-ready</div>
             <div className="text-xs text-slate-500">Open any sheet, then Print / Save as PDF.</div>
           </div>
@@ -31,7 +31,7 @@ export function CheatSheetsPage() {
           <Link
             key={m.id}
             to={`/modules/${m.id}/cheatsheet`}
-            className="group overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-soft transition-shadow hover:shadow-card no-underline"
+            className="group overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-soft transition-shadow hover:shadow-card no-underline"
           >
             <div className="h-1 bg-ucla-400" />
             <div className="p-5">
@@ -48,7 +48,7 @@ export function CheatSheetsPage() {
               <p className="mt-1 text-sm text-slate-600 leading-relaxed line-clamp-3">
                 {m.description}
               </p>
-              <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-ucla-500 px-3 py-2 text-sm font-semibold text-white transition-colors group-hover:bg-ucla-600">
+              <div className="mt-4 inline-flex items-center gap-2 rounded-lg bg-ucla-500 px-3 py-2 text-sm font-semibold text-white transition-colors group-hover:bg-ucla-600">
                 Open cheat sheet
                 <Icon name="arrow-right" size={14} />
               </div>

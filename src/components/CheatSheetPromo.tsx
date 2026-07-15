@@ -17,20 +17,20 @@ export function CheatSheetPromo({ module, compact = false }: Props) {
   return (
     <section
       className={[
-        'overflow-hidden rounded-xl border border-ucla-100 bg-ucla-50/80 text-slate-700 shadow-soft',
+        'calm-panel overflow-hidden text-slate-700',
         compact ? 'p-4' : 'p-5 sm:p-6',
       ].join(' ')}
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800 ring-1 ring-ucla-100">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-ucla-50 text-ucla-800 ring-1 ring-ucla-100">
             <Icon name="book-open" size={18} />
           </span>
           <div className="min-w-0">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ucla-700">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ucla-700">
               Fast reference
             </div>
-            <h2 className="mt-0.5 text-xl leading-tight text-ucla-900 sm:text-2xl">
+            <h2 className="mt-0.5 text-lg leading-tight text-ucla-900 sm:text-xl">
               {title}
             </h2>
             <p className="mt-1 max-w-prose text-sm leading-relaxed text-slate-600">

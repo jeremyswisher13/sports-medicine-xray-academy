@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './ui/Icon';
+import { imagePreviewSrc } from '../utils/imagePreview';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveQuizAttempt } from '../services/firestore';
 import type { SystematicChecklistItem, XRayImageEntry } from '../types';
@@ -225,21 +226,24 @@ export function SystematicReadChecklist({
   defaultExpandedAll = false,
 }: Props) {
   const { user, learnerPreview } = useAuth();
-  const [checked, setChecked] = useState<Set<string>>(() => readCheckedState(storageKey));
+  const persistenceKey = user && !learnerPreview && storageKey
+    ? `${user.uid}:${storageKey}`
+    : undefined;
+  const [checked, setChecked] = useState<Set<string>>(() => readCheckedState(persistenceKey));
   const [challengeAnswers, setChallengeAnswers] = useState<Record<string, string>>(() =>
-    readChallengeAnswers(storageKey),
+    readChallengeAnswers(persistenceKey),
   );
   const [mode, setMode] = useState<StudyMode>(() => (defaultExpandedAll ? 'checklist' : 'challenge'));
   const [activeStep, setActiveStep] = useState<SystematicStep | null>(() => items[0]?.step ?? null);
   const [imageCall, setImageCall] = useState<ImageCall | null>(null);
 
   useEffect(() => {
-    setChecked(readCheckedState(storageKey));
-    setChallengeAnswers(readChallengeAnswers(storageKey));
+    setChecked(readCheckedState(persistenceKey));
+    setChallengeAnswers(readChallengeAnswers(persistenceKey));
     setMode(defaultExpandedAll ? 'checklist' : 'challenge');
     setActiveStep(items[0]?.step ?? null);
     setImageCall(null);
-  }, [defaultExpandedAll, items, storageKey]);
+  }, [defaultExpandedAll, items, persistenceKey]);
 
   const totalPrompts = useMemo(
     () => items.reduce((acc, i) => acc + i.prompts.length, 0),
@@ -263,9 +267,9 @@ export function SystematicReadChecklist({
 
   function persistChecked(next: Set<string>) {
     const arr = Array.from(next);
-    if (storageKey) {
+    if (persistenceKey) {
       try {
-        localStorage.setItem(`sxra:checklist:${storageKey}`, JSON.stringify(arr));
+        localStorage.setItem(`sxra:checklist:${persistenceKey}`, JSON.stringify(arr));
       } catch {
         // ignore
       }
@@ -288,9 +292,9 @@ export function SystematicReadChecklist({
     const correct = optionId === stepChallenge.correctOptionId;
     setChallengeAnswers((prev) => {
       const next = { ...prev, [step]: optionId };
-      if (storageKey) {
+      if (persistenceKey) {
         try {
-          localStorage.setItem(`sxra:read-challenges:${storageKey}`, JSON.stringify(next));
+          localStorage.setItem(`sxra:read-challenges:${persistenceKey}`, JSON.stringify(next));
         } catch {
           // ignore
         }
@@ -368,7 +372,7 @@ export function SystematicReadChecklist({
                 type="button"
                 onClick={() => setMode(option)}
                 className={[
-                  'rounded-full border px-3 py-1.5 text-xs font-semibold capitalize transition-colors',
+                  'min-h-11 rounded-full border px-3 py-1.5 text-xs font-semibold capitalize transition-colors',
                   mode === option
                     ? 'border-ucla-700 bg-ucla-700 text-white shadow-soft'
                     : 'border-ucla-100 bg-white text-ucla-800 hover:border-ucla-200 hover:bg-ucla-50',
@@ -398,8 +402,8 @@ export function SystematicReadChecklist({
 
       {mode === 'challenge' ? (
         <div className="p-5 sm:p-6">
-          <details className="mb-4 rounded-2xl border border-ucla-100 bg-slate-50/70 p-3">
-            <summary className="cursor-pointer text-sm font-semibold text-ucla-900">
+          <details className="mb-4 rounded-lg border border-ucla-100 bg-slate-50/70 p-3">
+            <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-ucla-900">
               Jump to another read step
             </summary>
             <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -414,7 +418,7 @@ export function SystematicReadChecklist({
                     type="button"
                     onClick={() => setActiveStep(item.step)}
                     className={[
-                      'flex items-center gap-2 rounded-2xl border p-2.5 text-left transition-colors',
+                      'flex items-center gap-2 rounded-lg border p-2.5 text-left transition-colors',
                       isActive
                         ? 'border-ucla-200 bg-white text-ucla-900 shadow-soft'
                         : 'border-transparent bg-transparent text-slate-600 hover:border-ucla-100 hover:bg-white',
@@ -460,7 +464,7 @@ export function SystematicReadChecklist({
                 </p>
 
                 {practiceImage && (
-                  <div className="mt-4 rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4">
+                  <div className="mt-4 rounded-lg border border-ucla-100 bg-ucla-50/70 p-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
                         <Icon name="image" size={16} className="text-ucla-700" />
@@ -498,7 +502,7 @@ export function SystematicReadChecklist({
                             type="button"
                             onClick={() => setImageCall(option.id)}
                             className={[
-                              'rounded-xl border px-3 py-2 text-left text-sm font-semibold transition-colors',
+                              'rounded-lg border px-3 py-2 text-left text-sm font-semibold transition-colors',
                               imageCall && correct
                                 ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
                                 : selected
@@ -522,7 +526,7 @@ export function SystematicReadChecklist({
                   </div>
                 )}
 
-                <div className="mt-4 rounded-2xl border border-ucla-100 bg-white p-4 shadow-soft">
+                <div className="mt-4 rounded-lg border border-ucla-100 bg-white p-4 shadow-soft">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
                       <Icon name="sparkles" size={16} className="text-ucla-700" />
@@ -559,7 +563,7 @@ export function SystematicReadChecklist({
                           type="button"
                           onClick={() => answerChallenge(activeItem.step, option.id)}
                           className={[
-                            'flex min-h-[4rem] items-start gap-2.5 rounded-2xl border p-3 text-left text-sm font-semibold leading-snug transition-colors',
+                            'flex min-h-[4rem] items-start gap-2.5 rounded-lg border p-3 text-left text-sm font-semibold leading-snug transition-colors',
                             showCorrect
                               ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
                               : isSelected
@@ -591,7 +595,7 @@ export function SystematicReadChecklist({
                   {activeAnswer ? (
                     <div
                       className={[
-                        'mt-4 rounded-2xl border p-3',
+                        'mt-4 rounded-lg border p-3',
                         activeAnswerIsCorrect
                           ? 'border-emerald-200 bg-emerald-50'
                           : 'border-amber-200 bg-amber-50',
@@ -649,12 +653,13 @@ export function SystematicReadChecklist({
 
               <div className="order-first w-full min-w-0 space-y-3 xl:sticky xl:top-24 xl:order-last xl:w-72">
                 {practiceImage && (
-                  <div className="overflow-hidden rounded-2xl border border-ucla-100 bg-white shadow-soft">
+                  <div className="overflow-hidden rounded-lg border border-ucla-100 bg-white shadow-soft">
                     <div className="relative aspect-[4/3] bg-slate-950">
                       <img
-                        src={practiceImage.src}
+                        src={imagePreviewSrc(practiceImage.src)}
                         alt="Systematic read practice radiograph"
                         loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 h-full w-full object-contain"
                       />
                       <div className="absolute left-2 top-2 rounded-full border border-white/70 bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ucla-900 shadow-soft">
@@ -670,7 +675,7 @@ export function SystematicReadChecklist({
                         Use {activeItem.step.toLowerCase()} on this image before moving on.
                       </p>
                       {activeAnswer && (
-                        <div className="mt-2 rounded-xl border border-ucla-100 bg-ucla-50/70 p-2 text-xs leading-relaxed text-slate-700">
+                        <div className="mt-2 rounded-lg border border-ucla-100 bg-ucla-50/70 p-2 text-xs leading-relaxed text-slate-700">
                           <span className="font-semibold text-ucla-900">Image answer: </span>
                           {practiceImage.isNormal ? 'Normal anatomy' : 'Pathology'} ·{' '}
                           {practiceImage.view}. {practiceImage.caption ?? practiceImage.alt}
@@ -683,7 +688,7 @@ export function SystematicReadChecklist({
                     </div>
                   </div>
                 )}
-                <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4">
+                <div className="rounded-lg border border-ucla-100 bg-ucla-50/70 p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
                     <Icon name="eye" size={16} className="text-ucla-700" />
                     Normal anchor
@@ -697,7 +702,7 @@ export function SystematicReadChecklist({
 
             {activeAnswer && (
               <div className="mt-5 grid gap-3 md:grid-cols-[1fr_0.9fr]">
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                     <Icon name="book-open" size={16} className="text-ucla-700" />
                     How to read this step
@@ -711,7 +716,7 @@ export function SystematicReadChecklist({
                     ))}
                   </ul>
                 </div>
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
                   <div className="flex items-center gap-2 text-sm font-semibold text-amber-950">
                     <Icon name="alert" size={16} className="text-amber-700" />
                     Common miss
@@ -792,7 +797,7 @@ function PromptChecklist({
               type="button"
               onClick={() => onToggle(key)}
               className={[
-                'group flex min-h-[3.4rem] items-start gap-2.5 rounded-2xl border p-3 text-left transition-colors',
+                'group flex min-h-[3.4rem] items-start gap-2.5 rounded-lg border p-3 text-left transition-colors',
                 isChecked
                   ? 'border-ucla-200 bg-ucla-50 text-ucla-950'
                   : 'border-slate-200 bg-white text-slate-700 hover:border-ucla-200 hover:bg-ucla-50/70',

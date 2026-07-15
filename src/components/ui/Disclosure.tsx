@@ -60,7 +60,7 @@ export function Disclosure({
 
   if (boxed) {
     return (
-      <section className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-soft">
+      <section className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-soft">
         {header}
         {open && (
           <div className="border-t border-slate-100 p-4 animate-fade-in">{children}</div>

@@ -52,7 +52,7 @@ export function ModuleTrainer({ moduleId, data, isAdmin = false, onCheckComplete
                 onClick={() => setMode(t.id)}
                 aria-pressed={active}
                 className={[
-                  'inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors',
+                  'inline-flex min-h-11 items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-semibold transition-colors',
                   active
                     ? 'border-ucla-600 bg-ucla-600 text-white shadow-soft'
                     : 'border-slate-200 bg-white text-slate-600 hover:border-ucla-300 hover:text-ucla-900',

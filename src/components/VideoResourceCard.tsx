@@ -152,7 +152,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
 
       <div className="mt-3">
         {recallQuestions.length > 0 && !watchStarted ? (
-          <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4 sm:p-5">
+          <div className="rounded-lg border border-ucla-100 bg-ucla-50/70 p-4 sm:p-5">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-ucla-700">
               <Icon name="sparkles" size={14} />
               Before you watch
@@ -228,7 +228,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
       )}
 
       {recallQuestions.length > 0 && (completed || showRecall) && (
-        <div className="mt-4 rounded-xl border border-ucla-100 bg-ucla-50/40 p-3 sm:p-4">
+        <div className="mt-4 rounded-lg border border-ucla-100 bg-ucla-50/40 p-3 sm:p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
               Active recall · {recallQuestions.length} quick question
@@ -236,7 +236,7 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
             </div>
             <button
               type="button"
-              className="text-xs font-semibold text-ucla-700 hover:text-ucla-900"
+              className="inline-flex min-h-11 items-center px-2 text-xs font-semibold text-ucla-700 hover:text-ucla-900"
               onClick={() => setShowRecall((s) => !s)}
             >
               {showRecall ? 'Hide' : 'Show'}
@@ -285,8 +285,8 @@ export function VideoResourceCard({ video, initialProgress, onProgressChange }: 
       )}
 
       {video.reflectionPrompt && (
-        <details className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-          <summary className="cursor-pointer text-sm font-semibold text-slate-800">
+        <details className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 sm:p-4">
+          <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-slate-800">
             Reflection prompt
           </summary>
           <p className="mt-1 text-sm text-slate-600 leading-relaxed">

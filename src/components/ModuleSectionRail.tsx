@@ -8,13 +8,18 @@ export interface ModuleSection {
 interface Props {
   sections: ModuleSection[];
   className?: string;
+  onActiveChange?: (sectionId: string) => void;
 }
 
 // A sticky "on this page" rail for the single-scroll module. Tapping a chip
 // smooth-scrolls to that section; a scroll-spy highlights wherever you are so
 // you always know your place without the page being chopped into tabs.
-export function ModuleSectionRail({ sections, className = '' }: Props) {
+export function ModuleSectionRail({ sections, className = '', onActiveChange }: Props) {
   const [activeId, setActiveId] = useState(sections[0]?.id ?? '');
+
+  useEffect(() => {
+    if (activeId) onActiveChange?.(activeId);
+  }, [activeId, onActiveChange]);
 
   useEffect(() => {
     const ids = sections.map((s) => s.id);
@@ -52,7 +57,7 @@ export function ModuleSectionRail({ sections, className = '' }: Props) {
   return (
     <nav
       className={[
-        'sticky top-[68px] z-10 -mx-4 border-b border-slate-200/70 bg-white/90 px-2 py-2 backdrop-blur sm:mx-0 sm:rounded-xl sm:border sm:shadow-soft',
+        'sticky top-[67px] z-10 -mx-4 border-y border-slate-200/70 bg-[#F8FAFC]/95 px-2 py-2 backdrop-blur sm:mx-0 sm:rounded-lg sm:border sm:bg-white/90',
         className,
       ].join(' ')}
       aria-label="On this page"
@@ -67,9 +72,9 @@ export function ModuleSectionRail({ sections, className = '' }: Props) {
                 onClick={() => jump(section.id)}
                 aria-current={active ? 'location' : undefined}
                 className={[
-                  'inline-flex min-h-[38px] items-center rounded-lg px-3 py-2 text-sm font-semibold transition-colors',
+                  'inline-flex min-h-[36px] items-center rounded-md px-3 py-2 text-sm font-semibold transition-colors',
                   active
-                    ? 'bg-ucla-600 text-white'
+                    ? 'bg-ucla-700 text-white'
                     : 'text-slate-500 hover:bg-slate-100 hover:text-slate-800',
                 ].join(' ')}
               >

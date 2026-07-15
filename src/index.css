@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Serif 4';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('/fonts/source-serif-4-latin.woff2') format('woff2');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -12,14 +28,24 @@
     height: 100%;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  *, *::before, *::after {
+    letter-spacing: 0 !important;
+  }
+
   body {
-    @apply bg-[#EAF3FA] text-slate-900 font-sans antialiased;
+    @apply bg-[#F3F7FA] text-slate-900 font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01', 'kern';
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100dvh;
   }
 
   h1, h2, h3, h4 {
-    @apply font-serif tracking-tight text-slate-900;
+    @apply font-serif text-slate-900;
   }
 
   h1 { @apply text-3xl sm:text-4xl font-semibold; }
@@ -46,47 +72,55 @@
   }
 
   .card {
-    @apply bg-white/95 rounded-xl border border-ucla-100/80 shadow-soft;
+    @apply rounded-lg border border-slate-200/80 bg-white shadow-soft;
   }
 
   .card-hover {
     @apply transition-shadow duration-200 hover:shadow-card;
   }
 
-  /* Premium "celebration / hero" surface. One consistent treatment for the
-     few high-emphasis panels (module hero, completion reward, quiz hero) so
-     they stop each reinventing a bespoke gradient. Pair with `.card-premium-bar`
-     as the first child for the gold top accent. */
+  /* Premium surfaces stay restrained: a single accent line, plain white body,
+     and modest depth so the page does not feel visually crowded. */
   .card-premium {
-    @apply relative overflow-hidden rounded-xl border border-ucla-100 bg-gradient-to-br from-white via-ucla-50/80 to-white shadow-card;
+    @apply relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-soft;
   }
 
   .card-premium-bar {
-    @apply h-1 w-full bg-gradient-to-r from-ucla-500 via-gold-500 to-ucla-400;
+    @apply h-1 w-full bg-gradient-to-r from-ucla-600 via-gold-500 to-ucla-500;
+  }
+
+  .calm-panel {
+    @apply rounded-lg border border-slate-200/80 bg-white shadow-soft;
+  }
+
+  .learning-hero {
+    @apply rounded-lg border border-slate-200 bg-white shadow-soft;
   }
 
   .pill {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600;
+    @apply inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-xs font-medium text-slate-600;
   }
 
   .pill-primary {
-    @apply inline-flex items-center gap-1.5 rounded-full bg-ucla-50 text-ucla-800 border border-ucla-100 px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 rounded-md border border-ucla-100 bg-ucla-50 text-ucla-800 px-2 py-0.5 text-xs font-semibold;
   }
 
   .pill-gold {
-    @apply inline-flex items-center gap-1.5 rounded-full bg-gold-50 text-gold-800 border border-gold-100 px-2.5 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1.5 rounded-md border border-gold-100 bg-gold-50 text-gold-800 px-2 py-0.5 text-xs font-semibold;
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    min-height: 44px;
+    touch-action: manipulation;
   }
 
   .btn-primary {
-    @apply btn bg-ucla-500 text-white hover:bg-ucla-600 active:bg-ucla-700 shadow-soft;
+    @apply btn bg-ucla-700 text-white shadow-soft hover:bg-ucla-800 active:bg-ucla-900;
   }
 
   .btn-secondary {
-    @apply btn bg-white/95 border border-ucla-100 text-slate-800 hover:bg-ucla-50;
+    @apply btn border border-slate-200 bg-white text-slate-800 hover:bg-slate-50;
   }
 
   .btn-ghost {
@@ -94,11 +128,12 @@
   }
 
   .btn-gold {
-    @apply btn bg-gold-500 text-ucla-900 hover:bg-gold-400 shadow-soft;
+    @apply btn bg-gold-500 text-ucla-900 shadow-soft hover:bg-gold-400;
   }
 
   .input {
-    @apply w-full rounded-xl border border-ucla-100 bg-white/95 px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-ucla-500 focus:ring-2 focus:ring-ucla-100 focus:outline-none;
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm placeholder:text-slate-400 focus:border-ucla-500 focus:outline-none focus:ring-2 focus:ring-ucla-100;
+    min-height: 44px;
   }
 
   .label {
@@ -106,7 +141,7 @@
   }
 
   .section-title {
-    @apply text-xs font-semibold uppercase tracking-[0.18em] text-ucla-700;
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-ucla-700;
   }
 
   .prose-clinical p { @apply text-slate-700 leading-relaxed; }
@@ -154,10 +189,7 @@
 @layer utilities {
   .text-balance { text-wrap: balance; }
   .gradient-hero {
-    background:
-      radial-gradient(1200px 480px at 80% -10%, rgba(255, 209, 0, 0.10), transparent 60%),
-      radial-gradient(1200px 480px at -10% 110%, rgba(0, 59, 92, 0.10), transparent 60%),
-      linear-gradient(180deg, #FFFFFF 0%, #F7F8FA 100%);
+    background: linear-gradient(180deg, #FFFFFF 0%, #F7F8FA 100%);
   }
   .gradient-ucla {
     background: linear-gradient(135deg, #003B5C 0%, #002438 100%);
@@ -171,5 +203,19 @@
       rgba(255, 209, 0, 0.55) 82%,
       transparent 100%
     );
+  }
+}
+
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 1023px) {
+  .standalone-mobile-hidden {
+    display: none;
   }
 }

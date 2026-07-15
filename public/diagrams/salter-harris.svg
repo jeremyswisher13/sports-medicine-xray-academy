@@ -66,7 +66,7 @@
     <rect x="70" y="450" width="660" height="92" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
     <text x="400" y="478" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="12" letter-spacing="2">CLINICAL PEARL</text>
     <text x="400" y="502" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Higher types and any joint-surface (III/IV) or crush (V) injury carry more growth-arrest risk.</text>
-    <text x="400" y="524" text-anchor="middle" font-size="12" fill="#475569">Type II is the most common. A normal-looking film with focal physeal tenderness can still be a Salter-Harris I.</text>
+    <text x="400" y="524" text-anchor="middle" font-size="12" fill="#475569">Type II is common. Type I may be occult, but focal tenderness alone is not diagnostic.</text>
     <text x="400" y="556" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
   </g>
 </svg>

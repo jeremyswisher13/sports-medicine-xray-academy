@@ -23,9 +23,10 @@
     <path d="M170 320 L180 305 L190 320" stroke="#0F172A" stroke-width="2" fill="none"/>
   </g>
   <g font-family="Inter, sans-serif" font-size="13" fill="#475569">
-    <rect x="80" y="460" width="640" height="100" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
-    <text x="400" y="492" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="13" letter-spacing="2">PEARL</text>
-    <text x="400" y="520" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="17" fill="#0F172A">A 3–5 mm avulsion off the lateral tibia in a pivot injury is rarely innocent — order MRI.</text>
-    <text x="400" y="544" text-anchor="middle" font-size="12" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
+    <rect x="80" y="450" width="640" height="120" rx="16" fill="#FFFFFF" stroke="#FFD24F"/>
+    <text x="400" y="480" text-anchor="middle" font-weight="700" fill="#7A6400" font-size="13" letter-spacing="2">PEARL</text>
+    <text x="400" y="508" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#0F172A">A small lateral tibial-rim avulsion strongly raises concern for ACL</text>
+    <text x="400" y="530" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#0F172A">and associated internal derangement; use MRI when it will guide care.</text>
+    <text x="400" y="554" text-anchor="middle" font-size="12" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>
   </g>
 </svg>

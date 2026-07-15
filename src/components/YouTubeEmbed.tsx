@@ -11,7 +11,7 @@ export function YouTubeEmbed({ youtubeId, title }: Props) {
 
   if (!youtubeId) {
     return (
-      <div className="aspect-video w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
+      <div className="aspect-video w-full rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center text-sm text-slate-500">
         Video unavailable.
       </div>
     );
@@ -22,13 +22,14 @@ export function YouTubeEmbed({ youtubeId, title }: Props) {
       <button
         type="button"
         onClick={() => setActive(true)}
-        className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+        className="group relative aspect-video w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-900 shadow-sm focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
         aria-label={`Play ${title}`}
       >
         <img
           src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
           alt=""
           loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -48,7 +49,7 @@ export function YouTubeEmbed({ youtubeId, title }: Props) {
     <iframe
       src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0`}
       title={title}
-      className="aspect-video w-full rounded-2xl border border-slate-200 shadow-sm"
+      className="aspect-video w-full rounded-lg border border-slate-200 shadow-sm"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
     />

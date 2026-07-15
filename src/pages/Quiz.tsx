@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../components/ui/Icon';
 import { QuizQuestion } from '../components/QuizQuestion';
 import { ConfidenceScale } from '../components/ConfidenceScale';
 import { confidenceDomains, postCourseQuiz, preCourseQuiz } from '../data/quizzes';
 import { useAuth } from '../context/AuthContext';
+import { useProgress } from '../hooks/useProgress';
 import { ids, logAuditEvent, saveConfidenceRating, saveQuizAttempt } from '../services/firestore';
-import { markPreviewCourseAssessment } from '../utils/progress';
+import { firstConfidenceByDomain, firstQuizAttempt } from '../utils/assessment';
+import {
+  hasCompleteCourseConfidence,
+  markPreviewCourseAssessment,
+} from '../utils/progress';
+import { requestedPathFromState } from '../utils/navigation';
 
 interface Props {
   scope: 'pre' | 'post';
@@ -14,10 +20,11 @@ interface Props {
 
 export function QuizPage({ scope }: Props) {
   const { user, learnerPreview } = useAuth();
+  const { snapshot, loading: progressLoading, refresh } = useProgress();
   const navigate = useNavigate();
   const location = useLocation();
   const questions = scope === 'pre' ? preCourseQuiz : postCourseQuiz;
-  const requestedPath = getRequestedPath(location.state);
+  const requestedPath = requestedPathFromState(location.state);
 
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [confidences, setConfidences] = useState<Record<string, 1 | 2 | 3 | 4 | 5>>({});
@@ -25,6 +32,20 @@ export function QuizPage({ scope }: Props) {
   const [step, setStep] = useState<'quiz' | 'confidence' | 'done'>('quiz');
   const [quizIndex, setQuizIndex] = useState(0);
   const [startedAt, setStartedAt] = useState(Date.now());
+  const [savingConfidence, setSavingConfidence] = useState(false);
+  const existingQuiz = learnerPreview
+    ? undefined
+    : firstQuizAttempt(snapshot.quizzes, scope);
+  const existingConfidence = useMemo(
+    () =>
+      learnerPreview
+        ? []
+        : firstConfidenceByDomain(snapshot.confidence, scope),
+    [learnerPreview, scope, snapshot.confidence],
+  );
+  const assessmentComplete = Boolean(
+    existingQuiz && hasCompleteCourseConfidence(snapshot.confidence, scope),
+  );
 
   useEffect(() => {
     setAnswers({});
@@ -33,7 +54,32 @@ export function QuizPage({ scope }: Props) {
     setStep('quiz');
     setQuizIndex(0);
     setStartedAt(Date.now());
+    setSavingConfidence(false);
   }, [scope]);
+
+  useEffect(() => {
+    if (learnerPreview || progressLoading || !existingQuiz || assessmentComplete) return;
+    setAnswers(
+      Object.fromEntries(
+        existingQuiz.answers.map((answer) => [answer.questionId, answer.selectedOptionId]),
+      ),
+    );
+    setConfidences(
+      Object.fromEntries(
+        existingConfidence
+          .filter((rating) => rating.domain)
+          .map((rating) => [rating.domain as string, rating.value]),
+      ),
+    );
+    setSubmitted(true);
+    setStep('confidence');
+  }, [
+    assessmentComplete,
+    existingConfidence,
+    existingQuiz,
+    learnerPreview,
+    progressLoading,
+  ]);
 
   const total = questions.length;
   const currentQuestion = questions[quizIndex] ?? questions[0];
@@ -45,6 +91,10 @@ export function QuizPage({ scope }: Props) {
   const allConfidenceRated = confidenceDomains.every((domain) => confidences[domain.id]);
 
   async function submitQuiz() {
+    if (existingQuiz) {
+      setStep('confidence');
+      return;
+    }
     setSubmitted(true);
     if (!user || learnerPreview) return;
     await saveQuizAttempt({
@@ -68,39 +118,101 @@ export function QuizPage({ scope }: Props) {
   }
 
   async function submitConfidence() {
-    if (!allConfidenceRated) return;
+    if (!allConfidenceRated || savingConfidence) return;
+    setSavingConfidence(true);
     if (!user || learnerPreview) {
       if (learnerPreview) {
         markPreviewCourseAssessment(scope);
       }
       setStep('done');
+      setSavingConfidence(false);
       return;
     }
-    await Promise.all(
-      Object.entries(confidences).map(([domain, value]) =>
-        saveConfidenceRating({
-          id: ids.newId(),
-          userId: user.uid,
-          scope,
-          domain,
-          value,
-          createdAt: Date.now(),
-        }),
-      ),
+    try {
+      const savedDomains = new Set(
+        existingConfidence.map((rating) => rating.domain).filter(Boolean),
+      );
+      const newRatings = Object.entries(confidences).filter(
+        ([domain]) => !savedDomains.has(domain),
+      );
+      await Promise.all(
+        newRatings.map(([domain, value]) =>
+          saveConfidenceRating({
+            id: ids.newId(),
+            userId: user.uid,
+            scope,
+            domain,
+            value,
+            createdAt: Date.now(),
+          }),
+        ),
+      );
+      await logAuditEvent({
+        userId: user.uid,
+        type: 'confidence_submitted',
+        details: { scope, count: newRatings.length },
+      });
+      setStep('done');
+      await refresh();
+    } finally {
+      setSavingConfidence(false);
+    }
+  }
+
+  if (!learnerPreview && progressLoading) {
+    return (
+      <div className="container-page py-8 sm:py-12">
+        <div className="card mx-auto max-w-md p-5 text-sm text-slate-500">
+          Checking your saved assessment…
+        </div>
+      </div>
     );
-    await logAuditEvent({
-      userId: user.uid,
-      type: 'confidence_submitted',
-      details: { scope, count: Object.keys(confidences).length },
-    });
-    setStep('done');
+  }
+
+  if (!learnerPreview && assessmentComplete && existingQuiz && step !== 'done') {
+    return (
+      <div className="container-page py-8 sm:py-12">
+        <section className="card mx-auto max-w-xl p-6 text-center sm:p-8">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <Icon name="check" size={20} />
+          </div>
+          <div className="section-title mt-4">
+            {scope === 'pre' ? 'Baseline preserved' : 'Outcome preserved'}
+          </div>
+          <h1 className="mt-1 text-2xl text-ucla-950">Assessment already saved</h1>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            Your first complete {scope === 'pre' ? 'pre-course baseline' : 'post-course outcome'}
+            {' '}is kept unchanged so the course comparison remains interpretable.
+          </p>
+          <div className="mt-4 text-3xl font-bold tabular-nums text-ucla-900">
+            {Math.round(existingQuiz.scorePercent)}%
+          </div>
+          <div className="mt-5 flex flex-wrap justify-center gap-2">
+            <Link to="/dashboard" className="btn-secondary">
+              Dashboard
+            </Link>
+            <Link
+              to={scope === 'pre' ? '/modules' : '/progress'}
+              className="btn-primary"
+            >
+              {scope === 'pre' ? 'Continue learning' : 'View outcomes'}
+              <Icon name="arrow-right" size={14} />
+            </Link>
+          </div>
+        </section>
+      </div>
+    );
   }
 
   return (
-    <div className="container-page py-8 sm:py-12">
+    <div className="container-page py-6 sm:py-10">
       <div className="flex items-center gap-2 text-sm">
-        <Link to="/dashboard" className="text-slate-500 hover:text-slate-800 no-underline">
-          ← Dashboard
+        <Link
+          to="/dashboard"
+          className="-mx-2 inline-flex min-h-11 items-center gap-1 px-2 text-slate-500 no-underline hover:text-slate-800"
+        >
+          <Icon name="chevron-left" size={16} />
+          Dashboard
         </Link>
         <span className="text-slate-300">/</span>
         <span className="text-slate-700">
@@ -109,7 +221,7 @@ export function QuizPage({ scope }: Props) {
       </div>
       <header className="card-premium mt-3">
         <div className="card-premium-bar" />
-        <div className="p-5 sm:p-6">
+        <div className="p-4 sm:p-6">
         <div className="section-title">{scope === 'pre' ? 'Baseline' : 'Outcome'}</div>
         <h1 className="mt-1 text-balance">
           {scope === 'pre' ? 'Pre-course assessment' : 'Post-course assessment'}
@@ -123,7 +235,7 @@ export function QuizPage({ scope }: Props) {
                 ? 'Learner preview complete — no analytics were saved.'
                 : 'Thanks — your responses are saved.'}
         </p>
-        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {[
             {
               label: '1. Knowledge',
@@ -147,14 +259,14 @@ export function QuizPage({ scope }: Props) {
             <div
               key={item.label}
               className={[
-                'rounded-xl border px-3 py-2 text-sm',
+                'rounded-lg border px-3 py-2 text-sm',
                 item.active
                   ? 'border-ucla-200 bg-white text-ucla-900 shadow-soft'
                   : 'border-ucla-100 bg-white/60 text-slate-600',
               ].join(' ')}
             >
               <div className="font-semibold">{item.label}</div>
-              <div className="mt-0.5 text-xs leading-relaxed">{item.body}</div>
+              <div className="mt-0.5 hidden text-xs leading-relaxed sm:block">{item.body}</div>
             </div>
           ))}
         </div>
@@ -162,10 +274,10 @@ export function QuizPage({ scope }: Props) {
       </header>
 
       {step === 'quiz' && (
-        <section className="mt-6 space-y-4">
+        <section className="mt-4 space-y-4">
           {!submitted && currentQuestion && (
             <>
-              <div className="rounded-2xl border border-ucla-100 bg-white/95 p-4 shadow-soft">
+              <div className="rounded-lg border border-ucla-100 bg-white/95 p-3 shadow-soft">
                 <div className="flex items-center justify-between text-xs font-semibold text-slate-500">
                   <span>
                     Question {quizIndex + 1} of {total}
@@ -226,7 +338,7 @@ export function QuizPage({ scope }: Props) {
 
           {submitted && (
             <>
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-slate-700 shadow-soft">
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50/70 p-4 text-sm text-slate-700 shadow-soft">
                 Score:{' '}
                 <span className="font-bold tabular-nums text-ucla-900">
                   {Math.round(scorePercent)}%
@@ -259,7 +371,7 @@ export function QuizPage({ scope }: Props) {
 
       {step === 'confidence' && (
         <section className="mt-6 space-y-3">
-          <div className="rounded-2xl border border-ucla-100 bg-ucla-50/70 p-4 text-sm leading-relaxed text-slate-700">
+          <div className="rounded-lg border border-ucla-100 bg-ucla-50/70 p-4 text-sm leading-relaxed text-slate-700">
             <div className="font-semibold text-ucla-900">
               Confidence is part of the assessment.
             </div>
@@ -272,7 +384,13 @@ export function QuizPage({ scope }: Props) {
             <ConfidenceScale
               key={d.id}
               label={d.label}
+              description={
+                existingConfidence.some((rating) => rating.domain === d.id)
+                  ? 'Saved with your original assessment.'
+                  : undefined
+              }
               value={confidences[d.id]}
+              disabled={existingConfidence.some((rating) => rating.domain === d.id)}
               onChange={(v) =>
                 setConfidences((prev) => ({ ...prev, [d.id]: v }))
               }
@@ -285,9 +403,9 @@ export function QuizPage({ scope }: Props) {
             <button
               className="btn-primary"
               onClick={submitConfidence}
-              disabled={!allConfidenceRated}
+              disabled={!allConfidenceRated || savingConfidence}
             >
-              Submit ratings
+              {savingConfidence ? 'Saving ratings…' : 'Submit ratings'}
             </button>
           </div>
         </section>
@@ -309,7 +427,7 @@ export function QuizPage({ scope }: Props) {
             </Link>
             {scope === 'pre' ? (
               <Link to={requestedPath ?? '/modules/xray-foundations'} className="btn-primary">
-                {requestedPath ? 'Continue to requested module' : 'Start X-Ray Foundations'}
+                {requestedPath ? 'Continue where you left off' : 'Start X-Ray Foundations'}
                 <Icon name="arrow-right" size={14} />
               </Link>
             ) : (
@@ -323,12 +441,4 @@ export function QuizPage({ scope }: Props) {
       )}
     </div>
   );
-}
-
-function getRequestedPath(state: unknown): string | null {
-  if (!state || typeof state !== 'object') return null;
-  const from = (state as { from?: unknown }).from;
-  if (typeof from !== 'string') return null;
-  if (!from.startsWith('/modules')) return null;
-  return from;
 }

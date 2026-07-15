@@ -48,7 +48,7 @@ export function ViewSelector({ views }: Props) {
                     type="button"
                     onClick={() => setSelectedViewName(view.name)}
                     className={[
-                      'flex min-h-[3.75rem] items-start gap-2.5 rounded-2xl border p-3 text-left text-sm font-semibold leading-snug transition-colors',
+                      'flex min-h-[3.75rem] items-start gap-2.5 rounded-lg border p-3 text-left text-sm font-semibold leading-snug transition-colors',
                       revealTeachingView
                         ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
                         : isSelected
@@ -76,7 +76,7 @@ export function ViewSelector({ views }: Props) {
             {selectedView ? (
               <div
                 className={[
-                  'mt-4 rounded-2xl border p-3',
+                  'mt-4 rounded-lg border p-3',
                   selectedIsTeachingView
                     ? 'border-emerald-200 bg-emerald-50'
                     : 'border-ucla-100 bg-ucla-50/70',
@@ -106,17 +106,17 @@ export function ViewSelector({ views }: Props) {
       )}
 
       <details
-        className="rounded-2xl border border-ucla-100 bg-white/95 p-4 shadow-soft"
+        className="rounded-lg border border-ucla-100 bg-white/95 p-4 shadow-soft"
         open={selectedViewName !== null}
       >
-        <summary className="cursor-pointer text-sm font-semibold text-ucla-900">
+        <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-ucla-900">
           View reference
         </summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {views.map((v) => (
-            <article key={v.name} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+            <article key={v.name} className="rounded-lg border border-slate-200 bg-slate-50/70 p-4">
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
                   <Icon name="eye" size={16} />
                 </span>
                 <div className="min-w-0">

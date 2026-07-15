@@ -199,9 +199,9 @@ export const videoResources: VideoResource[] = [
     summary:
       'Supplemental review of the cervical spine radiograph, including what makes a lateral film adequate down to the C7-T1 junction.',
     clinicalWhy:
-      'Helps residents clear the cervical spine confidently and recognize an inadequate film or alignment abnormality before reassuring an athlete.',
+      'Helps residents assess cervical radiograph adequacy and recognize alignment abnormalities in low-risk settings where plain films are appropriate.',
     reflectionPrompt:
-      'On your last neck film, did you confirm the C7-T1 junction was visible before clearing the lower cervical spine?',
+      'On your last low-risk cervical radiograph, did you confirm the C7-T1 junction was visible before interpreting the lower cervical alignment?',
   },
   {
     id: 'amssm-thoracic-spine-radiology',

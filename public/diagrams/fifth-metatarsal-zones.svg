@@ -32,18 +32,18 @@
   <g transform="translate(110,400)" font-family="Inter, sans-serif" font-size="12">
     <rect x="0" y="0" width="180" height="74" rx="10" fill="#FFFFFF" stroke="#A8C2D7"/>
     <text x="14" y="24" font-weight="700" fill="#1A4A6F">Zone 1 — avulsion</text>
-    <text x="14" y="44" fill="#475569">Usually WBAT, hard-sole</text>
-    <text x="14" y="60" fill="#475569">shoe; good healing.</text>
+    <text x="14" y="44" fill="#475569">If nondisplaced: protected</text>
+    <text x="14" y="60" fill="#475569">WBAT; usually heals well.</text>
 
     <rect x="200" y="0" width="180" height="74" rx="10" fill="#FFFFFF" stroke="#FECACA"/>
     <text x="214" y="24" font-weight="700" fill="#9F1239">Zone 2 — Jones</text>
-    <text x="214" y="44" fill="#475569">NWB; high nonunion;</text>
-    <text x="214" y="60" fill="#475569">surgery often in athletes.</text>
+    <text x="214" y="44" fill="#475569">Watershed region;</text>
+    <text x="214" y="60" fill="#475569">higher nonunion risk.</text>
 
     <rect x="400" y="0" width="190" height="74" rx="10" fill="#FFFFFF" stroke="#FFD24F"/>
     <text x="414" y="24" font-weight="700" fill="#7A6400">Zone 3 — stress</text>
-    <text x="414" y="44" fill="#475569">Insidious; watershed zone;</text>
-    <text x="414" y="60" fill="#475569">prone to delayed union.</text>
+    <text x="414" y="44" fill="#475569">Proximal diaphyseal</text>
+    <text x="414" y="60" fill="#475569">stress; delayed/nonunion risk.</text>
   </g>
 
   <text x="400" y="572" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>

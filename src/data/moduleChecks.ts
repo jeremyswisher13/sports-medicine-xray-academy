@@ -30,7 +30,7 @@ const genericPreCheck = (moduleId: string): QuizQuestionData[] => [
     options: [
       { id: 'a', text: 'Reassure and discharge' },
       { id: 'b', text: 'Document the negative film and never re-image' },
-      { id: 'c', text: 'Treat empirically and escalate to MRI/CT/repeat film if suspicion remains' },
+      { id: 'c', text: 'Protect the patient as the suspected pattern requires and arrange appropriate repeat or advanced imaging' },
       { id: 'd', text: 'Order labs first' },
     ],
     correctOptionId: 'c',
@@ -164,7 +164,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       prompt: 'A posterior fat pad on an elbow lateral radiograph most strongly suggests:',
       options: [
         { id: 'a', text: 'Normal elbow variant' },
-        { id: 'b', text: 'Occult intra-articular fracture until proven otherwise' },
+        { id: 'b', text: 'Possible occult intra-articular fracture requiring fracture-directed care' },
         { id: 'c', text: 'Isolated tendinopathy' },
         { id: 'd', text: 'Olecranon bursitis only' },
       ],
@@ -176,7 +176,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       id: 'elbow-pre-q2',
       moduleId: 'elbow',
       domain: 'elbow',
-      prompt: 'Which line should intersect the capitellum on every elbow view?',
+      prompt: 'Which line should intersect the capitellum on adequately positioned elbow views?',
       options: [
         { id: 'a', text: 'Radiocapitellar line' },
         { id: 'b', text: "Shenton's line" },
@@ -185,7 +185,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'a',
       explanation:
-        'The radiocapitellar line runs through the radial neck and should intersect the capitellum on every view.',
+        'The radiocapitellar line runs through the radial neck and should intersect the capitellum on adequate views. Confirm a suspected miss across views because rotation and age can introduce variability.',
     },
     {
       id: 'elbow-pre-q3',
@@ -311,7 +311,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Lateral meniscus root tear in isolation' },
       ],
       correctOptionId: 'b',
-      explanation: 'Segond → ACL until proven otherwise.',
+      explanation: 'A Segond fracture is strongly associated with ACL injury and should prompt evaluation for internal derangement, typically with MRI.',
     },
     {
       id: 'knee-pre-q2',
@@ -335,13 +335,13 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
         'A large effusion on a lateral knee after acute trauma with normal-appearing bone most warrants:',
       options: [
         { id: 'a', text: 'Reassurance and NSAIDs' },
-        { id: 'b', text: 'MRI to evaluate for internal derangement or occult fracture' },
+        { id: 'b', text: 'Further injury-directed evaluation, with MRI or CT selected from the examination and suspected pattern' },
         { id: 'c', text: 'Bone scan' },
         { id: 'd', text: 'Casting and re-image in 6 weeks' },
       ],
       correctOptionId: 'b',
       explanation:
-        'Acute traumatic effusion + normal x-ray = suspect ACL, meniscus, or osteochondral injury.',
+        'A large acute traumatic effusion despite normal-appearing bone should prompt reassessment for occult fracture, ACL/meniscal injury, or osteochondral injury. MRI or CT is selected according to the examination and management question.',
     },
   ],
   'ankle-foot': [
@@ -350,7 +350,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       moduleId: 'ankle-foot',
       domain: 'ankle-foot',
       prompt:
-        'On a mortise view, the medial clear space exceeds the superior clear space by 3 mm. This implies:',
+        'On an adequately positioned mortise view, the medial clear space exceeds the superior clear space by 3 mm. This raises concern for:',
       options: [
         { id: 'a', text: 'Normal mortise' },
         { id: 'b', text: 'Deltoid / syndesmotic injury' },
@@ -358,7 +358,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Os trigonum' },
       ],
       correctOptionId: 'b',
-      explanation: 'Asymmetric medial > superior clear space = deltoid/syndesmosis disruption.',
+      explanation: 'Asymmetric medial widening on an adequate mortise view raises concern for deltoid injury and possible syndesmotic instability; confirm positioning and the complete series.',
     },
     {
       id: 'ankle-foot-pre-q2',
@@ -373,7 +373,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Splint and re-image in 6 weeks' },
       ],
       correctOptionId: 'b',
-      explanation: 'Plantar ecchymosis = Lisfranc until proven otherwise.',
+      explanation: 'Plantar ecchymosis with midfoot pain is a high-risk clue for Lisfranc injury and warrants loading views when tolerated or advanced imaging.',
     },
     {
       id: 'ankle-foot-pre-q3',
@@ -383,12 +383,12 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
         'A transverse fracture at the metaphyseal-diaphyseal junction of the 5th MT in an athlete is best managed initially with:',
       options: [
         { id: 'a', text: 'WBAT in a hard-sole shoe' },
-        { id: 'b', text: 'NWB CAM boot and orthopedic referral (Jones)' },
+        { id: 'b', text: 'Non-weightbearing immobilization and early orthopedic/sports referral (Jones)' },
         { id: 'c', text: 'Ace wrap and discharge' },
         { id: 'd', text: 'Tylenol only' },
       ],
       correctOptionId: 'b',
-      explanation: 'Jones fractures have higher nonunion risk; NWB and surgical evaluation are standard.',
+      explanation: 'Jones fractures have higher nonunion risk than zone 1 avulsions; initial non-weightbearing immobilization and early specialty follow-up are appropriate, with fixation often considered for high-demand athletes.',
     },
   ],
   spine: [
@@ -571,7 +571,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       moduleId: 'do-not-miss',
       domain: 'do-not-miss',
       prompt:
-        'Disrupted Gilula arcs on a lateral wrist x-ray suggests:',
+        'Disrupted Gilula arcs on a PA wrist plus loss of capitate-lunate alignment on the lateral suggests:',
       options: [
         { id: 'a', text: 'Distal radius fracture' },
         { id: 'b', text: 'Perilunate dislocation' },
@@ -580,7 +580,7 @@ const specificPreChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'b',
       explanation:
-        'Perilunate dislocation needs urgent reduction and hand surgery referral.',
+        'Gilula arcs are assessed on the PA view, while the lateral confirms loss of radius-lunate-capitate alignment. Together these findings raise urgent concern for perilunate injury.',
     },
   ],
 };
@@ -614,7 +614,7 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'AC joint widening' },
       ],
       correctOptionId: 'c',
-      explanation: 'Glenoid bone loss > ~15-20% can shift the surgical plan.',
+      explanation: 'The amount and location of glenoid bone loss, engagement pattern, glenoid-track relationship, patient demands, and recurrence history all influence stabilization planning; CT can define the bony defect.',
     },
     {
       id: 'shoulder-post-q3',
@@ -637,16 +637,16 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
       id: 'elbow-post-q1',
       moduleId: 'elbow',
       domain: 'elbow',
-      prompt: 'In a child, the anterior humeral line should normally:',
+      prompt: 'On a true lateral elbow in a child age 5 or older, the anterior humeral line should normally:',
       options: [
-        { id: 'a', text: 'Bisect the middle third of the capitellum on lateral' },
+        { id: 'a', text: 'Intersect the capitellum, usually through its middle third' },
         { id: 'b', text: 'Intersect the femoral head' },
         { id: 'c', text: 'Outline the ankle mortise' },
         { id: 'd', text: 'Measure the scapholunate interval' },
       ],
       correctOptionId: 'a',
       explanation:
-        'Posterior displacement of the capitellum relative to the anterior humeral line suggests pediatric supracondylar fracture.',
+        'At age 5 and older the line usually intersects the middle third on a true lateral; in younger children it may normally pass through the anterior third. A clear posterior shift suggests supracondylar fracture.',
     },
     {
       id: 'elbow-post-q2',
@@ -676,7 +676,7 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'a',
       explanation:
-        'Little League elbow and medial epicondyle avulsion are high-yield pediatric throwing injuries.',
+        'Chronic physeal widening in a thrower supports medial epicondyle apophysitis. An acute medial epicondyle avulsion is a distinct traction fracture, often after sudden valgus load or elbow dislocation.',
     },
   ],
   'wrist-hand': [
@@ -800,7 +800,7 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Bone scan' },
       ],
       correctOptionId: 'b',
-      explanation: 'Even subtle plateau depression changes the surgical plan; CT is standard.',
+      explanation: 'CT characterizes plateau depression, split components, and articular fragments and can change fracture classification and operative planning.',
     },
     {
       id: 'knee-post-q3',
@@ -831,7 +831,7 @@ const specificPostChecks: Record<string, QuizQuestionData[]> = {
       ],
       correctOptionId: 'b',
       explanation:
-        'Maisonneuve = proximal fibula fracture with deltoid disruption; full-length tib/fib films and ortho referral.',
+        'A Maisonneuve pattern combines a proximal fibula fracture with syndesmotic disruption and medial ankle injury, which may be deltoid rupture or medial malleolar fracture. Examine the whole fibula and obtain full-length tib/fib views when indicated.',
     },
     {
       id: 'ankle-foot-post-q2',

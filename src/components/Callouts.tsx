@@ -8,13 +8,13 @@ interface CalloutProps {
 
 export function DoNotMissCallout({ title, children }: CalloutProps) {
   return (
-    <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-4 sm:p-5">
+    <div className="rounded-lg border border-slate-200 border-l-4 border-l-rose-400 bg-white p-4 shadow-soft sm:p-5">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700">
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-rose-50 text-rose-700">
           <Icon name="alert" size={16} />
         </span>
         <div className="min-w-0">
-          <div className="text-xs font-semibold uppercase tracking-wide text-rose-700">
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-rose-700">
             Do not miss
           </div>
           <h4 className="mt-0.5 text-rose-900">{title}</h4>
@@ -27,13 +27,13 @@ export function DoNotMissCallout({ title, children }: CalloutProps) {
 
 export function ClinicalPearlCallout({ title, children }: CalloutProps) {
   return (
-    <div className="rounded-2xl border border-gold-200 bg-gold-50/70 p-4 sm:p-5">
+    <div className="rounded-lg border border-slate-200 border-l-4 border-l-gold-400 bg-white p-4 shadow-soft sm:p-5">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-800">
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-gold-50 text-gold-800">
           <Icon name="sparkles" size={16} />
         </span>
         <div className="min-w-0">
-          <div className="text-xs font-semibold uppercase tracking-wide text-gold-800">
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-gold-800">
             Clinical pearl
           </div>
           <h4 className="mt-0.5 text-ucla-900">{title}</h4>
@@ -46,13 +46,13 @@ export function ClinicalPearlCallout({ title, children }: CalloutProps) {
 
 export function PitfallCallout({ title, children }: CalloutProps) {
   return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 sm:p-5">
+    <div className="rounded-lg border border-slate-200 border-l-4 border-l-amber-400 bg-white p-4 shadow-soft sm:p-5">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-800">
+        <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-amber-50 text-amber-800">
           <Icon name="flag" size={16} />
         </span>
         <div className="min-w-0">
-          <div className="text-xs font-semibold uppercase tracking-wide text-amber-800">
+          <div className="text-xs font-semibold uppercase tracking-[0.12em] text-amber-800">
             Pitfall
           </div>
           <h4 className="mt-0.5 text-ucla-900">{title}</h4>

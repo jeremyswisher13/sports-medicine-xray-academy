@@ -34,7 +34,10 @@ export type IconName =
   | 'maximize'
   | 'x'
   | 'bar-chart'
-  | 'clock';
+  | 'clock'
+  | 'download'
+  | 'home'
+  | 'refresh';
 
 const paths: Record<IconName, string> = {
   check: 'M5 12.5l4 4 10-10',
@@ -83,6 +86,9 @@ const paths: Record<IconName, string> = {
   x: 'M6 6l12 12M18 6 6 18',
   'bar-chart': 'M4 20V10m5 10V4m5 16v-7m5 7V8',
   clock: 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-5v5l3 2',
+  download: 'M12 3v12m0 0 5-5m-5 5-5-5M5 21h14',
+  home: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3V10.5Z',
+  refresh: 'M20 6v5h-5M4 18v-5h5M18.5 10a7 7 0 0 0-12.2-3M5.5 14a7 7 0 0 0 12.2 3',
 };
 
 export function Icon({ name, size = 18, ...rest }: Props) {

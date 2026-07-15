@@ -6,10 +6,16 @@ import { XRayImage } from './XRayImage';
 import { getImage } from '../data/images';
 import { useAuth } from '../context/AuthContext';
 import { ids, logAuditEvent, saveCaseAttempt } from '../services/firestore';
-import type { CaseScenario, XRayImageEntry } from '../types';
+import type {
+  CaseManagementChoiceId,
+  CaseQuestionType,
+  CaseScenario,
+  XRayImageEntry,
+} from '../types';
 
 interface Props {
   scenario: CaseScenario;
+  onComplete?: (result: { correct: boolean; managementCorrect: boolean }) => void;
 }
 
 type CaseConfidenceValue = 1 | 2 | 3 | 4 | 5;
@@ -33,18 +39,35 @@ const managementOptions = [
   },
 ] as const;
 
-type ManagementChoiceId = (typeof managementOptions)[number]['id'];
+const questionLabels: Record<CaseQuestionType, string> = {
+  diagnosis: 'Most likely diagnosis',
+  management: 'Best next step',
+  'associated-injury': 'Most likely associated injury',
+  interpretation: 'Best interpretation',
+};
 
-export function CasePracticeCard({ scenario }: Props) {
+export function CasePracticeCard({ scenario, onComplete }: Props) {
   const { user, learnerPreview } = useAuth();
   const [selected, setSelected] = useState<string | undefined>();
   const [submitted, setSubmitted] = useState(false);
   const [notes, setNotes] = useState('');
   const [observations, setObservations] = useState<string[]>([]);
-  const [managementChoiceId, setManagementChoiceId] = useState<ManagementChoiceId | undefined>();
+  const [managementChoiceId, setManagementChoiceId] = useState<CaseManagementChoiceId | undefined>();
   const [confidence, setConfidence] = useState<CaseConfidenceValue | undefined>();
   const correct = selected === scenario.correctOptionId;
-  const recommendedManagementId = managementChoiceFor(scenario.nextStep);
+  const showManagementCommitment = scenario.questionType !== 'management';
+  const managementCorrect = showManagementCommitment
+    ? Boolean(
+        managementChoiceId &&
+          scenario.recommendedManagementChoiceIds.includes(managementChoiceId),
+      )
+    : correct;
+  const immediatePanels = (scenario.imagePanels ?? []).filter(
+    (panel) => !panel.revealAfterSubmit,
+  );
+  const teachingPanels = (scenario.imagePanels ?? []).filter(
+    (panel) => panel.revealAfterSubmit,
+  );
 
   function toggleObservation(text: string) {
     setObservations((prev) =>
@@ -53,33 +76,44 @@ export function CasePracticeCard({ scenario }: Props) {
   }
 
   async function submit() {
-    if (!selected || !managementChoiceId || confidence === undefined) return;
+    if (
+      !selected ||
+      confidence === undefined ||
+      (showManagementCommitment && !managementChoiceId)
+    ) {
+      return;
+    }
     setSubmitted(true);
-    if (!user || learnerPreview) return;
-    await saveCaseAttempt({
-      id: ids.newId(),
-      userId: user.uid,
-      caseId: scenario.id,
-      moduleId: scenario.moduleId,
-      selectedOptionId: selected,
-      correct: selected === scenario.correctOptionId,
-      checklistChecked: observations,
-      freeTextNotes: notes,
-      managementChoiceId,
-      confidence,
-      submittedAt: Date.now(),
-    });
-    await logAuditEvent({
-      userId: user.uid,
-      type: 'case_attempted',
-      moduleId: scenario.moduleId,
-      refId: scenario.id,
-      details: {
+    if (user && !learnerPreview) {
+      await saveCaseAttempt({
+        id: ids.newId(),
+        userId: user.uid,
+        caseId: scenario.id,
+        moduleId: scenario.moduleId,
+        selectedOptionId: selected,
         correct,
-        managementCorrect: managementChoiceId === recommendedManagementId,
+        questionType: scenario.questionType,
+        checklistChecked: observations,
+        freeTextNotes: notes,
+        ...(managementChoiceId ? { managementChoiceId } : {}),
+        managementCorrect,
         confidence,
-      },
-    });
+        submittedAt: Date.now(),
+      });
+      await logAuditEvent({
+        userId: user.uid,
+        type: 'case_attempted',
+        moduleId: scenario.moduleId,
+        refId: scenario.id,
+        details: {
+          questionType: scenario.questionType,
+          correct,
+          managementCorrect,
+          confidence,
+        },
+      });
+    }
+    onComplete?.({ correct, managementCorrect });
   }
 
   const observationOptions = [
@@ -116,25 +150,9 @@ export function CasePracticeCard({ scenario }: Props) {
         </div>
       </dl>
 
-      {(() => {
-        const entries: XRayImageEntry[] = (scenario.imagePanels ?? [])
-          .map((p) => (p.imageKey ? getImage(p.imageKey) : undefined))
-          .filter((e): e is XRayImageEntry => Boolean(e));
-        if (entries.length === 0) return null;
-        const cls =
-          entries.length === 1
-            ? 'mt-4 mx-auto max-w-xl'
-            : 'mt-4 grid gap-3 sm:grid-cols-2';
-        return (
-          <div className={cls}>
-            {entries.map((entry) => (
-              <XRayImage key={entry.id} entry={entry} />
-            ))}
-          </div>
-        );
-      })()}
+      <CaseImages panels={immediatePanels} />
 
-      <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
         <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
           What do you notice first?
         </div>
@@ -148,7 +166,8 @@ export function CasePracticeCard({ scenario }: Props) {
               <label
                 key={o}
                 className={[
-                  'flex cursor-pointer items-start gap-2 rounded-lg border bg-white px-3 py-2 text-sm',
+                  'flex items-start gap-2 rounded-lg border bg-white px-3 py-2 text-sm',
+                  submitted ? 'cursor-default' : 'cursor-pointer',
                   checked ? 'border-ucla-300 bg-ucla-50/40' : 'border-slate-200',
                 ].join(' ')}
               >
@@ -156,6 +175,7 @@ export function CasePracticeCard({ scenario }: Props) {
                   type="checkbox"
                   className="sr-only"
                   checked={checked}
+                  disabled={submitted}
                   onChange={() => toggleObservation(o)}
                 />
                 <span
@@ -176,6 +196,7 @@ export function CasePracticeCard({ scenario }: Props) {
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
+          disabled={submitted}
           className="input mt-3 min-h-[5rem] resize-y"
           placeholder="One-sentence sports medicine impression…"
           aria-label="Your sports medicine impression"
@@ -184,14 +205,14 @@ export function CasePracticeCard({ scenario }: Props) {
 
       <div className="mt-4">
         <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
-          Most likely diagnosis
+          {questionLabels[scenario.questionType]}
         </div>
         <div className="mt-2 grid gap-2">
           {scenario.diagnosisOptions.map((opt) => {
             const isSelected = selected === opt.id;
             const isCorrect = opt.id === scenario.correctOptionId;
             let cls =
-              'flex w-full items-start gap-3 rounded-xl border bg-white px-4 py-3 text-left text-sm transition-colors';
+              'flex w-full items-start gap-3 rounded-lg border bg-white px-4 py-3 text-left text-sm transition-colors';
             if (submitted) {
               if (isCorrect) cls += ' border-emerald-300 bg-emerald-50/60';
               else if (isSelected) cls += ' border-rose-300 bg-rose-50/60';
@@ -206,6 +227,7 @@ export function CasePracticeCard({ scenario }: Props) {
                 key={opt.id}
                 type="button"
                 className={cls}
+                disabled={submitted}
                 onClick={() => !submitted && setSelected(opt.id)}
               >
                 <span
@@ -231,69 +253,78 @@ export function CasePracticeCard({ scenario }: Props) {
             );
           })}
         </div>
-        <div className="mt-4 rounded-xl border border-ucla-100 bg-ucla-50/50 p-4">
-          <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
-            Management commitment
-          </div>
-          <p className="mt-1 text-sm leading-relaxed text-slate-700">
-            Commit to the safest next action before seeing the teaching feedback.
-          </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {managementOptions.map((option) => {
-              const isSelected = managementChoiceId === option.id;
-              const isRecommended = recommendedManagementId === option.id;
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  disabled={submitted}
-                  onClick={() => setManagementChoiceId(option.id)}
-                  className={[
-                    'flex min-h-[3.75rem] items-start gap-2.5 rounded-xl border px-3 py-2 text-left text-sm font-semibold leading-snug transition-colors disabled:cursor-not-allowed',
-                    submitted && isRecommended
-                      ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
-                      : submitted && isSelected
-                        ? 'border-rose-300 bg-rose-50 text-rose-900'
-                        : isSelected
-                          ? 'border-ucla-400 bg-white text-ucla-950'
-                          : 'border-ucla-100 bg-white text-slate-700 hover:border-ucla-200',
-                  ].join(' ')}
-                  aria-pressed={isSelected}
-                >
-                  <span
+        {showManagementCommitment && (
+          <div className="mt-4 rounded-lg border border-ucla-100 bg-ucla-50/50 p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+              Management commitment
+            </div>
+            <p className="mt-1 text-sm leading-relaxed text-slate-700">
+              Commit to the safest next action before seeing the teaching feedback.
+            </p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {managementOptions.map((option) => {
+                const isSelected = managementChoiceId === option.id;
+                const isRecommended = scenario.recommendedManagementChoiceIds.includes(option.id);
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    disabled={submitted}
+                    onClick={() => setManagementChoiceId(option.id)}
                     className={[
-                      'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border',
+                      'flex min-h-[3.75rem] items-start gap-2.5 rounded-lg border px-3 py-2 text-left text-sm font-semibold leading-snug transition-colors disabled:cursor-not-allowed',
                       submitted && isRecommended
-                        ? 'border-emerald-600 bg-emerald-600 text-white'
-                        : isSelected
-                          ? 'border-ucla-700 bg-ucla-700 text-white'
-                          : 'border-slate-300 bg-white text-transparent',
+                        ? 'border-emerald-300 bg-emerald-50 text-emerald-900'
+                        : submitted && isSelected
+                          ? 'border-rose-300 bg-rose-50 text-rose-900'
+                          : isSelected
+                            ? 'border-ucla-400 bg-white text-ucla-950'
+                            : 'border-ucla-100 bg-white text-slate-700 hover:border-ucla-200',
                     ].join(' ')}
+                    aria-pressed={isSelected}
                   >
-                    <Icon name={submitted && isRecommended ? 'check' : 'circle'} size={11} />
-                  </span>
-                  <span>{option.label}</span>
-                </button>
-              );
-            })}
+                    <span
+                      className={[
+                        'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border',
+                        submitted && isRecommended
+                          ? 'border-emerald-600 bg-emerald-600 text-white'
+                          : isSelected
+                            ? 'border-ucla-700 bg-ucla-700 text-white'
+                            : 'border-slate-300 bg-white text-transparent',
+                      ].join(' ')}
+                    >
+                      <Icon name={submitted && isRecommended ? 'check' : 'circle'} size={11} />
+                    </span>
+                    <span>{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="mt-4">
-            <ConfidenceScale
-              compact
-              label="How confident are you in your read and next step?"
-              value={confidence}
-              onChange={setConfidence}
-            />
-          </div>
+        )}
+        <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4">
+          <ConfidenceScale
+            compact
+            label="How confident are you in your read and next step?"
+            value={confidence}
+            disabled={submitted}
+            onChange={setConfidence}
+          />
         </div>
         {!submitted && (
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <span className="text-xs text-slate-500">
-              Diagnosis, management, and confidence are required before reveal.
+              {showManagementCommitment
+                ? 'Answer, management, and confidence are required before reveal.'
+                : 'Answer and confidence are required before reveal.'}
             </span>
             <button
               className="btn-primary"
-              disabled={!selected || !managementChoiceId || confidence === undefined}
+              disabled={
+                !selected ||
+                confidence === undefined ||
+                (showManagementCommitment && !managementChoiceId)
+              }
               onClick={submit}
             >
               Submit answer
@@ -304,7 +335,7 @@ export function CasePracticeCard({ scenario }: Props) {
 
       {submitted && (
         <div className="mt-5 space-y-3">
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
               Explanation
             </div>
@@ -312,7 +343,15 @@ export function CasePracticeCard({ scenario }: Props) {
               {scenario.explanation}
             </p>
           </div>
-          <div className="rounded-xl border border-gold-200 bg-gold-50/60 p-4">
+          {teachingPanels.length > 0 && (
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
+                Teaching radiograph
+              </div>
+              <CaseImages panels={teachingPanels} className="mt-2" />
+            </div>
+          )}
+          <div className="rounded-lg border border-gold-200 bg-gold-50/60 p-4">
             <div className="text-xs font-semibold uppercase tracking-wide text-gold-800">
               Teaching pearl
             </div>
@@ -320,7 +359,7 @@ export function CasePracticeCard({ scenario }: Props) {
               {scenario.teachingPearl}
             </p>
           </div>
-          <div className="rounded-xl border border-ucla-100 bg-ucla-50/60 p-4">
+          <div className="rounded-lg border border-ucla-100 bg-ucla-50/60 p-4">
             <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
               Next step
             </div>
@@ -329,7 +368,7 @@ export function CasePracticeCard({ scenario }: Props) {
             </p>
             <Link
               to={`/modules/${scenario.moduleId}/cheatsheet`}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
+              className="-mx-2 mt-3 inline-flex min-h-11 items-center gap-1.5 px-2 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
             >
               <Icon name="printer" size={13} />
               Open related cheat sheet
@@ -341,34 +380,27 @@ export function CasePracticeCard({ scenario }: Props) {
   );
 }
 
-function managementChoiceFor(nextStep: string): ManagementChoiceId {
-  const text = nextStep.toLowerCase();
-  if (
-    text.includes('urgent') ||
-    text.includes('emergent') ||
-    text.includes('same day') ||
-    text.includes('reduction') ||
-    text.includes('emergency')
-  ) {
-    return 'urgent-referral';
-  }
-  if (
-    text.includes('mri') ||
-    text.includes('ct') ||
-    text.includes('advanced imaging') ||
-    text.includes('repeat radiograph')
-  ) {
-    return 'advanced-imaging';
-  }
-  if (
-    text.includes('immobil') ||
-    text.includes('splint') ||
-    text.includes('boot') ||
-    text.includes('non-weightbearing') ||
-    text.includes('nwb') ||
-    text.includes('protect')
-  ) {
-    return 'immobilize-protect';
-  }
-  return 'symptomatic-follow-up';
+function CaseImages({
+  panels,
+  className = 'mt-4',
+}: {
+  panels: NonNullable<CaseScenario['imagePanels']>;
+  className?: string;
+}) {
+  const entries: XRayImageEntry[] = panels
+    .map((panel) => (panel.imageKey ? getImage(panel.imageKey) : undefined))
+    .filter((entry): entry is XRayImageEntry => Boolean(entry));
+  if (entries.length === 0) return null;
+  return (
+    <div
+      className={[
+        className,
+        entries.length === 1 ? 'mx-auto max-w-xl' : 'grid gap-3 sm:grid-cols-2',
+      ].join(' ')}
+    >
+      {entries.map((entry) => (
+        <XRayImage key={entry.id} entry={entry} />
+      ))}
+    </div>
+  );
 }

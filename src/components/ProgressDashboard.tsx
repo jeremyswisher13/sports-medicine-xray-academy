@@ -2,15 +2,15 @@ import { useMemo } from 'react';
 import { Icon } from './ui/Icon';
 import { moduleSummaries } from '../data/moduleSummaries';
 import { videoResources } from '../data/videoResources';
+import {
+  firstConfidenceAverage,
+  firstQuizAttempt,
+  latestCaseAttempts,
+} from '../utils/assessment';
 import type { ProgressSnapshot } from '../hooks/useProgress';
 
 interface Props {
   snapshot: ProgressSnapshot;
-}
-
-function avg(nums: number[]): number {
-  if (!nums.length) return 0;
-  return nums.reduce((a, b) => a + b, 0) / nums.length;
 }
 
 export function ProgressDashboard({ snapshot }: Props) {
@@ -20,29 +20,26 @@ export function ProgressDashboard({ snapshot }: Props) {
       (m) => courseModuleIds.has(m.moduleId) && m.completed,
     ).length;
     const totalModules = moduleSummaries.length;
-    const preQuiz = snapshot.quizzes.find((q) => q.scope === 'pre');
-    const postQuiz = snapshot.quizzes.find((q) => q.scope === 'post');
-    const preConfidence = snapshot.confidence
-      .filter((c) => c.scope === 'pre')
-      .map((c) => c.value);
-    const postConfidence = snapshot.confidence
-      .filter((c) => c.scope === 'post')
-      .map((c) => c.value);
+    const preQuiz = firstQuizAttempt(snapshot.quizzes, 'pre');
+    const postQuiz = firstQuizAttempt(snapshot.quizzes, 'post');
+    const preConfidenceAvg = firstConfidenceAverage(snapshot.confidence, 'pre');
+    const postConfidenceAvg = firstConfidenceAverage(snapshot.confidence, 'post');
     const videosCompleted = snapshot.videos.filter((v) => v.markedComplete).length;
     const videosTotal = videoResources.length;
     const videoCompletionPct = videosTotal === 0 ? 0 : (videosCompleted / videosTotal) * 100;
     const reflectionsCompleted = snapshot.videos.filter(
       (v) => v.reflectionText && v.reflectionText.trim().length > 0,
     ).length;
-    const casesCompleted = snapshot.cases.length;
-    const correctCases = snapshot.cases.filter((c) => c.correct).length;
+    const latestCases = latestCaseAttempts(snapshot.cases);
+    const casesCompleted = latestCases.length;
+    const correctCases = latestCases.filter((c) => c.correct).length;
     return {
       completedModules,
       totalModules,
       preQuizScore: preQuiz?.scorePercent,
       postQuizScore: postQuiz?.scorePercent,
-      preConfidenceAvg: avg(preConfidence),
-      postConfidenceAvg: avg(postConfidence),
+      preConfidenceAvg,
+      postConfidenceAvg,
       videosCompleted,
       videosTotal,
       videoCompletionPct,
@@ -65,7 +62,7 @@ export function ProgressDashboard({ snapshot }: Props) {
   }) => (
     <div className="card p-4">
       <div className="flex items-center gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-ucla-50 text-ucla-800">
+        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-ucla-50 text-ucla-800">
           <Icon name={iconName} size={16} />
         </span>
         <div className="min-w-0">
@@ -102,9 +99,9 @@ export function ProgressDashboard({ snapshot }: Props) {
           iconName="star"
           label="Confidence (pre → post)"
           value={
-            summary.preConfidenceAvg && summary.postConfidenceAvg
+            summary.preConfidenceAvg !== undefined && summary.postConfidenceAvg !== undefined
               ? `${summary.preConfidenceAvg.toFixed(1)} → ${summary.postConfidenceAvg.toFixed(1)}`
-              : summary.preConfidenceAvg
+              : summary.preConfidenceAvg !== undefined
                 ? `${summary.preConfidenceAvg.toFixed(1)} • Post pending`
                 : 'Pre pending'
           }
@@ -139,7 +136,7 @@ export function ProgressDashboard({ snapshot }: Props) {
               return (
                 <li
                   key={m.id}
-                  className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2"
+                  className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2"
                 >
                   <span className="min-w-0 flex-1 basis-full truncate text-sm font-medium text-slate-800 sm:basis-auto">
                     {m.title}

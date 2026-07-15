@@ -4,6 +4,7 @@ interface Props {
   label?: string;
   description?: string;
   compact?: boolean;
+  disabled?: boolean;
 }
 
 const labels: Record<1 | 2 | 3 | 4 | 5, string> = {
@@ -14,7 +15,14 @@ const labels: Record<1 | 2 | 3 | 4 | 5, string> = {
   5: 'Ready to apply clinically',
 };
 
-export function ConfidenceScale({ value, onChange, label, description, compact = false }: Props) {
+export function ConfidenceScale({
+  value,
+  onChange,
+  label,
+  description,
+  compact = false,
+  disabled = false,
+}: Props) {
   return (
     <div className={compact ? '' : 'card p-5'}>
       {label && <div className="text-sm font-semibold text-slate-900">{label}</div>}
@@ -30,9 +38,10 @@ export function ConfidenceScale({ value, onChange, label, description, compact =
               type="button"
               role="radio"
               aria-checked={selected}
+              disabled={disabled}
               onClick={() => onChange(n)}
               className={[
-                'flex min-w-[3.5rem] flex-col items-center gap-0.5 rounded-xl border px-3 py-2 text-center transition-colors',
+                'flex min-w-[3.5rem] flex-col items-center gap-0.5 rounded-lg border px-3 py-2 text-center transition-colors disabled:cursor-default disabled:opacity-75',
                 selected
                   ? 'border-ucla-600 bg-ucla-600 text-white shadow-soft'
                   : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300',

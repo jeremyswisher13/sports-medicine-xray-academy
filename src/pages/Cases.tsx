@@ -114,7 +114,7 @@ export function CasesPage() {
                       type="button"
                       onClick={() => setActiveCaseId(caseItem.id)}
                       className={[
-                        'rounded-2xl border p-3 text-left transition-colors',
+                        'rounded-lg border p-3 text-left transition-colors',
                         selected
                           ? 'border-ucla-300 bg-ucla-50 text-ucla-950 shadow-soft'
                           : 'border-slate-200 bg-white text-slate-700 hover:border-ucla-200 hover:bg-ucla-50/60',

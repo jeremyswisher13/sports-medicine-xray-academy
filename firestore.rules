@@ -25,11 +25,24 @@ service cloud.firestore {
             || request.auth.token.email == 'jeremyswisher13@gmail.com'
             || request.auth.token.email == 'jeremyswisher.medicine@gmail.com');
     }
+    function expectedRole() {
+      return isAdminEmail() ? 'admin'
+        : request.auth.token.email.matches('.*@mednet\\.ucla\\.edu$') ? 'fellow'
+        : request.auth.token.email.matches('.*ucla.*') ? 'resident'
+        : 'guest';
+    }
 
     // User profile docs are keyed by uid.
     match /users/{uid} {
       allow read: if isSelf(uid) || isAdminEmail();
-      allow create, update: if isSelf(uid);
+      allow create: if isSelf(uid)
+        && request.auth.token.email != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.role == expectedRole();
+      allow update: if isSelf(uid)
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['displayName', 'photoURL', 'lastLogin']);
       allow delete: if false;
       // Allow admin to list/query the users collection.
       allow list: if isAdminEmail();
@@ -38,43 +51,41 @@ service cloud.firestore {
     // Per-learner progress collections — owner-only with admin read.
     match /moduleProgress/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
-      allow create, update: if ownsIncoming();
+      allow create: if ownsIncoming();
+      allow update: if ownsExisting() && ownsIncoming();
       allow delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
     match /quizAttempts/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
       allow create: if ownsIncoming();
       allow update, delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
     match /confidenceRatings/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
       allow create: if ownsIncoming();
       allow update, delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
     match /caseAttempts/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
       allow create: if ownsIncoming();
       allow update, delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
     match /videoProgress/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
-      allow create, update: if ownsIncoming();
+      allow create: if ownsIncoming();
+      allow update: if ownsExisting() && ownsIncoming();
       allow delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
     match /bookmarks/{docId} {
       allow read: if ownsExisting() || isAdminEmail();
-      allow create, update, delete: if ownsIncoming();
+      allow create: if ownsIncoming();
+      allow update: if ownsExisting() && ownsIncoming();
+      allow delete: if ownsExisting();
     }
     match /auditLogs/{docId} {
       allow create: if ownsIncoming();
       allow read: if ownsExisting() || isAdminEmail();
       allow update, delete: if false;
-      allow list: if isAdminEmail() || (isSignedIn() && request.query.limit <= 500);
     }
 
     // Curriculum docs (modules) are read-only to authenticated users,

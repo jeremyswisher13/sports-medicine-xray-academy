@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="FAI cam versus pincer morphology diagram">
   <rect width="800" height="600" fill="#F7F8FA"/>
-  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Femoroacetabular Impingement — Cam vs Pincer</text>
-  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">Two morphologies (often combined) that drive hip impingement in athletes</text>
+  <text x="400" y="46" font-family="'Source Serif 4', serif" font-size="26" font-weight="700" fill="#003B5C" text-anchor="middle">Cam and Pincer Hip Morphology</text>
+  <text x="400" y="76" font-family="Inter, sans-serif" font-size="13" fill="#475569" text-anchor="middle">These shapes may contribute to impingement syndrome when symptoms and examination agree</text>
 
   <!-- Normal -->
   <g transform="translate(70,110)" font-family="Inter, sans-serif">
@@ -38,8 +38,8 @@
   </g>
 
   <g font-family="Inter, sans-serif">
-    <rect x="70" y="450" width="660" height="100" rx="16" fill="#FFFFFF" stroke="#A8C2D7"/>
-    <text x="400" y="478" text-anchor="middle" font-weight="700" fill="#003B5C" font-size="12" letter-spacing="2">PEARL</text>
+    <rect x="70" y="450" width="660" height="100" rx="8" fill="#FFFFFF" stroke="#A8C2D7"/>
+    <text x="400" y="478" text-anchor="middle" font-weight="700" fill="#003B5C" font-size="12" letter-spacing="0">PEARL</text>
     <text x="400" y="502" text-anchor="middle" font-family="'Source Serif 4', serif" font-size="16" fill="#003B5C">Cam = aspherical head-neck junction; Pincer = acetabular over-coverage. Many hips are mixed.</text>
     <text x="400" y="524" text-anchor="middle" font-size="12" fill="#475569">Young athlete with groin pain + positive FADIR → look for cam/pincer on AP pelvis and Dunn/lateral views.</text>
     <text x="400" y="540" text-anchor="middle" font-size="11" fill="#64748B">Original UCLA Sports Medicine illustrative diagram — not a real radiograph</text>

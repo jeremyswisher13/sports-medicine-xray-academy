@@ -27,7 +27,7 @@ export function PlaceholderImagePanel({ view = 'AP', caption, className = '' }: 
   return (
     <figure
       className={[
-        'group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-50',
+        'group relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-dashed border-slate-300 bg-slate-50',
         className,
       ].join(' ')}
       aria-label="Placeholder x-ray panel"

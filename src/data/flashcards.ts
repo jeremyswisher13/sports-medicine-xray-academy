@@ -68,20 +68,20 @@ const shoulderDeck: Flashcard[] = [
     moduleId: 'shoulder',
     front: 'Most essential view to diagnose posterior shoulder dislocation?',
     back: 'Axillary view (or Velpeau substitute). AP can look near-normal.',
-    pearl: 'Light bulb sign on AP + locked internal rotation = posterior dislocation until proven otherwise.',
+    pearl: 'Light-bulb appearance plus locked internal rotation is a strong clue; prove the joint relationship on an axial view.',
   },
   {
     id: 'fc-shd-2',
     moduleId: 'shoulder',
     front: 'Normal coracoclavicular distance?',
-    back: '11–13 mm. Always compare to the contralateral side.',
-    pearl: 'CC distance increase >25–50% over the other side suggests Type III+ AC separation.',
+    back: 'About 11–13 mm in many adults; account for technique and compare to the contralateral side when available.',
+    pearl: 'A roughly 25–100% side-to-side increase fits a type III pattern when the other Rockwood features agree.',
   },
   {
     id: 'fc-shd-3',
     moduleId: 'shoulder',
-    front: 'Acromiohumeral interval cutoff for chronic cuff insufficiency?',
-    back: '< 7 mm = chronic rotator cuff insufficiency.',
+    front: 'What does a narrowed acromiohumeral interval suggest?',
+    back: 'On an adequately positioned upright AP, an interval below about 7 mm supports chronic superior migration or large chronic cuff dysfunction; it is specific but not sensitive, and a normal interval does not exclude a tear.',
   },
   {
     id: 'fc-shd-4',
@@ -94,7 +94,7 @@ const shoulderDeck: Flashcard[] = [
     id: 'fc-shd-5',
     moduleId: 'shoulder',
     front: 'Bony Bankart lesion clinical relevance?',
-    back: 'Glenoid rim fracture from anterior dislocation; >15–20% bone loss can shift surgery to a bone-block (e.g., Latarjet).',
+    back: 'A glenoid rim fracture from anterior dislocation; clinically important bone loss can shift stabilization planning toward a bony procedure.',
   },
   {
     id: 'fc-shd-6',
@@ -121,7 +121,7 @@ const kneeDeck: Flashcard[] = [
     id: 'fc-knee-1',
     moduleId: 'knee',
     front: 'Segond fracture is associated with…',
-    back: 'ACL tear (in ~75–100% of cases). Always order MRI.',
+    back: 'ACL tear and associated internal derangement. MRI is usually the next study when clinically appropriate.',
     pearl: 'A 3–5 mm avulsion off the lateral tibial plateau in a pivot injury is rarely innocent.',
   },
   {
@@ -146,7 +146,7 @@ const kneeDeck: Flashcard[] = [
     id: 'fc-knee-5',
     moduleId: 'knee',
     front: 'Acute large knee effusion + normal x-ray = ?',
-    back: 'Internal derangement until proven otherwise → MRI.',
+    back: 'Reassess for occult fracture or internal derangement; consider MRI based on examination and management needs.',
   },
   {
     id: 'fc-knee-6',
@@ -173,13 +173,13 @@ const ankleFootDeck: Flashcard[] = [
     id: 'fc-af-1',
     moduleId: 'ankle-foot',
     front: 'On a mortise view, what should medial vs superior clear space look like?',
-    back: 'Equal — both ~2–4 mm. Medial > superior suggests deltoid/syndesmotic injury.',
+    back: 'On a well-positioned mortise, the medial clear space should generally not exceed the superior clear space. Asymmetry raises concern for deltoid injury or instability, but rotation, stress, and technique matter.',
   },
   {
     id: 'fc-af-2',
     moduleId: 'ankle-foot',
     front: 'Plantar ecchymosis with midfoot pain = ?',
-    back: 'Lisfranc until proven otherwise → weightbearing AP foot or CT.',
+    back: 'High concern for Lisfranc injury → weightbearing comparison views when tolerated, or CT/MRI when not.',
   },
   {
     id: 'fc-af-3',
@@ -192,7 +192,7 @@ const ankleFootDeck: Flashcard[] = [
     id: 'fc-af-4',
     moduleId: 'ankle-foot',
     front: 'Maisonneuve fracture?',
-    back: 'Proximal fibula fracture with deltoid disruption — get full-length tib/fib films.',
+    back: 'A proximal fibula fracture associated with syndesmotic disruption and a medial ankle injury, which may be deltoid rupture or a medial malleolar fracture. Examine the whole fibula and obtain full-length tib/fib views when indicated.',
   },
   {
     id: 'fc-af-5',
@@ -203,8 +203,8 @@ const ankleFootDeck: Flashcard[] = [
   {
     id: 'fc-af-6',
     moduleId: 'ankle-foot',
-    front: 'Tib-fib clear space cutoff suggesting syndesmotic widening?',
-    back: '> 5–6 mm at 1 cm above the plafond.',
+    front: 'How should the tibiofibular clear space be used for syndesmosis assessment?',
+    back: 'A value around 6 mm or greater at about 1 cm above the plafond raises concern, but projection, rotation, and the rest of the mortise assessment must be considered.',
   },
   {
     id: 'fc-af-7',
@@ -216,7 +216,7 @@ const ankleFootDeck: Flashcard[] = [
     id: 'fc-af-8',
     moduleId: 'ankle-foot',
     front: 'When should a Jones fracture get NWB management?',
-    back: 'Always at presentation; surgical fixation often considered in athletes due to nonunion risk.',
+    back: 'At initial presentation, use non-weightbearing immobilization and arrange early follow-up; fixation is often considered in high-demand athletes.',
   },
 ];
 
@@ -225,13 +225,13 @@ const doNotMissDeck: Flashcard[] = [
     id: 'fc-dnm-1',
     moduleId: 'do-not-miss',
     front: 'Klein line on AP pelvis fails to intersect the lateral epiphysis = ?',
-    back: 'SCFE — emergent ortho referral, NWB.',
+    back: 'SCFE concern — immediate non-weightbearing and urgent orthopedic referral; choose the lateral view by stability.',
   },
   {
     id: 'fc-dnm-2',
     moduleId: 'do-not-miss',
-    front: 'Disrupted Gilula arcs on lateral wrist = ?',
-    back: 'Perilunate dislocation — urgent reduction and hand surgery.',
+    front: 'Disrupted Gilula arcs on PA wrist plus abnormal capitate-lunate alignment on lateral = ?',
+    back: 'Urgent concern for perilunate/lunate carpal injury; a perilunate dislocation requires emergency reduction and hand-surgery management.',
   },
   {
     id: 'fc-dnm-3',
@@ -267,7 +267,7 @@ const doNotMissDeck: Flashcard[] = [
     id: 'fc-dnm-8',
     moduleId: 'do-not-miss',
     front: 'Jones fracture in an athlete — initial management?',
-    back: 'NWB CAM boot + ortho referral; surgical fixation often considered.',
+    back: 'Non-weightbearing immobilization plus early orthopedic/sports referral; surgical fixation is often considered for high-demand athletes.',
   },
 ];
 
@@ -333,7 +333,7 @@ const kneeExpansionDeck: Flashcard[] = [
     id: 'fc-knee-9',
     moduleId: 'knee',
     front: 'What does lipohemarthrosis on knee x-ray imply?',
-    back: 'An intra-articular fracture until proven otherwise.',
+    back: 'Marrow fat in the joint, strongly indicating an intra-articular fracture.',
     pearl: 'Look for a fat-fluid level on the horizontal-beam lateral.',
   },
   {
@@ -395,7 +395,7 @@ const doNotMissExpansionDeck: Flashcard[] = [
     id: 'fc-dnm-10',
     moduleId: 'do-not-miss',
     front: 'Open physis + focal bony tenderness + normal x-ray = ?',
-    back: 'Treat as possible Salter-Harris I injury when the exam is convincing.',
+    back: 'Occult physeal injury remains possible, but tenderness alone is not diagnostic. Use the site-specific pathway and reassess the clinical course.',
   },
   {
     id: 'fc-dnm-11',
@@ -417,20 +417,20 @@ const elbowDeck: Flashcard[] = [
     id: 'fc-elbow-1',
     moduleId: 'elbow',
     front: 'Radiocapitellar line rule?',
-    back: 'A line down the radial neck should intersect the capitellum on every view.',
-    pearl: 'If it misses, think radial head dislocation or Monteggia pattern.',
+    back: 'A line down the radial neck should intersect the capitellum on adequately positioned views.',
+    pearl: 'A reproducible miss across views raises concern for radial head dislocation or a Monteggia pattern; rotation and age can create apparent misses.',
   },
   {
     id: 'fc-elbow-2',
     moduleId: 'elbow',
     front: 'Anterior humeral line rule in children?',
-    back: 'On the true lateral, it should pass through the middle third of the capitellum.',
+    back: 'On a true lateral it should intersect the capitellum; the middle third is typical at age 5 and older, while younger children may intersect more anteriorly.',
   },
   {
     id: 'fc-elbow-3',
     moduleId: 'elbow',
     front: 'Posterior fat pad on elbow x-ray means…',
-    back: 'Elbow effusion and occult fracture until proven otherwise.',
+    back: 'An abnormal elbow effusion after trauma that strongly suggests occult intra-articular injury; manage as a possible fracture.',
   },
   {
     id: 'fc-elbow-4',
@@ -442,7 +442,7 @@ const elbowDeck: Flashcard[] = [
     id: 'fc-elbow-5',
     moduleId: 'elbow',
     front: 'Pediatric elbow effusion after trauma with subtle films usually means…',
-    back: 'Occult supracondylar fracture until proven otherwise.',
+    back: 'Possible occult fracture, commonly supracondylar; immobilize and arrange appropriate follow-up when the clinical picture fits.',
   },
   {
     id: 'fc-elbow-6',
@@ -550,8 +550,8 @@ const pelvisHipDeck: Flashcard[] = [
   {
     id: 'fc-hip-6',
     moduleId: 'pelvis-hip',
-    front: 'Cam-type FAI x-ray concept?',
-    back: 'Loss of normal femoral head-neck offset, often seen as an aspherical bump.',
+    front: 'Cam morphology x-ray concept?',
+    back: 'Loss of normal femoral head-neck offset, often seen as an aspherical bump. It supports FAI syndrome only when symptoms and examination also fit.',
   },
   {
     id: 'fc-hip-7',
@@ -635,7 +635,7 @@ const pediatricAdolescentDeck: Flashcard[] = [
     id: 'fc-ped-3',
     moduleId: 'pediatric-adolescent',
     front: 'Salter-Harris I injury can look like…',
-    back: 'A normal x-ray with focal physeal tenderness.',
+    back: 'A normal x-ray despite a compatible mechanism and focal symptoms at an open physis; the diagnosis remains clinical and site-specific.',
   },
   {
     id: 'fc-ped-4',
@@ -658,8 +658,8 @@ const pediatricAdolescentDeck: Flashcard[] = [
   {
     id: 'fc-ped-7',
     moduleId: 'pediatric-adolescent',
-    front: 'Pediatric ankle sprain with focal physeal tenderness?',
-    back: 'Treat as possible physeal injury when x-rays are negative but the exam is convincing.',
+    front: 'Radiograph-negative pediatric lateral ankle injury?',
+    back: 'Most are ligament sprains or occult avulsions, not Salter-Harris I distal fibula. Use a removable brace/functional recovery pathway when low risk, with reassessment if recovery is atypical.',
   },
   {
     id: 'fc-ped-8',

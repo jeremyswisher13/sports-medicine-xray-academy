@@ -93,7 +93,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Triceps tendinopathy' },
       ],
       correctOptionId: 'b',
-      explanation: 'Posterior fat pad is never normal in the right clinical context.',
+      explanation: 'A posterior fat pad after trauma is abnormal and strongly suggests an occult intra-articular injury; manage it as a possible fracture.',
     },
   ],
   'amssm-shoulder-radiology': [
@@ -108,21 +108,21 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'AC joint OA' },
       ],
       correctOptionId: 'b',
-      explanation: 'High-riding humeral head implies chronic cuff dysfunction.',
+      explanation: 'On an adequately positioned upright AP, a narrowed interval supports chronic superior migration or large chronic cuff dysfunction. It is not sensitive enough to exclude a tear when normal.',
     },
     {
       id: 'pv-shd-q2',
       domain: 'shoulder',
       prompt:
-        'On Grashey, a clean concentric joint space confirms:',
+        'On a Grashey projection, a clean concentric joint space most directly supports:',
       options: [
         { id: 'a', text: 'A normal cuff' },
-        { id: 'b', text: 'An adequate film' },
+        { id: 'b', text: 'Adequate projection of the glenohumeral joint' },
         { id: 'c', text: 'No bony Bankart' },
         { id: 'd', text: 'No instability' },
       ],
       correctOptionId: 'b',
-      explanation: 'Adequate Grashey is the prerequisite for downstream interpretation.',
+      explanation: 'An open, concentric glenohumeral joint space supports adequate Grashey positioning; it does not by itself exclude cuff, labral, rim, or instability pathology.',
     },
   ],
   'amssm-elbow-radiology': [
@@ -130,16 +130,16 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
       id: 'pv-elbow-q1',
       domain: 'foundations',
       prompt:
-        'On a pediatric lateral elbow x-ray, the anterior humeral line should:',
+        'On a true lateral elbow in a child age 5 or older, the anterior humeral line should:',
       options: [
         { id: 'a', text: 'Pass anterior to the capitellum' },
-        { id: 'b', text: 'Bisect the middle third of the capitellum' },
+        { id: 'b', text: 'Intersect the capitellum, usually through its middle third' },
         { id: 'c', text: 'Pass posterior to the capitellum' },
         { id: 'd', text: 'Be irrelevant in adults' },
       ],
       correctOptionId: 'b',
       explanation:
-        'Anterior humeral line should bisect the middle third — posterior position suggests supracondylar fracture.',
+        'At age 5 and older the line usually crosses the middle third on a true lateral; in younger children it may intersect the anterior third. A clear posterior shift suggests supracondylar fracture.',
     },
     {
       id: 'pv-elbow-q2',
@@ -153,7 +153,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Radial head fracture' },
       ],
       correctOptionId: 'c',
-      explanation: 'Medial-sided pain + epicondyle fragment in a thrower = UCL injury until proven otherwise.',
+      explanation: 'Medial-sided pain plus an epicondylar fragment in a thrower should prompt evaluation for medial epicondyle avulsion and associated UCL injury.',
     },
   ],
   'amssm-hand-radiology': [
@@ -196,7 +196,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Tibial tubercle apophysitis' },
       ],
       correctOptionId: 'b',
-      explanation: 'Segond → ACL until proven otherwise.',
+      explanation: 'A Segond fracture is strongly associated with ACL injury and should trigger evaluation for internal derangement.',
     },
     {
       id: 'pv-hk-q2',
@@ -238,7 +238,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'AVN crescent sign' },
       ],
       correctOptionId: 'a',
-      explanation: 'Cam = aspherical head-neck junction; pincer = acetabular over-coverage.',
+      explanation: 'Cam morphology is an aspherical head-neck junction; pincer morphology is acetabular over-coverage. Either can be asymptomatic, so FAI syndrome also requires compatible symptoms and examination findings.',
     },
   ],
   'amssm-knee-radiology': [
@@ -248,12 +248,12 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
       prompt: 'A large suprapatellar effusion with no fracture after acute trauma warrants:',
       options: [
         { id: 'a', text: 'Reassurance' },
-        { id: 'b', text: 'MRI for internal derangement / occult fracture' },
+        { id: 'b', text: 'Further injury-directed evaluation; select MRI or CT from the examination and suspected pattern' },
         { id: 'c', text: 'CT lumbar spine' },
         { id: 'd', text: 'Casting' },
       ],
       correctOptionId: 'b',
-      explanation: 'Effusion is the tiebreaker for soft-tissue injury when bone is unremarkable.',
+      explanation: 'A large traumatic effusion is an indirect injury clue when bone appears unremarkable. Reassess for occult fracture and internal derangement, then choose MRI or CT according to the clinical question.',
     },
     {
       id: 'pv-knee-q2',
@@ -281,7 +281,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Bone scan' },
       ],
       correctOptionId: 'b',
-      explanation: 'NWB films can hide Lisfranc; weightbearing or CT clarifies.',
+      explanation: 'NWB films can hide Lisfranc injury. Use weightbearing comparison radiographs when safe and tolerated, or CT/MRI when the patient cannot bear weight or films remain equivocal.',
     },
     {
       id: 'pv-fa-q2',
@@ -294,7 +294,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Distal shaft' },
       ],
       correctOptionId: 'b',
-      explanation: 'Jones = metaphyseal-diaphyseal junction; high nonunion risk.',
+      explanation: 'A Jones fracture is at the metaphyseal-diaphyseal junction and carries higher nonunion risk than a zone 1 avulsion.',
     },
   ],
   'amssm-ankle-radiology': [
@@ -309,7 +309,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Posterior malleolar fracture' },
       ],
       correctOptionId: 'b',
-      explanation: 'Asymmetric medial > superior implies deltoid disruption.',
+      explanation: 'On an adequately positioned mortise view, asymmetric medial widening raises concern for deltoid injury and possible syndesmotic instability; confirm technique and the complete series.',
     },
     {
       id: 'pv-ank-q2',
@@ -350,7 +350,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Apophysitis' },
       ],
       correctOptionId: 'b',
-      explanation: 'Symmetric physes are normal; asymmetric widening is a fracture pattern.',
+      explanation: 'Asymmetric physeal widening raises concern for Salter-Harris injury, but age, positioning, mechanism, focal tenderness, and comparison when selectively useful all affect interpretation.',
     },
   ],
   'amssm-ocd-lesions': [
@@ -378,7 +378,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
         { id: 'd', text: 'Bone scan' },
       ],
       correctOptionId: 'b',
-      explanation: 'MRI characterizes stability — drives operative vs non-op decision.',
+      explanation: 'MRI helps characterize the lesion, cartilage/subchondral bone, and features associated with stability, which informs management alongside symptoms, skeletal maturity, and examination.',
     },
   ],
   'amssm-bone-stress-injuries': [
@@ -388,7 +388,7 @@ export const videoQuestions: Record<string, QuizQuestionData[]> = {
       prompt: 'Why are early stress injuries often radiographically occult?',
       options: [
         { id: 'a', text: 'Cortical changes appear before clinical pain' },
-        { id: 'b', text: 'Cortical changes lag behind clinical pain by 2–4 weeks' },
+        { id: 'b', text: 'Radiographic cortical or periosteal changes can lag clinical pain by weeks' },
         { id: 'c', text: 'X-rays detect them before MRI' },
         { id: 'd', text: 'They never appear on x-ray' },
       ],

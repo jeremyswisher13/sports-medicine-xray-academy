@@ -54,13 +54,13 @@ function PathologyRow({ item }: { item: PathologyComparison }) {
       {open && (
         <div className="mt-3 animate-fade-in">
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-emerald-100 bg-emerald-50/50 p-3">
+            <div className="rounded-lg border border-emerald-100 bg-emerald-50/50 p-3">
               <div className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
                 Normal
               </div>
               <p className="mt-1 text-sm leading-relaxed text-slate-700">{item.normal}</p>
             </div>
-            <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-3">
+            <div className="rounded-lg border border-rose-100 bg-rose-50/50 p-3">
               <div className="text-xs font-semibold uppercase tracking-wide text-rose-700">
                 Pathologic
               </div>

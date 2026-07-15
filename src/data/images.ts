@@ -151,9 +151,9 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
   'pelvis-hip:fai-cam-pincer': {
     id: 'pelvis-hip-fai-cam-pincer',
     src: '/diagrams/fai-cam-pincer.svg',
-    alt: 'Diagram comparing normal hip, cam morphology, and pincer morphology in femoroacetabular impingement',
+    alt: 'Diagram comparing a normal hip with cam and pincer bony morphology',
     view: 'Diagram',
-    caption: 'FAI — cam vs pincer morphology',
+    caption: 'Cam and pincer morphology — correlate with symptoms and examination',
     source: 'Original UCLA Sports Medicine diagram',
     license: 'Original — Sports Medicine X-Ray Academy',
     attribution: 'Jeremy Swisher, MD',
@@ -210,7 +210,7 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     id: 'elbow-fat-pad-sign',
     src: '/uploads/elbow-fat-pad-sign.jpg',
     alt:
-      'Lateral elbow radiograph showing anterior and posterior fat pad signs — occult intra-articular fracture',
+      'Lateral elbow radiograph showing anterior and posterior fat pad signs, raising concern for occult intra-articular injury',
     view: 'Lateral',
     caption: 'Posterior fat pad sign — lateral elbow',
     source: 'Wikimedia Commons',
@@ -417,7 +417,7 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     alt:
       'Frog-leg lateral pelvis radiograph showing slipped capital femoral epiphysis with posterior slip',
     view: 'Special',
-    caption: 'SCFE — frog-leg lateral confirmatory view',
+    caption: 'SCFE — frog-leg lateral example for a stable presentation',
     source: 'Wikimedia Commons',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:SCFE_FROG_B%26W.jpg',
@@ -430,9 +430,9 @@ export const imageRegistry: Record<string, XRayImageEntry> = {
     id: 'hip-fai-cam-morphology',
     src: '/uploads/hip-fai-cam-morphology.jpg',
     alt:
-      'AP pelvis radiograph showing prominent cam morphology of the femoral head-neck junction in femoroacetabular impingement',
+      'AP pelvis radiograph showing prominent cam morphology of the femoral head-neck junction',
     view: 'AP',
-    caption: 'Cam morphology — aspherical femoral head-neck junction (FAI)',
+    caption: 'Cam morphology — aspherical femoral head-neck junction',
     source: 'Wikimedia Commons',
     sourceUrl:
       'https://commons.wikimedia.org/wiki/File:CAM-Impingement_und_Coxarthrose_50W_-_CR_Beckenuebersicht_pa_-_001.jpg',

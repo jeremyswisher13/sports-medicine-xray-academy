@@ -29,7 +29,7 @@ export const preCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Plantar ecchymosis = Lisfranc until proven otherwise. NWB films often miss the diastasis.',
+      'Plantar ecchymosis with midfoot pain is a high-risk clue for Lisfranc injury. NWB films can miss instability, so obtain loading views when tolerated or advanced imaging.',
   },
   {
     id: 'pre-q3',
@@ -44,7 +44,7 @@ export const preCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'c',
     explanation:
-      'Segond fracture is highly associated with ACL injury — MRI is the next step.',
+      'A Segond fracture is strongly associated with ACL injury and should trigger evaluation for associated internal derangement; MRI is usually appropriate when it will guide management.',
   },
   {
     id: 'pre-q4',
@@ -59,7 +59,7 @@ export const preCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'c',
     explanation:
-      'Femoral neck stress fracture is a tension-side injury with completion risk. MRI is test of choice.',
+      'Femoral neck bone stress injuries may be radiographically occult and can progress to displacement. MRI is the preferred next test when suspicion remains; protect weightbearing during evaluation.',
   },
   {
     id: 'pre-q5',
@@ -74,7 +74,7 @@ export const preCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Klein line abnormality on AP is classic for SCFE; emergent ortho referral is required.',
+      'Klein line abnormality on AP is a classic SCFE clue. Make the patient immediately non-weightbearing and obtain urgent orthopedic consultation; lateral positioning depends on stability.',
   },
   {
     id: 'pre-q6',
@@ -104,7 +104,7 @@ export const preCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Asymmetric medial > superior clear space indicates deltoid disruption ± syndesmosis injury.',
+      'On an adequately positioned mortise view, asymmetric medial widening relative to the superior clear space raises concern for deltoid injury and possible syndesmotic instability; confirm technique and the rest of the series.',
   },
 ];
 
@@ -122,7 +122,7 @@ export const postCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'c',
     explanation:
-      'Posterior dislocation requires a true axillary or Velpeau substitute — AP and Y are not enough.',
+      'A true axillary or Velpeau view directly demonstrates the glenohumeral relationship and is preferred when posterior dislocation is suspected; an adequate Y can support the diagnosis but may be less definitive.',
   },
   {
     id: 'post-q2',
@@ -131,19 +131,19 @@ export const postCourseQuiz: QuizQuestionData[] = [
       'A 28-year-old runner has lateral foot pain. Films show a transverse fracture at the metaphyseal-diaphyseal junction of the 5th MT. Best management?',
     options: [
       { id: 'a', text: 'WBAT in hard-sole shoe' },
-      { id: 'b', text: 'NWB CAM boot, ortho referral (Jones)' },
+      { id: 'b', text: 'Non-weightbearing immobilization and early ortho/sports referral (Jones)' },
       { id: 'c', text: 'Reassure — avulsion' },
       { id: 'd', text: 'Discharge with NSAIDs' },
     ],
     correctOptionId: 'b',
     explanation:
-      'Jones fractures have high nonunion risk and often warrant surgical consideration in athletes.',
+      'Jones fractures carry higher nonunion risk than zone 1 avulsions and often warrant surgical consideration in high-demand athletes.',
   },
   {
     id: 'post-q3',
     domain: 'do-not-miss',
     prompt:
-      'A snowboarder has a deformed wrist with median paresthesias. Lateral x-ray shows disruption of Gilula arcs. Diagnosis?',
+      'A snowboarder has a deformed wrist with median paresthesias. The PA shows disrupted Gilula arcs, and the lateral shows the capitate displaced dorsally from the lunate. Diagnosis?',
     options: [
       { id: 'a', text: 'Distal radius fracture' },
       { id: 'b', text: 'Perilunate dislocation' },
@@ -152,7 +152,7 @@ export const postCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Perilunate dislocation requires urgent reduction and hand surgery referral.',
+      'Gilula arcs are assessed on the PA view; capitate-lunate malalignment is confirmed on the lateral. This pattern is a perilunate dislocation and requires emergency reduction and hand-surgery management.',
   },
   {
     id: 'post-q4',
@@ -167,7 +167,7 @@ export const postCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Occult scaphoid fracture is the rule, not the exception, in this clinical setting.',
+      'Occult scaphoid fracture remains an important possibility after a FOOSH with focal scaphoid tenderness despite normal initial radiographs. Protect the wrist and arrange repeat radiographs or earlier MRI/CT according to clinical suspicion and local protocol.',
   },
   {
     id: 'post-q5',
@@ -197,7 +197,7 @@ export const postCourseQuiz: QuizQuestionData[] = [
     ],
     correctOptionId: 'b',
     explanation:
-      'Even small plateau depressions affect the surgical decision; CT is standard for fragment characterization.',
+      'CT better characterizes plateau depression, split components, and articular fragments and can change fracture classification and operative planning.',
   },
   {
     id: 'post-q7',

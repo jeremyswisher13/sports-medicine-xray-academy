@@ -22,7 +22,7 @@ export function AnnotatedXray({
   const entry = getImage(imageKey);
   if (!entry) {
     return (
-      <div className="grid aspect-[3/4] w-full place-items-center rounded-xl bg-slate-900 text-sm text-slate-400">
+      <div className="grid aspect-[3/4] w-full place-items-center rounded-lg bg-slate-900 text-sm text-slate-400">
         Image unavailable
       </div>
     );
@@ -31,11 +31,12 @@ export function AnnotatedXray({
     <figure className="m-0">
       {/* The wrapper hugs the image (w-fit) so the percentage-positioned markers
           stay aligned even when the film is height-capped on tall phone screens. */}
-      <div className="relative mx-auto w-fit max-w-full overflow-hidden rounded-xl bg-black">
+      <div className="relative mx-auto w-fit max-w-full overflow-hidden rounded-lg bg-black">
         <img
           src={entry.src}
           alt={entry.alt ?? entry.caption ?? ''}
           draggable={false}
+          decoding="async"
           className="mx-auto block max-h-[56vh] w-auto max-w-full select-none lg:max-h-[72vh]"
         />
         {markers.map((m, i) => (
@@ -57,7 +58,8 @@ export function AnnotatedXray({
                   // Anchor the label toward the image interior so markers near an
                   // edge don't clip; allow wrapping (within a max width) instead of
                   // overflowing off the film.
-                  'absolute top-[150%] z-10 w-max max-w-[170px] rounded bg-black/80 px-2 py-0.5 text-[11px] font-semibold leading-tight text-white',
+                  'absolute z-10 w-max max-w-[170px] rounded bg-black/80 px-2 py-0.5 text-[11px] font-semibold leading-tight text-white',
+                  m.y >= 72 ? 'bottom-[150%]' : 'top-[150%]',
                   m.x >= 70 ? 'right-0' : m.x <= 30 ? 'left-0' : 'left-1/2 -translate-x-1/2',
                 ].join(' ')}
               >

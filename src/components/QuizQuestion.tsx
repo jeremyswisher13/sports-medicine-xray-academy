@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from './ui/Icon';
 import type { QuizQuestionData } from '../types';
@@ -11,6 +11,8 @@ interface Props {
   showFeedback?: boolean;
   locked?: boolean;
   formative?: boolean;
+  feedbackRevealed?: boolean;
+  onReveal?: () => void;
   cheatSheetModuleId?: string;
   onSelect: (optionId: string) => void;
 }
@@ -23,32 +25,40 @@ export function QuizQuestion({
   showFeedback = false,
   locked = false,
   formative = false,
+  feedbackRevealed = false,
+  onReveal,
   cheatSheetModuleId,
   onSelect,
 }: Props) {
   const [revealed, setRevealed] = useState(showFeedback);
+  const feedbackVisible = revealed || feedbackRevealed || showFeedback;
+
+  useEffect(() => {
+    setRevealed(showFeedback);
+  }, [question.id, showFeedback]);
 
   const isCorrect = (id: string) => id === question.correctOptionId;
   const isSelected = (id: string) => id === selectedOptionId;
 
   return (
-    <article className="card p-5 sm:p-6">
+    <article className="card p-4 sm:p-6">
       <div className="flex items-baseline justify-between gap-3">
         <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
           Question {index + 1} of {total}
         </div>
         <div className="pill">{question.domain.replace('-', ' ')}</div>
       </div>
-      <h3 className="mt-2 text-lg sm:text-xl text-balance text-slate-900">
+      <h3 className="mt-2 text-base sm:text-xl text-balance text-slate-900">
         {question.prompt}
       </h3>
-      <fieldset disabled={locked} className="mt-4 grid gap-2">
+      <fieldset disabled={locked || (formative && feedbackVisible)} className="mt-4 grid gap-2">
+        <legend className="sr-only">Answer choices for question {index + 1}</legend>
         {question.options.map((opt) => {
           const selected = isSelected(opt.id);
-          const reveal = revealed || showFeedback;
+          const reveal = feedbackVisible;
           const correct = isCorrect(opt.id);
           let cls =
-            'flex w-full items-start gap-3 rounded-xl border bg-white px-4 py-3 text-left text-sm transition-colors';
+            'flex w-full items-start gap-3 rounded-lg border bg-white px-4 py-3 text-left text-sm transition-colors';
           if (reveal) {
             if (correct) cls += ' border-emerald-300 bg-emerald-50/60';
             else if (selected && !correct) cls += ' border-rose-300 bg-rose-50/60';
@@ -90,12 +100,15 @@ export function QuizQuestion({
         })}
       </fieldset>
 
-      {formative && !showFeedback && !revealed && (
+      {formative && !feedbackVisible && (
         <div className="mt-4 flex justify-end">
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => setRevealed(true)}
+            onClick={() => {
+              setRevealed(true);
+              onReveal?.();
+            }}
             disabled={!selectedOptionId}
           >
             Show explanation
@@ -103,8 +116,8 @@ export function QuizQuestion({
         </div>
       )}
 
-      {(revealed || showFeedback) && (
-        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+      {feedbackVisible && (
+        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
             Explanation
           </div>
@@ -126,7 +139,7 @@ export function QuizQuestion({
           {cheatSheetModuleId && (
             <Link
               to={`/modules/${cheatSheetModuleId}/cheatsheet`}
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
+              className="-mx-2 mt-3 inline-flex min-h-11 items-center gap-1.5 px-2 text-xs font-semibold text-ucla-700 no-underline hover:text-ucla-900"
             >
               <Icon name="printer" size={13} />
               Open related cheat sheet

@@ -75,7 +75,7 @@ export function ModuleCompletionReward({
             />
           </div>
 
-          <div className="mt-5 rounded-2xl border border-white bg-white/85 p-4">
+          <div className="mt-5 rounded-lg border border-white bg-white/85 p-4">
             <div className="text-xs font-semibold uppercase tracking-wide text-ucla-700">
               Best next reps
             </div>
@@ -83,7 +83,7 @@ export function ModuleCompletionReward({
               {targets.map((target) => (
                 <article
                   key={target.title}
-                  className="rounded-xl border border-ucla-100 bg-ucla-50/60 p-3"
+                  className="rounded-lg border border-ucla-100 bg-ucla-50/60 p-3"
                 >
                   <div className="flex items-center gap-2 text-sm font-semibold text-ucla-900">
                     <Icon name={target.icon} size={15} className="text-ucla-700" />
@@ -98,7 +98,7 @@ export function ModuleCompletionReward({
           </div>
         </div>
 
-        <aside className="rounded-2xl border border-ucla-100 bg-white/90 p-4 shadow-soft">
+        <aside className="rounded-lg border border-ucla-100 bg-white/90 p-4 shadow-soft">
           <div className="text-sm font-semibold text-ucla-900">Keep the momentum</div>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
             Use the result while it is fresh: either move forward, or do a short image-call block
@@ -156,7 +156,7 @@ function RewardMetric({
         : 'border-ucla-100 bg-white text-ucla-950';
 
   return (
-    <div className={['rounded-2xl border p-4 shadow-soft', toneClass].join(' ')}>
+    <div className={['rounded-lg border p-4 shadow-soft', toneClass].join(' ')}>
       <div className="text-[11px] font-semibold uppercase tracking-wide opacity-75">
         {label}
       </div>
